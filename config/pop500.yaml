@@ -1,0 +1,5 @@
+population_size: 500
+mutation_rate: 0.05
+crossover_rate: 0.8
+elitism_size: 5
+max_generations: 500
