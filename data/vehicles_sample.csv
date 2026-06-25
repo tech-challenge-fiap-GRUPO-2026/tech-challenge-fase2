@@ -1,3 +1,6 @@
 vehicle_id,max_capacity,max_distance
 1,50,120
 2,75,180
+3,90,220
+4,110,260
+5,130,300

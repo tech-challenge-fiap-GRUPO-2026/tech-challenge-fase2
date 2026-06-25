@@ -1,6 +1,7 @@
 from src.ga.genetic_algorithm import (
     GeneticAlgorithmConfig,
     GeneticAlgorithmResult,
+    CAPACITY_EXCESS_PENALTY,
     HIGH_PRIORITY_DELAY_PENALTY,
     LOW_PRIORITY_DELAY_PENALTY,
     MEDIUM_PRIORITY_DELAY_PENALTY,
@@ -20,6 +21,7 @@ from src.ga.genetic_algorithm import (
 __all__ = [
     "GeneticAlgorithmConfig",
     "GeneticAlgorithmResult",
+    "CAPACITY_EXCESS_PENALTY",
     "HIGH_PRIORITY_DELAY_PENALTY",
     "LOW_PRIORITY_DELAY_PENALTY",
     "MEDIUM_PRIORITY_DELAY_PENALTY",

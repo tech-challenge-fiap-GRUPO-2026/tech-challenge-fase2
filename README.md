@@ -36,6 +36,20 @@ Executar a interface visual:
 .venv/bin/python -m src.main
 ```
 
+Opcoes disponiveis:
+
+- `--vehicle-id <id>`: seleciona o veiculo de `data/vehicles_sample.csv` usado na simulacao. Padrao: primeiro veiculo do arquivo.
+- `--population-size <n>`: define o tamanho da populacao do algoritmo genetico. Padrao: `100`.
+- `--mutation-probability <p>`: define a probabilidade de mutacao. Padrao: `0.5`.
+- `--deliveries-file <path>`: define o CSV de entregas. Padrao: `data/deliveries_sample.csv`.
+- `--vehicles-file <path>`: define o CSV de veiculos. Padrao: `data/vehicles_sample.csv`.
+
+Exemplo:
+
+```bash
+.venv/bin/python -m src.main --vehicle-id 3 --population-size 200 --mutation-probability 0.3
+```
+
 Fechar a janela:
 
 - pressione `q`, ou
@@ -52,6 +66,7 @@ Executar os testes:
 - `docs/project_context.md`: contexto do projeto
 - `docs/prompts.md`: definicao das sprints
 - `docs/sprint3_priorities.md`: prioridades e penalizacao por atraso HIGH
+- `docs/sprint4_capacity.md`: peso e capacidade maxima do veiculo
 - `references/docs/architecture.md`: arquitetura do baseline TSP
 - `references/docs/extension_plan.md`: analise da Sprint 1 e plano de extensao
 

@@ -1,11 +1,12 @@
 from __future__ import annotations
 
+import argparse
 from pathlib import Path
 
 import itertools
 
 from src.ga.genetic_algorithm import GeneticAlgorithmConfig
-from src.data_loader import load_deliveries_csv
+from src.data_loader import load_deliveries_csv, load_vehicles_csv
 from src.routing.tsp import TSPProblem, iterate_tsp
 from src.visualization import DEFAULT_SECONDARY_ROUTE_COLOR, draw_cities, draw_fitness_plot, draw_route, scale_points
 from src.models import City, Delivery
@@ -28,16 +29,46 @@ POPULATION_SIZE = 100
 N_GENERATIONS = None
 MUTATION_PROBABILITY = 0.5
 DELIVERIES_SAMPLE_PATH = Path(__file__).resolve().parents[1] / "data" / "deliveries_sample.csv"
+VEHICLES_SAMPLE_PATH = Path(__file__).resolve().parents[1] / "data" / "vehicles_sample.csv"
 DEPOT_LOCATION = (-1.4615, -48.4968)
 
 
-def run_visual_demo() -> None:
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(description="TSP visual demo")
+    parser.add_argument("--vehicle-id", dest="vehicle_id", default=None, help="Vehicle id from data/vehicles_sample.csv")
+    parser.add_argument("--population-size", dest="population_size", type=int, default=POPULATION_SIZE, help="Population size for the genetic algorithm")
+    parser.add_argument("--mutation-probability", dest="mutation_probability", type=float, default=MUTATION_PROBABILITY, help="Mutation probability for the genetic algorithm")
+    parser.add_argument("--deliveries-file", dest="deliveries_file", type=Path, default=DELIVERIES_SAMPLE_PATH, help="Path to the deliveries CSV file")
+    parser.add_argument("--vehicles-file", dest="vehicles_file", type=Path, default=VEHICLES_SAMPLE_PATH, help="Path to the vehicles CSV file")
+    return parser
+
+
+def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
+    return build_parser().parse_args(argv)
+
+
+def select_vehicle(vehicles: list[object], vehicle_id: str | None) -> object | None:
+    if vehicle_id is None:
+        return vehicles[0] if vehicles else None
+
+    for vehicle in vehicles:
+        if getattr(vehicle, "id", None) == vehicle_id:
+            return vehicle
+
+    available = ", ".join(str(getattr(vehicle, "id", "?")) for vehicle in vehicles)
+    raise SystemExit(f'Vehiculo "{vehicle_id}" nao encontrado. Disponiveis: {available or "nenhum"}.')
+
+
+def run_visual_demo(args: argparse.Namespace | None = None) -> None:
     try:
         import pygame
     except ModuleNotFoundError as exc:  # pragma: no cover - runtime guard
         raise SystemExit("pygame nao esta instalado na virtualenv. Execute `.venv/bin/pip install pygame`.") from exc
 
-    raw_deliveries = load_deliveries_csv(DELIVERIES_SAMPLE_PATH)
+    args = args or parse_args()
+    raw_deliveries = load_deliveries_csv(args.deliveries_file)
+    vehicles = load_vehicles_csv(args.vehicles_file)
+    vehicle = select_vehicle(vehicles, args.vehicle_id)
     depot = City(id="depot", location=DEPOT_LOCATION)
     scaled_locations = scale_points([depot, *raw_deliveries], WIDTH - PLOT_X_OFFSET, HEIGHT, padding=NODE_RADIUS, offset_x=PLOT_X_OFFSET)
     scaled_depot = scaled_locations[0]
@@ -51,11 +82,11 @@ def run_visual_demo() -> None:
     visual_by_id[visual_depot.id] = visual_depot
 
     config = GeneticAlgorithmConfig(
-        population_size=POPULATION_SIZE,
+        population_size=args.population_size,
         generations=None,
-        mutation_probability=MUTATION_PROBABILITY,
+        mutation_probability=args.mutation_probability,
     )
-    problem = TSPProblem(depot=depot, cities=tuple(raw_deliveries))
+    problem = TSPProblem(depot=depot, cities=tuple(raw_deliveries), vehicle=vehicle)
     generation_counter = itertools.count(start=1)
 
     def translate_route(route: list[object]) -> list[object]:

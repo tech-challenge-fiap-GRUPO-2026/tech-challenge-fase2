@@ -17,4 +17,5 @@ class Delivery:
     id: str
     location: Point
     priority: Priority = Priority.MEDIUM
+    weight: float = 0.0
     due_time: float | None = None

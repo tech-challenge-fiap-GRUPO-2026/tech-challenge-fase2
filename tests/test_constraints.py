@@ -1,4 +1,5 @@
 from src.ga.genetic_algorithm import (
+    CAPACITY_EXCESS_PENALTY,
     HIGH_PRIORITY_DELAY_PENALTY,
     LOW_PRIORITY_DELAY_PENALTY,
     MEDIUM_PRIORITY_DELAY_PENALTY,
@@ -64,3 +65,26 @@ def test_low_priority_delivery_with_delay_adds_penalty() -> None:
     expected_penalty = 2 * LOW_PRIORITY_DELAY_PENALTY
 
     assert calculate_fitness(route) == 12 + expected_penalty
+
+
+def test_capacity_limit_adds_penalty_when_exceeded() -> None:
+    route = [
+        City(id="depot", location=(0, 0)),
+        Delivery(id="a", location=(3, 0), priority=Priority.LOW, weight=4),
+        Delivery(id="b", location=(3, 4), priority=Priority.MEDIUM, weight=5),
+        Delivery(id="c", location=(0, 4), priority=Priority.HIGH, weight=6),
+    ]
+
+    expected_penalty = (4 + 5 + 6 - 10) * CAPACITY_EXCESS_PENALTY
+
+    assert calculate_fitness(route, capacity_limit=10) == 14 + expected_penalty
+
+
+def test_capacity_limit_does_not_add_penalty_when_within_limit() -> None:
+    route = [
+        City(id="depot", location=(0, 0)),
+        Delivery(id="a", location=(3, 0), priority=Priority.LOW, weight=2),
+        Delivery(id="b", location=(3, 4), priority=Priority.MEDIUM, weight=3),
+    ]
+
+    assert calculate_fitness(route, capacity_limit=10) == 12
