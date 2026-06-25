@@ -46,13 +46,14 @@ Opcoes disponiveis:
 - `--vehicle-id <id>`: seleciona o veiculo de `data/vehicles_sample.csv` usado na simulacao. Padrao: primeiro veiculo do arquivo.
 - `--population-size <n>`: define o tamanho da populacao do algoritmo genetico. Padrao: `100`.
 - `--mutation-probability <p>`: define a probabilidade de mutacao. Padrao: `0.5`.
+- `--fps <n>`: define a taxa de quadros da animacao. Padrao: `30`.
 - `--deliveries-file <path>`: define o CSV de entregas. Padrao: `data/deliveries_sample.csv`.
 - `--vehicles-file <path>`: define o CSV de veiculos. Padrao: `data/vehicles_sample.csv`.
 
 Exemplo:
 
 ```bash
-.venv/bin/python -m src.main --vehicle-id 3 --population-size 200 --mutation-probability 0.3
+.venv/bin/python -m src.main --vehicle-id 3 --population-size 200 --mutation-probability 0.3 --fps 15
 ```
 
 Fechar a janela:

@@ -40,6 +40,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--vehicle-id", dest="vehicle_id", default=None, help="Vehicle id from data/vehicles_sample.csv")
     parser.add_argument("--population-size", dest="population_size", type=int, default=POPULATION_SIZE, help="Population size for the genetic algorithm")
     parser.add_argument("--mutation-probability", dest="mutation_probability", type=float, default=MUTATION_PROBABILITY, help="Mutation probability for the genetic algorithm")
+    parser.add_argument("--fps", dest="fps", type=int, default=FPS, help="Frame rate for the visual animation")
     parser.add_argument("--deliveries-file", dest="deliveries_file", type=Path, default=DELIVERIES_SAMPLE_PATH, help="Path to the deliveries CSV file")
     parser.add_argument("--vehicles-file", dest="vehicles_file", type=Path, default=VEHICLES_SAMPLE_PATH, help="Path to the vehicles CSV file")
     return parser
@@ -140,7 +141,7 @@ def run_visual_demo(args: argparse.Namespace | None = None) -> None:
             draw_route(screen, translate_route(state.population[1]), DEFAULT_SECONDARY_ROUTE_COLOR, 2)
 
         pygame.display.flip()
-        clock.tick(FPS)
+        clock.tick(args.fps)
 
     pygame.quit()
 

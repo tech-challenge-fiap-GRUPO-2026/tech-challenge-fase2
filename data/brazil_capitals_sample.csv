@@ -1,28 +1,28 @@
 delivery_id,latitude,longitude,priority,weight,due_time
-Rio Branco,10,8,LOW,0,
-Porto Velho,16,16,LOW,0,
-Manaus,24,30,LOW,0,
-Boa Vista,28,46,LOW,0,
-Belem,44,53,LOW,0,
-Macapa,50,65,LOW,0,
-Palmas,43,36,LOW,0,
-Sao Luis,53,58,LOW,0,
-Teresina,58,52,LOW,0,
-Fortaleza,67,59,LOW,0,
-Natal,77,62,LOW,0,
-Joao Pessoa,75,56,LOW,0,
-Recife,73,50,LOW,0,
-Maceio,74,44,LOW,0,
-Aracaju,71,39,LOW,0,
-Salvador,65,34,LOW,0,
-Cuiaba,38,24,LOW,0,
-Campo Grande,34,14,LOW,0,
-Goiania,47,23,LOW,0,
-Brasilia,50,28,LOW,0,
-Belo Horizonte,55,18,LOW,0,
-Vitoria,60,20,LOW,0,
-Rio de Janeiro,57,12,LOW,0,
-Sao Paulo,52,8,LOW,0,
-Curitiba,47,4,LOW,0,
-Florianopolis,50,2,LOW,0,
-Porto Alegre,45,0,LOW,0,
+Rio Branco,10,8,MEDIUM,6,58
+Porto Velho,16,16,MEDIUM,7,55
+Manaus,24,30,HIGH,12,42
+Boa Vista,28,46,MEDIUM,5,60
+Belem,44,53,HIGH,14,38
+Macapa,50,65,LOW,4,72
+Palmas,43,36,MEDIUM,6,52
+Sao Luis,53,58,HIGH,11,40
+Teresina,58,52,MEDIUM,8,48
+Fortaleza,67,59,HIGH,13,36
+Natal,77,62,MEDIUM,7,44
+Joao Pessoa,75,56,MEDIUM,6,46
+Recife,73,50,HIGH,12,34
+Maceio,74,44,MEDIUM,8,43
+Aracaju,71,39,LOW,5,57
+Salvador,65,34,HIGH,15,32
+Cuiaba,38,24,MEDIUM,9,50
+Campo Grande,34,14,MEDIUM,10,49
+Goiania,47,23,HIGH,13,37
+Brasilia,50,28,HIGH,16,30
+Belo Horizonte,55,18,HIGH,14,33
+Vitoria,60,20,MEDIUM,8,45
+Rio de Janeiro,57,12,HIGH,17,28
+Sao Paulo,52,8,HIGH,18,26
+Curitiba,47,4,MEDIUM,9,41
+Florianopolis,50,2,LOW,6,54
+Porto Alegre,45,0,MEDIUM,10,47
