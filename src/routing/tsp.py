@@ -40,8 +40,12 @@ class TSPGenerationState:
     fitness_history: list[float]
 
 
-def route_distance(route: Sequence[object], capacity_limit: float | None = None) -> float:
-    return calculate_fitness(route, capacity_limit)
+def route_distance(
+    route: Sequence[object],
+    capacity_limit: float | None = None,
+    distance_limit: float | None = None,
+) -> float:
+    return calculate_fitness(route, capacity_limit, distance_limit)
 
 
 def iterate_tsp(
@@ -52,12 +56,13 @@ def iterate_tsp(
     config = config or GeneticAlgorithmConfig()
     random_source = rng if rng is not None else random
     capacity_limit = problem.vehicle.max_capacity if problem.vehicle is not None else None
+    distance_limit = problem.vehicle.max_distance if problem.vehicle is not None else None
     population = generate_random_population(problem.cities, config.population_size, random_source, problem.depot)
     fitness_history: list[float] = []
 
     generation = 1
     while config.generations is None or generation <= config.generations:
-        population_fitness = [calculate_fitness(individual, capacity_limit) for individual in population]
+        population_fitness = [calculate_fitness(individual, capacity_limit, distance_limit) for individual in population]
         population, population_fitness = sort_population(population, population_fitness)
 
         best_route = list(population[0])
@@ -91,7 +96,15 @@ def solve_tsp(
     rng: random.Random | None = None,
 ) -> TSPSolution:
     capacity_limit = problem.vehicle.max_capacity if problem.vehicle is not None else None
-    result: GeneticAlgorithmResult = run_genetic_algorithm(problem.cities, config, rng, problem.depot, capacity_limit)
+    distance_limit = problem.vehicle.max_distance if problem.vehicle is not None else None
+    result: GeneticAlgorithmResult = run_genetic_algorithm(
+        problem.cities,
+        config,
+        rng,
+        problem.depot,
+        capacity_limit,
+        distance_limit,
+    )
     return TSPSolution(
         route=result.best_route,
         distance=result.best_fitness,

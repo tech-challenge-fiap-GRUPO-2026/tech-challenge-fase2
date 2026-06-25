@@ -1,4 +1,6 @@
-from src.main import parse_args, select_vehicle
+from pathlib import Path
+
+from src.main import parse_args, select_depot_location, select_vehicle
 from src.models import Vehicle
 
 
@@ -50,3 +52,15 @@ def test_parse_args_reads_custom_options() -> None:
     assert args.mutation_probability == 0.25
     assert str(args.deliveries_file) == "data/custom_deliveries.csv"
     assert str(args.vehicles_file) == "data/custom_vehicles.csv"
+
+
+def test_select_depot_location_uses_brazil_capitals_map_depot() -> None:
+    depot = select_depot_location(Path("data/brazil_capitals_sample.csv"))
+
+    assert depot == (50, 28)
+
+
+def test_select_depot_location_uses_default_depot_for_other_files() -> None:
+    depot = select_depot_location(Path("data/deliveries_sample.csv"))
+
+    assert depot == (-1.4615, -48.4968)

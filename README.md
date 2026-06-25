@@ -20,6 +20,11 @@ O projeto esta sendo construido em sprints. O baseline atual migra o resolvedor 
 - `data/`: datasets de exemplo
 - `config/`: configuracoes de experimentos
 
+## Dados de Exemplo
+
+- `data/deliveries_sample.csv`: entregas sintéticas usadas no demo atual
+- `data/brazil_capitals_sample.csv`: capitais brasileiras posicionadas em 2D para simulação visual
+
 ## Requisitos
 
 - Python 3.12
@@ -67,6 +72,8 @@ Executar os testes:
 - `docs/prompts.md`: definicao das sprints
 - `docs/sprint3_priorities.md`: prioridades e penalizacao por atraso HIGH
 - `docs/sprint4_capacity.md`: peso e capacidade maxima do veiculo
+- `docs/sprint5_autonomy.md`: distancia maxima e penalizacao por autonomia
+- `docs/brazil_capitals_map.md`: mapeamento das capitais brasileiras em 2D
 - `references/docs/architecture.md`: arquitetura do baseline TSP
 - `references/docs/extension_plan.md`: analise da Sprint 1 e plano de extensao
 
@@ -74,4 +81,4 @@ Executar os testes:
 
 - O entrypoint atual esta em `src/main.py`.
 - A visualizacao em `src/main.py` usa o solver migrado da Sprint 2 como base de execucao.
-- O projeto ainda evolui para VRP, prioridades, capacidade, autonomia e LLM nas proximas sprints.
+- O projeto ainda evolui para VRP, LLM e novas otimizacoes nas proximas sprints.

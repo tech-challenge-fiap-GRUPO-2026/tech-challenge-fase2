@@ -80,3 +80,13 @@ def test_run_genetic_algorithm_returns_best_solution_history() -> None:
     assert len(result.best_fitness_history) == config.generations
     assert len(result.best_route_history) == config.generations
     assert result.best_fitness == result.best_fitness_history[-1]
+
+
+def test_run_genetic_algorithm_applies_distance_limit() -> None:
+    cities = [(0, 0), (3, 0)]
+    config = GeneticAlgorithmConfig(population_size=4, generations=2, mutation_probability=0.2)
+
+    result = run_genetic_algorithm(cities, config, random.Random(3), distance_limit=5)
+
+    assert result.best_fitness == 31
+    assert result.best_fitness_history[-1] == 31

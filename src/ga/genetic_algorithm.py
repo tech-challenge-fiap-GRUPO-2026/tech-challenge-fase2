@@ -12,6 +12,7 @@ HIGH_PRIORITY_DELAY_PENALTY = 100.0
 MEDIUM_PRIORITY_DELAY_PENALTY = 30.0
 LOW_PRIORITY_DELAY_PENALTY = 10.0
 CAPACITY_EXCESS_PENALTY = 25.0
+DISTANCE_EXCESS_PENALTY = 25.0
 
 _PENALTY_MAP: dict[str, float] = {
     "HIGH": HIGH_PRIORITY_DELAY_PENALTY,
@@ -220,13 +221,25 @@ def _compute_capacity_penalty(path: Sequence[object], capacity_limit: float | No
     return excess_weight * CAPACITY_EXCESS_PENALTY if excess_weight > 0 else 0.0
 
 
+def _compute_distance_penalty(distance: float, distance_limit: float | None) -> float:
+    if distance_limit is None:
+        return 0.0
+
+    excess_distance = distance - distance_limit
+    return excess_distance * DISTANCE_EXCESS_PENALTY if excess_distance > 0 else 0.0
+
+
 def calculate_distance(point1: object, point2: object) -> float:
     point1 = _get_location(point1)
     point2 = _get_location(point2)
     return math.sqrt((point1[0] - point2[0]) ** 2 + (point1[1] - point2[1]) ** 2)
 
 
-def calculate_fitness(path: Sequence[object], capacity_limit: float | None = None) -> float:
+def calculate_fitness(
+    path: Sequence[object],
+    capacity_limit: float | None = None,
+    distance_limit: float | None = None,
+) -> float:
     distance = 0.0
     penalty = 0.0
     arrival_time = 0.0
@@ -240,6 +253,7 @@ def calculate_fitness(path: Sequence[object], capacity_limit: float | None = Non
         distance += calculate_distance(path[index], path[(index + 1) % path_size])
 
     penalty += _compute_capacity_penalty(path, capacity_limit)
+    penalty += _compute_distance_penalty(distance, distance_limit)
     return distance + penalty
 
 
@@ -306,6 +320,7 @@ def run_genetic_algorithm(
     rng: random.Random | None = None,
     fixed_start: object | None = None,
     capacity_limit: float | None = None,
+    distance_limit: float | None = None,
 ) -> GeneticAlgorithmResult:
     config = config or GeneticAlgorithmConfig()
     random_source = _random_source(rng)
@@ -315,7 +330,7 @@ def run_genetic_algorithm(
     generations = config.generations if config.generations is not None else 100
 
     for _ in range(generations):
-        population_fitness = [calculate_fitness(individual, capacity_limit) for individual in population]
+        population_fitness = [calculate_fitness(individual, capacity_limit, distance_limit) for individual in population]
         population, population_fitness = sort_population(population, population_fitness)
 
         best_route = population[0]

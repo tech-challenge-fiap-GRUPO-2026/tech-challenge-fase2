@@ -29,8 +29,10 @@ POPULATION_SIZE = 100
 N_GENERATIONS = None
 MUTATION_PROBABILITY = 0.5
 DELIVERIES_SAMPLE_PATH = Path(__file__).resolve().parents[1] / "data" / "deliveries_sample.csv"
+BRAZIL_CAPITALS_SAMPLE_PATH = Path(__file__).resolve().parents[1] / "data" / "brazil_capitals_sample.csv"
 VEHICLES_SAMPLE_PATH = Path(__file__).resolve().parents[1] / "data" / "vehicles_sample.csv"
 DEPOT_LOCATION = (-1.4615, -48.4968)
+BRAZIL_CAPITALS_DEPOT_LOCATION = (50, 28)
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -59,6 +61,13 @@ def select_vehicle(vehicles: list[object], vehicle_id: str | None) -> object | N
     raise SystemExit(f'Vehiculo "{vehicle_id}" nao encontrado. Disponiveis: {available or "nenhum"}.')
 
 
+def select_depot_location(deliveries_file: Path) -> tuple[float, float]:
+    if deliveries_file.resolve() == BRAZIL_CAPITALS_SAMPLE_PATH.resolve():
+        return BRAZIL_CAPITALS_DEPOT_LOCATION
+
+    return DEPOT_LOCATION
+
+
 def run_visual_demo(args: argparse.Namespace | None = None) -> None:
     try:
         import pygame
@@ -69,7 +78,7 @@ def run_visual_demo(args: argparse.Namespace | None = None) -> None:
     raw_deliveries = load_deliveries_csv(args.deliveries_file)
     vehicles = load_vehicles_csv(args.vehicles_file)
     vehicle = select_vehicle(vehicles, args.vehicle_id)
-    depot = City(id="depot", location=DEPOT_LOCATION)
+    depot = City(id="depot", location=select_depot_location(args.deliveries_file))
     scaled_locations = scale_points([depot, *raw_deliveries], WIDTH - PLOT_X_OFFSET, HEIGHT, padding=NODE_RADIUS, offset_x=PLOT_X_OFFSET)
     scaled_depot = scaled_locations[0]
     scaled_delivery_locations = scaled_locations[1:]
