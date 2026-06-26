@@ -1,142 +1,214 @@
-# Sprint 1
+# Prompts das Sprints
 
-Compare a implementação da pasta references
-com os requisitos do Projeto 2.
+Este arquivo registra os prompts usados para evoluir o Projeto 2 do Tech Challenge Fase 2.
+
+Legenda:
+
+- `Concluida`: implementada e documentada no estado atual.
+- `Pendente`: ainda precisa ser implementada.
+- `Planejada`: prevista para fechamento do projeto.
+
+# Sprint 1 - Analise do Baseline
+
+Status: Concluida.
+
+Compare a implementacao da pasta `references/` com os requisitos do Projeto 2.
 
 Identifique:
 
-- requisitos já atendidos
-- requisitos ausentes
-- riscos técnicos
-- possíveis refatorações
+- requisitos ja atendidos;
+- requisitos ausentes;
+- riscos tecnicos;
+- possiveis refatoracoes.
 
 Produza:
 
-references/docs/extension_plan.md
+- `references/docs/extension_plan.md`
 
-Não implementar código.
+Nao implementar codigo.
 
-# Sprint 2
+# Sprint 2 - Migracao para src
 
-Utilizando o código da pasta references
-como base.
+Status: Concluida.
 
-Crie uma nova implementação em:
-
-src/
+Utilizando o codigo da pasta `references/` como base, crie uma nova implementacao em `src/`.
 
 Objetivos:
 
-- adicionar type hints
-- adicionar dataclasses
-- melhorar legibilidade
-- preservar comportamento
+- adicionar type hints;
+- adicionar dataclasses;
+- melhorar legibilidade;
+- preservar comportamento do TSP basico;
+- separar o nucleo genetico da visualizacao.
 
-Criar testes unitários.
+Criar testes unitarios.
 
-Não adicionar novas funcionalidades.
+Nao adicionar novas funcionalidades nesta sprint.
 
-# Sprint 3
+# Sprint 3 - Prioridades
+
+Status: Concluida.
 
 Implementar prioridades:
 
-HIGH
-MEDIUM
-LOW
+- `HIGH`
+- `MEDIUM`
+- `LOW`
 
-Atualizar fitness para considerar
-penalizações por atraso de entregas HIGH.
+Atualizar fitness para considerar penalizacoes por atraso de entregas.
 
 Criar testes.
 
-Documentar alterações.
+Documentar alteracoes em:
 
-# Sprint 4
+- `docs/sprint3_priorities.md`
+
+# Sprint 4 - Capacidade
+
+Status: Concluida.
 
 Adicionar:
 
-- peso da entrega
-- capacidade máxima do veículo
+- peso da entrega;
+- capacidade maxima do veiculo.
 
-Atualizar fitness.
+Atualizar fitness para penalizar excesso de capacidade.
 
 Criar testes.
 
-Gerar exemplo em data/.
+Gerar exemplos em `data/`.
 
-# Sprint 5
+Documentar alteracoes em:
+
+- `docs/sprint4_capacity.md`
+
+# Sprint 5 - Autonomia
+
+Status: Concluida.
 
 Adicionar:
 
-- distância máxima por veículo
+- distancia maxima por veiculo.
 
-Aplicar penalidade quando exceder.
-
-Criar testes.
-
-# Sprint 6
-
-Expandir TSP para múltiplos veículos.
-
-Criar:
-
-src/routing/vrp.py
-
-Implementar distribuição de entregas.
+Aplicar penalidade quando a rota exceder a autonomia do veiculo.
 
 Criar testes.
 
-# Sprint 7
+Documentar alteracoes em:
+
+- `docs/sprint5_autonomy.md`
+
+# Sprint 5.1 - CLI, Dados e Documentacao
+
+Status: Concluida.
+
+Atualizar o demo visual para aceitar parametros via CLI:
+
+- `--vehicle-id`
+- `--population-size`
+- `--mutation-probability`
+- `--fps`
+- `--deliveries-file`
+- `--vehicles-file`
+
+Adicionar dataset de capitais brasileiras em 2D:
+
+- `data/brazil_capitals_sample.csv`
+
+Atualizar documentacao:
+
+- `README.md`
+- `docs/architecture.md`
+- `reports/final_report.md`
+- `docs/report_outline.md`
+- `docs/video_script.md`
+
+# Sprint 6 - VRP com Multiplos Veiculos
+
+Status: Pendente.
+
+Expandir TSP para VRP.
+
+Criar ou preencher:
+
+- `src/routing/vrp.py`
+- `tests/test_vrp.py`
 
 Implementar:
 
-src/llm/report_generator.py
-src/llm/route_explainer.py
+- representacao de multiplas rotas;
+- distribuicao de entregas entre veiculos;
+- fitness agregado da frota;
+- validacao de capacidade e autonomia por veiculo;
+- testes de alocacao.
 
-Funções:
+# Sprint 7 - Camada LLM
 
-- gerar relatório operacional
-- gerar instruções para motoristas
-- responder perguntas sobre rotas
+Status: Pendente.
 
-Criar prompts reutilizáveis.
+Implementar:
 
-# Sprint 8
+- `src/llm/report_generator.py`
+- `src/llm/route_explainer.py`
+- `src/llm/prompts.py`
 
-Executar:
+Funcoes esperadas:
 
-pop50.yaml
-pop100.yaml
-pop500.yaml
+- gerar relatorio operacional;
+- gerar instrucoes para motoristas;
+- responder perguntas sobre rotas;
+- criar prompts reutilizaveis.
+
+Criar testes sem depender de chamada externa obrigatoria a provedor LLM.
+
+# Sprint 8 - Experimentos
+
+Status: Pendente.
+
+Executar configuracoes:
+
+- `config/pop50.yaml`
+- `config/pop100.yaml`
+- `config/pop500.yaml`
 
 Comparar:
 
-- fitness
-- convergência
-- tempo
+- fitness final;
+- convergencia;
+- tempo de execucao.
 
 Gerar:
 
-artifacts/charts/
+- artefatos em `artifacts/charts/`;
+- tabelas de resultados;
+- atualizacao de `reports/final_report.md`.
 
-Atualizar:
+# Sprint 9 - Consolidacao Final
 
-reports/final_report.md
-
-# Sprint 9
+Status: Planejada.
 
 Gerar:
 
-- gráficos finais
-- mapas finais
-- relatório consolidado
-- roteiro de apresentação
+- graficos finais;
+- mapas finais;
+- relatorio consolidado;
+- roteiro final de apresentacao.
 
 Atualizar:
 
-docs/video_script.md
-reports/final_report.md
+- `docs/video_script.md`
+- `reports/final_report.md`
 
-# Sprint 10
+# Sprint 10 - Integracao Final com LLM
 
-Integrar LLM.
+Status: Planejada.
+
+Integrar a camada LLM ao fluxo final do sistema.
+
+Entregaveis:
+
+- relatorio gerado a partir da rota otimizada;
+- instrucoes por rota ou por veiculo;
+- respostas a perguntas sobre entregas;
+- documentacao de uso;
+- exemplos de prompts e respostas.

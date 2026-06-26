@@ -1,448 +1,419 @@
 # Extension Plan
 
-## Objetivo da Sprint 1
+## Objetivo
 
-Comparar a implementacao existente em `references/` com os requisitos do Projeto 2 e registrar:
+Este documento registra a evolucao do baseline em `references/` para o Projeto 2 do Tech Challenge Fase 2: otimizacao de rotas para distribuicao de medicamentos e insumos com Algoritmos Geneticos e apoio futuro de LLM.
 
-- requisitos ja atendidos;
-- requisitos ausentes;
-- riscos tecnicos;
-- possiveis refatoracoes.
-
-Esta sprint e apenas analitica. Nao ha implementacao de codigo de producao nesta etapa.
+O projeto saiu de um TSP didatico e hoje possui uma implementacao em `src/` com restricoes de prioridade, capacidade e autonomia. O foco das proximas sprints e completar VRP, LLM, experimentos e artefatos finais.
 
 ## Escopo do Projeto 2
 
-O Projeto 2 tem como objetivo evoluir um resolvedor de rotas baseado em Algoritmos Geneticos para um sistema de otimizacao de rotas medicas.
+Requisitos funcionais do enunciado:
 
-Requisitos funcionais previstos:
+- resolver TSP para rotas de entrega;
+- representar entregas medicas e veiculos;
+- considerar distancia, prioridade e restricoes relevantes no fitness;
+- considerar prioridade de entregas;
+- considerar capacidade limitada dos veiculos;
+- considerar autonomia limitada dos veiculos;
+- evoluir para multiplos veiculos, isto e, VRP;
+- visualizar rotas otimizadas;
+- gerar instrucoes e relatorios com LLM;
+- responder perguntas sobre rotas em linguagem natural;
+- comparar resultados com diferentes configuracoes.
 
-- resolver TSP para uma rota unica;
-- evoluir para VRP com multiplos veiculos;
-- representar entregas medicas;
-- considerar prioridade de entregas `HIGH`, `MEDIUM` e `LOW`;
-- considerar peso da entrega;
-- respeitar capacidade maxima dos veiculos;
-- respeitar autonomia ou distancia maxima por veiculo;
-- gerar metricas, graficos e comparacoes experimentais;
-- produzir relatorios e explicacoes com apoio de LLM.
+Requisitos tecnicos:
 
-Requisitos tecnicos previstos:
+- projeto Python estruturado;
+- ambiente virtual com dependencias;
+- testes automatizados;
+- documentacao tecnica;
+- relatorio tecnico;
+- roteiro de demonstracao.
 
-- Python 3.12;
-- implementacao em `src/`;
-- uso de type hints;
-- uso de dataclasses para entidades de dominio;
-- testes unitarios com `pytest`;
-- reproducibilidade de experimentos;
-- documentacao tecnica incremental.
+## Estado Atual
 
-## Estado atual da pasta `references/`
+### Implementado
 
-A pasta `references/` contem uma implementacao didatica de TSP com Algoritmo Genetico.
+- Implementacao principal em `src/`.
+- Type hints e dataclasses nos modelos principais.
+- TSP com Algoritmo Genetico.
+- Representacao de rota como permutacao de entregas.
+- Deposito opcional fixado no inicio da rota.
+- Populacao inicial aleatoria.
+- Selecao por melhores individuos.
+- Order crossover.
+- Mutacao por troca adjacente.
+- Elitismo.
+- Fitness por distancia de rota fechada.
+- Penalizacao por atraso por prioridade.
+- Penalizacao por excesso de capacidade.
+- Penalizacao por excesso de autonomia.
+- Leitura de entregas e veiculos via CSV.
+- Dataset de entregas sinteticas.
+- Dataset de capitais brasileiras em 2D.
+- Dataset de veiculos com capacidade e autonomia.
+- Demo visual com Pygame.
+- Grafico de fitness com Matplotlib.
+- CLI configuravel.
+- Testes automatizados com `pytest`.
+- Documentacao de arquitetura, sprints, roteiro e relatorio inicial.
 
-Arquivos principais:
+### Validacao Atual
 
-- `genetic_algorithm.py`: operadores geneticos, fitness, populacao e demo em linha de comando;
-- `tsp.py`: loop visual com Pygame;
-- `draw_functions.py`: funcoes de visualizacao;
-- `benchmark_att48.py`: dados do benchmark `att48`;
-- `demo_crossover.py`: demonstracao isolada de crossover;
-- `demo_mutation.py`: demonstracao isolada de mutacao;
-- `README.md`: descricao geral do resolvedor TSP;
-- `LICENSE`: licenca CC0.
+Ultima validacao conhecida:
 
-## Requisitos ja atendidos
+```text
+30 passed
+```
 
-### TSP basico
+## Arquitetura Atual
 
-Atendido parcialmente.
+```text
+data/*.csv
+   |
+   v
+src/data_loader.py
+   |
+   v
+Delivery / Vehicle / City / Priority
+   |
+   v
+TSPProblem
+   |
+   v
+src/ga/genetic_algorithm.py
+   |
+   v
+TSPSolution / TSPGenerationState
+   |
+   v
+src/main.py + src/visualization/
+```
 
-A implementacao representa uma solucao como uma permutacao de cidades e calcula a distancia total de uma rota fechada. Isso cobre o nucleo do TSP: visitar todas as cidades uma vez e retornar ao ponto inicial.
+## Componentes
+
+### Modelos
+
+- `src/models/delivery.py`: `City` e `Delivery`.
+- `src/models/priority.py`: `Priority` com `HIGH`, `MEDIUM`, `LOW`.
+- `src/models/vehicle.py`: `Vehicle` com `max_capacity` e `max_distance`.
 
 ### Algoritmo Genetico
 
-Atendido parcialmente.
+- `src/ga/genetic_algorithm.py`
 
-Ja existem os componentes principais:
-
-- geracao de populacao inicial;
-- calculo de fitness;
-- ordenacao por fitness;
-- selecao de pais;
-- crossover do tipo order crossover;
-- mutacao;
-- elitismo simples;
-- repeticao por geracoes.
-
-### Fitness por distancia
-
-Atendido.
-
-O fitness e calculado pela soma das distancias Euclidianas entre pontos consecutivos, incluindo o retorno da ultima cidade para a primeira.
-
-### Crossover para permutacao
-
-Atendido parcialmente.
-
-O operador `order_crossover` e adequado para problemas de permutacao porque evita duplicacao de cidades e preserva ordem relativa dos genes restantes.
-
-### Mutacao
-
-Atendido parcialmente.
-
-A mutacao atual troca duas cidades adjacentes com probabilidade configuravel. Isso preserva a validade do cromossomo, mas e uma perturbacao limitada.
-
-### Elitismo
-
-Atendido.
-
-O melhor individuo de cada geracao e preservado diretamente na nova populacao.
-
-### Visualizacao
-
-Atendido parcialmente.
-
-O projeto ja exibe:
-
-- cidades;
-- melhor rota da geracao;
-- uma rota secundaria;
-- grafico de evolucao do fitness.
-
-### Benchmark inicial
-
-Atendido parcialmente.
-
-Ha dados do benchmark `att48` e uma solucao de referencia. O uso esta comentado em `tsp.py`, mas fornece uma base para comparacao posterior.
-
-## Requisitos ausentes
-
-### Estrutura final em `src/`
-
-Ausente.
-
-Os arquivos em `src/` existem, mas ainda estao vazios. A implementacao de referencia ainda nao foi migrada para uma arquitetura reutilizavel e testavel.
-
-### Type hints consistentes
-
-Ausente parcialmente.
-
-Algumas funcoes de `genetic_algorithm.py` e `draw_functions.py` possuem type hints, mas a cobertura nao e completa nem esta organizada em modulos finais.
-
-### Dataclasses de dominio
-
-Ausente.
-
-Ainda nao ha modelos implementados para:
-
-- entrega;
-- veiculo;
-- prioridade;
-- rota;
-- resultado de otimizacao.
-
-### Testes unitarios
-
-Ausente.
-
-Os arquivos de teste existem em `tests/`, mas estao vazios. Ainda nao ha cobertura para fitness, crossover, mutacao, constraints, TSP ou VRP.
-
-### Prioridade de entregas
-
-Ausente.
-
-O cromossomo atual contem apenas coordenadas. Nao ha campo para prioridade, janela de atendimento, SLA ou penalizacao por atraso.
-
-### Capacidade de veiculo
-
-Ausente.
-
-Nao ha peso de entrega nem capacidade maxima de veiculo no modelo atual.
-
-### Autonomia ou distancia maxima
-
-Ausente.
-
-A implementacao atual minimiza distancia total, mas nao penaliza ou invalida rotas que excedem uma distancia maxima por veiculo.
-
-### Multiplos veiculos / VRP
-
-Ausente.
-
-O cromossomo atual representa apenas uma rota unica. Nao ha distribuicao de entregas entre veiculos.
-
-### Experimentos reprodutiveis
-
-Ausente.
-
-Nao ha mecanismo consolidado para executar configuracoes como `pop50.yaml`, `pop100.yaml` e `pop500.yaml`, registrar metricas, controlar seed ou exportar resultados.
-
-### Relatorios com LLM
-
-Ausente.
-
-Nao ha implementacao para gerar relatorio operacional, instrucoes para motoristas ou respostas sobre rotas.
-
-## Riscos tecnicos
-
-### Acoplamento com Pygame
-
-O loop principal em `tsp.py` mistura evolucao genetica, configuracao do problema, visualizacao e controle de eventos. Isso dificulta testes automatizados e execucoes batch.
-
-Mitigacao recomendada:
-
-- separar motor genetico de visualizacao;
-- mover Pygame para camada opcional;
-- criar funcoes puras para TSP e VRP.
-
-### Reprodutibilidade limitada
-
-O uso de aleatoriedade nao controla seed de forma centralizada. Isso dificulta comparar experimentos.
-
-Mitigacao recomendada:
-
-- permitir seed em configuracao;
-- registrar seed nos resultados;
-- evitar dependencia direta de estado global de `random` quando possivel.
-
-### Crossover degenerado em `tsp.py`
-
-Em `tsp.py`, a chamada atual usa `order_crossover(parent1, parent1)`. Isso reduz a recombinacao genetica, pois o segundo pai selecionado nao participa efetivamente da geracao do filho.
-
-Mitigacao recomendada:
-
-- usar `order_crossover(parent1, parent2)` na implementacao final;
-- cobrir esse comportamento por teste.
-
-### Mutacao pouco exploratoria
-
-A mutacao por troca adjacente preserva validade, mas explora pouco o espaco de busca.
-
-Mitigacao recomendada:
-
-- manter swap adjacente como baseline;
-- considerar mutacao por swap arbitrario ou inversao de segmento em sprint posterior, se necessario;
-- nao alterar comportamento durante a Sprint 2, pois ela pede preservar comportamento.
-
-### Fitness ainda nao representa o dominio medico
-
-O fitness mede apenas distancia. O dominio final precisa considerar prioridade, atraso, peso, capacidade, autonomia e multiplos veiculos.
-
-Mitigacao recomendada:
-
-- introduzir penalidades gradualmente;
-- manter distancia como componente base;
-- criar testes especificos para cada penalidade.
-
-### Dados representados apenas como coordenadas
-
-O gene atual e uma tupla `(x, y)`. Isso e suficiente para TSP, mas insuficiente para entrega medica.
-
-Mitigacao recomendada:
-
-- criar dataclass `Delivery` contendo id, coordenadas, peso e prioridade;
-- criar dataclass `Vehicle` contendo id, capacidade e distancia maxima;
-- adaptar fitness para ler entidades de dominio.
-
-### Benchmark nao automatizado
-
-O benchmark `att48` existe, mas seu uso depende de trechos comentados no codigo.
-
-Mitigacao recomendada:
-
-- criar runner de experimentos;
-- salvar metricas por execucao;
-- gerar graficos em `artifacts/charts/`.
-
-### Ausencia de testes de invariantes geneticos
-
-Operadores de crossover e mutacao precisam garantir que o cromossomo continue sendo uma permutacao valida.
-
-Mitigacao recomendada:
-
-- testar tamanho do filho;
-- testar ausencia de duplicatas;
-- testar preservacao do conjunto de cidades;
-- testar comportamento com seed fixa.
-
-## Possiveis refatoracoes
-
-### Separar nucleo genetico da aplicacao visual
-
-Criar um modulo de algoritmo genetico sem dependencia de Pygame ou Matplotlib.
-
-Responsabilidades sugeridas:
+Responsabilidades:
 
 - gerar populacao;
+- calcular distancia;
 - calcular fitness;
-- selecionar pais;
 - aplicar crossover;
 - aplicar mutacao;
+- ordenar populacao por fitness;
 - executar geracoes;
-- retornar melhor solucao e historico.
+- retornar melhor rota e historico.
 
-### Criar modelos de dominio
+### Roteamento TSP
 
-Modelos sugeridos:
+- `src/routing/tsp.py`
 
-- `Delivery`: entrega medica com coordenada, prioridade e peso;
-- `Vehicle`: veiculo com capacidade e distancia maxima;
-- `Route`: sequencia de entregas alocada a um veiculo;
-- `OptimizationResult`: melhor solucao, fitness final e historico.
+Responsabilidades:
 
-### Introduzir configuracao explicita
+- adaptar entregas e veiculo ao algoritmo genetico;
+- aplicar deposito fixo quando existir;
+- propagar limites de capacidade e autonomia;
+- disponibilizar execucao completa e iterativa.
 
-Centralizar parametros como:
+### Visualizacao e CLI
 
-- tamanho da populacao;
-- numero de geracoes;
-- probabilidade de mutacao;
-- seed;
-- estrategia de selecao;
-- parametros de penalizacao.
+- `src/main.py`
+- `src/visualization/maps.py`
+- `src/visualization/plots.py`
 
-### Criar camada de constraints
+Opcoes atuais da CLI:
 
-Separar regras de dominio em `src/routing/constraints.py`.
+- `--vehicle-id`
+- `--population-size`
+- `--mutation-probability`
+- `--fps`
+- `--deliveries-file`
+- `--vehicles-file`
 
-Constraints previstas:
+## Fitness Atual
 
-- penalidade por atraso de entrega `HIGH`;
-- penalidade por excesso de capacidade;
-- penalidade por excesso de distancia maxima;
-- validacao de distribuicao de entregas por veiculo.
+O fitness e minimizado.
 
-### Criar camada de experimentos
+```text
+fitness = distancia_total_da_rota
+        + penalidade_por_atraso
+        + penalidade_por_capacidade
+        + penalidade_por_autonomia
+```
 
-Criar uma forma padronizada de executar configuracoes e registrar resultados.
+Penalidades:
 
-Saidas sugeridas:
+- atraso `HIGH`: `100.0` por unidade de atraso;
+- atraso `MEDIUM`: `30.0` por unidade de atraso;
+- atraso `LOW`: `10.0` por unidade de atraso;
+- excesso de capacidade: `25.0` por unidade acima de `max_capacity`;
+- excesso de autonomia: `25.0` por unidade acima de `max_distance`.
 
-- fitness final;
-- melhor rota;
-- tempo de execucao;
-- historico de convergencia;
-- parametros usados;
-- graficos exportados.
+## Comparacao com o Enunciado
 
-### Manter compatibilidade comportamental na Sprint 2
+| Requisito | Estado |
+|---|---|
+| TSP com Algoritmo Genetico | Atendido |
+| Representacao genetica de rotas | Atendido |
+| Operadores de selecao, crossover e mutacao | Atendido |
+| Fitness com distancia | Atendido |
+| Prioridades de entrega | Atendido |
+| Capacidade limitada dos veiculos | Atendido |
+| Autonomia limitada dos veiculos | Atendido |
+| Visualizacao de rotas | Atendido parcialmente |
+| Testes automatizados | Atendido |
+| Documentacao tecnica | Atendido parcialmente |
+| Multiplos veiculos / VRP | Pendente |
+| Integracao com LLM | Pendente |
+| Instrucoes para motoristas | Pendente |
+| Relatorios operacionais | Pendente |
+| Perguntas em linguagem natural | Pendente |
+| Experimentos comparativos | Pendente |
+| Graficos e artefatos finais | Pendente |
+| Relatorio final completo | Em andamento |
+| Video de demonstracao | Planejado |
 
-A Sprint 2 pede nova implementacao em `src/` com type hints, dataclasses e testes, sem novas funcionalidades. Portanto, a migracao inicial deve preservar o comportamento do TSP basico antes de adicionar prioridades, capacidade ou VRP.
+## Riscos Tecnicos Atuais
 
-## Plano incremental recomendado
+### VRP ainda ausente
 
-### Sprint 2
+O enunciado exige multiplos veiculos. Hoje o sistema resolve uma rota principal por vez.
 
-Migrar o TSP basico para `src/`.
+Mitigacao:
+
+- implementar `src/routing/vrp.py`;
+- criar representacao de frota;
+- distribuir entregas entre veiculos;
+- calcular fitness agregado por frota;
+- testar capacidade e autonomia por veiculo.
+
+### LLM ainda ausente
+
+Os arquivos em `src/llm/` ainda nao possuem implementacao.
+
+Mitigacao:
+
+- criar prompts reutilizaveis;
+- implementar gerador de relatorio operacional;
+- implementar explicador de rotas;
+- manter funcoes testaveis sem depender obrigatoriamente de chamada externa.
+
+### Experimentos ainda nao automatizados
+
+Existem arquivos em `config/`, mas ainda nao ha runner consolidado.
+
+Mitigacao:
+
+- implementar logger de experimentos;
+- registrar tempo, fitness e convergencia;
+- gerar graficos em `artifacts/charts/`.
+
+### Distancia Euclidiana
+
+O projeto usa coordenadas 2D e distancia euclidiana, nao malha viaria real.
+
+Mitigacao:
+
+- documentar essa limitacao;
+- manter como aproximacao valida para demonstracao;
+- considerar integracao futura com APIs de roteamento real.
+
+### Parametros de penalidade fixos
+
+Os pesos das penalidades estao definidos como constantes no codigo.
+
+Mitigacao:
+
+- expor penalidades em configuracao futura;
+- comparar sensibilidade nos experimentos.
+
+## Plano Incremental Atualizado
+
+### Sprint 1 - Analise
+
+Status: Concluida.
+
+Entregaveis:
+
+- analise do baseline;
+- identificacao de lacunas;
+- plano de extensao inicial.
+
+### Sprint 2 - Migracao para `src/`
+
+Status: Concluida.
 
 Entregaveis:
 
 - nucleo genetico testavel;
-- type hints consistentes;
-- dataclasses minimas;
-- testes para fitness, populacao, ordenacao, crossover e mutacao;
-- comportamento equivalente ao baseline de `references/`.
+- type hints;
+- dataclasses;
+- testes de fitness, populacao, ordenacao, crossover e mutacao;
+- comportamento equivalente ao baseline.
 
-### Sprint 3
+### Sprint 3 - Prioridades
 
-Adicionar prioridades.
-
-Entregaveis:
-
-- enum ou constantes para `HIGH`, `MEDIUM`, `LOW`;
-- penalizacao por atraso de entregas `HIGH`;
-- testes da penalizacao;
-- documentacao da nova funcao de fitness.
-
-### Sprint 4
-
-Adicionar peso e capacidade.
+Status: Concluida.
 
 Entregaveis:
 
-- peso por entrega;
-- capacidade maxima por veiculo;
-- penalidade por excesso de capacidade;
+- `Priority` com `HIGH`, `MEDIUM`, `LOW`;
+- `Delivery.priority`;
+- `Delivery.due_time`;
+- penalizacao por atraso;
+- testes;
+- `docs/sprint3_priorities.md`.
+
+### Sprint 4 - Capacidade
+
+Status: Concluida.
+
+Entregaveis:
+
+- `Delivery.weight`;
+- `Vehicle.max_capacity`;
+- penalizacao por excesso de capacidade;
 - exemplos em `data/`;
-- testes de capacidade.
+- testes;
+- `docs/sprint4_capacity.md`.
 
-### Sprint 5
+### Sprint 5 - Autonomia
 
-Adicionar distancia maxima.
-
-Entregaveis:
-
-- campo de distancia maxima no veiculo;
-- penalidade por exceder autonomia;
-- testes de limite de distancia.
-
-### Sprint 6
-
-Expandir TSP para VRP.
+Status: Concluida.
 
 Entregaveis:
 
-- representacao de multiplas rotas;
-- distribuicao de entregas entre veiculos;
-- fitness agregado por frota;
-- testes de alocacao.
+- `Vehicle.max_distance`;
+- penalizacao por excesso de autonomia;
+- propagacao do limite no TSP e algoritmo genetico;
+- testes;
+- `docs/sprint5_autonomy.md`.
 
-### Sprint 7
+### Sprint 5.1 - Dados, CLI e Documentacao
 
-Adicionar camada LLM.
-
-Entregaveis:
-
-- gerador de relatorio operacional;
-- explicador de rotas;
-- prompts reutilizaveis;
-- respostas a perguntas sobre rotas.
-
-### Sprint 8
-
-Executar experimentos.
+Status: Concluida.
 
 Entregaveis:
 
-- execucao de `pop50.yaml`, `pop100.yaml` e `pop500.yaml`;
-- comparacao de fitness, convergencia e tempo;
+- CLI com `--vehicle-id`, `--population-size`, `--mutation-probability`, `--fps`, `--deliveries-file`, `--vehicles-file`;
+- dataset `data/brazil_capitals_sample.csv`;
+- deposito coerente para o dataset de capitais;
+- README atualizado;
+- arquitetura documentada;
+- relatorio tecnico inicial;
+- roteiro de video;
+- outline do relatorio.
+
+### Sprint 6 - VRP
+
+Status: Pendente.
+
+Objetivo:
+
+Expandir TSP para multiplos veiculos.
+
+Entregaveis:
+
+- preencher `src/routing/vrp.py`;
+- preencher `tests/test_vrp.py`;
+- criar modelo ou estrutura para solucao de frota;
+- distribuir entregas entre veiculos;
+- calcular fitness agregado;
+- respeitar capacidade e autonomia por veiculo;
+- documentar estrategia.
+
+### Sprint 7 - LLM
+
+Status: Pendente.
+
+Objetivo:
+
+Gerar textos operacionais a partir das rotas otimizadas.
+
+Entregaveis:
+
+- `src/llm/prompts.py`;
+- `src/llm/report_generator.py`;
+- `src/llm/route_explainer.py`;
+- prompts para relatorio, instrucoes e perguntas;
+- testes de formatacao e montagem de prompt;
+- documentacao de uso.
+
+### Sprint 8 - Experimentos
+
+Status: Pendente.
+
+Objetivo:
+
+Comparar configuracoes do algoritmo genetico.
+
+Entregaveis:
+
+- runner de experimentos;
+- uso de `config/pop50.yaml`, `config/pop100.yaml`, `config/pop500.yaml`;
+- metricas de tempo, fitness e convergencia;
 - graficos em `artifacts/charts/`;
 - atualizacao de `reports/final_report.md`.
 
-### Sprint 9
+### Sprint 9 - Consolidacao
 
-Consolidar apresentacao e artefatos finais.
+Status: Planejada.
 
 Entregaveis:
 
 - graficos finais;
 - mapas finais;
 - relatorio consolidado;
-- roteiro de apresentacao.
+- roteiro final de apresentacao;
+- evidencias de execucao.
 
-### Sprint 10
+### Sprint 10 - Integracao Final com LLM
 
-Integrar LLM ao fluxo final.
+Status: Planejada.
 
 Entregaveis:
 
-- integracao da geracao textual ao resultado das rotas;
-- validacao de prompts;
-- documentacao de uso.
+- LLM integrada ao fluxo final;
+- relatorio gerado a partir da rota;
+- instrucoes por motorista ou veiculo;
+- perguntas e respostas sobre rotas;
+- exemplos documentados.
 
-## Criterios de aceite para seguir para Sprint 2
+## Criterios de Aceite para as Proximas Sprints
 
-Antes de iniciar a Sprint 2, o projeto deve ter clareza sobre:
+### Sprint 6
 
-- quais comportamentos da referencia precisam ser preservados;
-- quais funcoes serao migradas para `src/`;
-- quais invariantes geneticos devem ser testados;
-- como representar cidades, entregas e veiculos sem adicionar funcionalidades antes da hora;
-- como manter separada a logica de otimizacao da visualizacao.
+- Uma frota com pelo menos dois veiculos deve receber entregas distribuidas.
+- Cada rota deve respeitar ou penalizar capacidade e autonomia individualmente.
+- O resultado deve expor rotas por veiculo e fitness total.
+- Testes devem cobrir distribuicao e penalidades por veiculo.
+
+### Sprint 7
+
+- O sistema deve gerar instrucoes legiveis para motoristas.
+- O sistema deve gerar relatorio operacional com distancia, entregas e restricoes.
+- O sistema deve responder perguntas simples sobre rotas.
+- Prompts devem ficar centralizados e testaveis.
+
+### Sprint 8
+
+- Os tres cenarios de configuracao devem ser executaveis.
+- Resultados devem ser comparaveis em tabela.
+- Graficos de convergencia devem ser gerados.
+- O relatorio deve incluir analise dos experimentos.
 
 ## Conclusao
 
-A pasta `references/` atende ao nucleo inicial de um TSP com Algoritmo Genetico, mas ainda esta longe do sistema final de rotas medicas. Ela deve ser tratada como baseline tecnico: util para preservar o comportamento de fitness, populacao, crossover, mutacao e elitismo, mas inadequada como arquitetura final por estar acoplada a visualizacao, nao possuir modelos de dominio, nao ter testes e nao cobrir constraints medicas.
+O projeto ja atende ao nucleo de TSP com Algoritmo Genetico e as principais restricoes logisticas individuais: prioridade, capacidade e autonomia. A implementacao atual e testavel, configuravel via CLI e possui visualizacao 2D.
 
-O proximo passo recomendado e migrar o baseline para `src/` com testes e tipos, mantendo comportamento equivalente antes de introduzir prioridades, capacidade, autonomia, VRP e LLM.
+Para aderencia completa ao Projeto 2, as proximas prioridades sao VRP com multiplos veiculos, LLM para instrucoes e relatorios, e experimentos comparativos com artefatos finais.

@@ -4,12 +4,35 @@ Sistema de otimizacao de rotas medicas com Algoritmos Geneticos.
 
 ## Visao geral
 
+O projeto escolhido e o **Projeto 2: Otimizacao de Rotas para Distribuicao de Medicamentos e Insumos**.
+
 O projeto esta sendo construido em sprints. O baseline atual migra o resolvedor de TSP da pasta `references/` para `src/`, com:
 
 - algoritmo genetico para TSP;
 - visualizacao com Pygame;
 - grafico de fitness com Matplotlib;
 - testes unitarios com `pytest`.
+
+## Estado Atual
+
+Implementado:
+
+- TSP com Algoritmo Genetico;
+- representacao genetica de rotas;
+- operadores de crossover, mutacao, selecao por fitness e elitismo;
+- fitness com distancia, prioridade, atraso, capacidade e autonomia;
+- leitura de entregas e veiculos via CSV;
+- visualizacao 2D das rotas;
+- CLI configuravel;
+- testes automatizados.
+
+Ainda pendente para aderencia completa ao enunciado:
+
+- VRP com multiplos veiculos;
+- camada LLM para instrucoes, relatorios e perguntas sobre rotas;
+- experimentos comparativos com diferentes configuracoes;
+- relatorio tecnico final completo;
+- roteiro e gravacao do video de demonstracao.
 
 ## Estrutura
 
@@ -70,11 +93,14 @@ Executar os testes:
 ## Documentacao
 
 - `docs/project_context.md`: contexto do projeto
+- `docs/architecture.md`: arquitetura atual e componentes planejados
 - `docs/prompts.md`: definicao das sprints
+- `docs/report_outline.md`: estrutura sugerida do relatorio tecnico
 - `docs/sprint3_priorities.md`: prioridades e penalizacao por atraso HIGH
 - `docs/sprint4_capacity.md`: peso e capacidade maxima do veiculo
 - `docs/sprint5_autonomy.md`: distancia maxima e penalizacao por autonomia
 - `docs/brazil_capitals_map.md`: mapeamento das capitais brasileiras em 2D
+- `docs/video_script.md`: roteiro do video de demonstracao
 - `references/docs/architecture.md`: arquitetura do baseline TSP
 - `references/docs/extension_plan.md`: analise da Sprint 1 e plano de extensao
 
