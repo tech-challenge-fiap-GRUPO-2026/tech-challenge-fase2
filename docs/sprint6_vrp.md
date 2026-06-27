@@ -80,7 +80,7 @@ total_fitness = soma_do_fitness_de_todas_as_rotas
 O demo visual aceita o modo VRP:
 
 ```bash
-.venv/bin/python -m src.main --mode vrp --deliveries-file data/brazil_capitals_sample.csv --population-size 100 --mutation-probability 0.3 --fps 15
+.venv/bin/python -m src.main --mode vrp --deliveries-file data/brazil_capitals_sample.csv --population-size 100 --mutation-probability 0.3 --elite-size 2 --fps 15
 ```
 
 No modo `vrp`, o sistema usa todos os veiculos do arquivo definido por `--vehicles-file`.
@@ -88,7 +88,7 @@ No modo `vrp`, o sistema usa todos os veiculos do arquivo definido por `--vehicl
 Para selecionar uma frota especifica:
 
 ```bash
-.venv/bin/python -m src.main --mode vrp --vehicle-ids 1 3 5 --deliveries-file data/brazil_capitals_sample.csv --population-size 100 --mutation-probability 0.3 --fps 15
+.venv/bin/python -m src.main --mode vrp --vehicle-ids 1 3 5 --deliveries-file data/brazil_capitals_sample.csv --population-size 100 --mutation-probability 0.3 --elite-size 2 --fps 15
 ```
 
 A cada geracao, o demo redesenha:

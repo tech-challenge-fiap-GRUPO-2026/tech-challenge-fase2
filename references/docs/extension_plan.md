@@ -68,7 +68,7 @@ Requisitos tecnicos:
 Ultima validacao conhecida:
 
 ```text
-40 passed
+41 passed
 ```
 
 ## Arquitetura Atual
@@ -156,6 +156,7 @@ Opcoes atuais da CLI:
 - `--mode`
 - `--population-size`
 - `--mutation-probability`
+- `--elite-size`
 - `--fps`
 - `--deliveries-file`
 - `--vehicles-file`
@@ -323,7 +324,7 @@ Status: Concluida.
 
 Entregaveis:
 
-- CLI com `--vehicle-id`, `--vehicle-ids`, `--population-size`, `--mutation-probability`, `--fps`, `--deliveries-file`, `--vehicles-file`;
+- CLI com `--vehicle-id`, `--vehicle-ids`, `--population-size`, `--mutation-probability`, `--elite-size`, `--fps`, `--deliveries-file`, `--vehicles-file`;
 - dataset `data/brazil_capitals_sample.csv`;
 - deposito coerente para o dataset de capitais;
 - README atualizado;

@@ -58,14 +58,14 @@ Conteudo:
 - Executar:
 
 ```bash
-.venv/bin/python -m src.main --deliveries-file data/brazil_capitals_sample.csv --vehicle-id 3 --population-size 100 --mutation-probability 0.3 --fps 15
+.venv/bin/python -m src.main --deliveries-file data/brazil_capitals_sample.csv --vehicle-id 3 --population-size 100 --mutation-probability 0.3 --elite-size 2 --fps 15
 ```
 
 - Mostrar a rota e o grafico de fitness em execucao.
 - Executar tambem o modo VRP:
 
 ```bash
-.venv/bin/python -m src.main --mode vrp --vehicle-ids 1 3 5 --deliveries-file data/brazil_capitals_sample.csv --population-size 100 --mutation-probability 0.3 --fps 15
+.venv/bin/python -m src.main --mode vrp --vehicle-ids 1 3 5 --deliveries-file data/brazil_capitals_sample.csv --population-size 100 --mutation-probability 0.3 --elite-size 2 --fps 15
 ```
 
 - Mostrar a evolucao do fitness agregado e o tracado progressivo das rotas por veiculo com cores diferentes.

@@ -77,7 +77,7 @@ def iterate_tsp(
             fitness_history=list(fitness_history),
         )
 
-        new_population = [list(best_route)]
+        new_population = [list(individual) for individual in population[: config.elite_size]]
         parent_pool = population[: max(2, min(config.parent_pool_size, len(population)))]
 
         while len(new_population) < config.population_size:

@@ -71,6 +71,7 @@ Opcoes disponiveis:
 - `--mode <tsp|vrp>`: define o modo da visualizacao. Padrao: `tsp`.
 - `--population-size <n>`: define o tamanho da populacao do algoritmo genetico. Padrao: `100`.
 - `--mutation-probability <p>`: define a probabilidade de mutacao. Padrao: `0.5`.
+- `--elite-size <n>`: define quantos melhores individuos sao preservados entre geracoes. Padrao: `1`.
 - `--fps <n>`: define a taxa de quadros da animacao. Padrao: `30`.
 - `--deliveries-file <path>`: define o CSV de entregas. Padrao: `data/deliveries_sample.csv`.
 - `--vehicles-file <path>`: define o CSV de veiculos. Padrao: `data/vehicles_sample.csv`.
@@ -78,13 +79,13 @@ Opcoes disponiveis:
 Exemplo:
 
 ```bash
-.venv/bin/python -m src.main --vehicle-id 3 --population-size 200 --mutation-probability 0.3 --fps 15
+.venv/bin/python -m src.main --vehicle-id 3 --population-size 200 --mutation-probability 0.3 --elite-size 2 --fps 15
 ```
 
 Exemplo com multiplos veiculos:
 
 ```bash
-.venv/bin/python -m src.main --mode vrp --vehicle-ids 1 3 5 --deliveries-file data/brazil_capitals_sample.csv --population-size 100 --mutation-probability 0.3 --fps 15
+.venv/bin/python -m src.main --mode vrp --vehicle-ids 1 3 5 --deliveries-file data/brazil_capitals_sample.csv --population-size 100 --mutation-probability 0.3 --elite-size 2 --fps 15
 ```
 
 Se `--vehicle-ids` nao for informado no modo `vrp`, todos os veiculos de `data/vehicles_sample.csv` sao usados.

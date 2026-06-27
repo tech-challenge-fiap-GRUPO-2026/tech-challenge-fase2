@@ -161,6 +161,7 @@ Opcoes:
 - `--mode`
 - `--population-size`
 - `--mutation-probability`
+- `--elite-size`
 - `--fps`
 - `--deliveries-file`
 - `--vehicles-file`

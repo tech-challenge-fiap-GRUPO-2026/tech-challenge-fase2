@@ -36,6 +36,7 @@ VRP_ROUTE_COLORS = (
 POPULATION_SIZE = 100
 N_GENERATIONS = None
 MUTATION_PROBABILITY = 0.5
+ELITE_SIZE = 1
 DELIVERIES_SAMPLE_PATH = Path(__file__).resolve().parents[1] / "data" / "deliveries_sample.csv"
 BRAZIL_CAPITALS_SAMPLE_PATH = Path(__file__).resolve().parents[1] / "data" / "brazil_capitals_sample.csv"
 VEHICLES_SAMPLE_PATH = Path(__file__).resolve().parents[1] / "data" / "vehicles_sample.csv"
@@ -50,6 +51,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--vehicle-ids", dest="vehicle_ids", nargs="+", default=None, help="Vehicle ids used in VRP mode. Default: all vehicles from CSV")
     parser.add_argument("--population-size", dest="population_size", type=int, default=POPULATION_SIZE, help="Population size for the genetic algorithm")
     parser.add_argument("--mutation-probability", dest="mutation_probability", type=float, default=MUTATION_PROBABILITY, help="Mutation probability for the genetic algorithm")
+    parser.add_argument("--elite-size", dest="elite_size", type=int, default=ELITE_SIZE, help="Number of best individuals preserved between generations")
     parser.add_argument("--fps", dest="fps", type=int, default=FPS, help="Frame rate for the visual animation")
     parser.add_argument("--deliveries-file", dest="deliveries_file", type=Path, default=DELIVERIES_SAMPLE_PATH, help="Path to the deliveries CSV file")
     parser.add_argument("--vehicles-file", dest="vehicles_file", type=Path, default=VEHICLES_SAMPLE_PATH, help="Path to the vehicles CSV file")
@@ -131,6 +133,7 @@ def run_visual_demo(args: argparse.Namespace | None = None) -> None:
         population_size=args.population_size,
         generations=None,
         mutation_probability=args.mutation_probability,
+        elite_size=args.elite_size,
     )
 
     def translate_route(route: list[object]) -> list[object]:

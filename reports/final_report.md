@@ -90,19 +90,19 @@ O projeto possui datasets de exemplo:
 Exemplo:
 
 ```bash
-.venv/bin/python -m src.main --deliveries-file data/brazil_capitals_sample.csv --vehicle-id 3 --population-size 200 --mutation-probability 0.3 --fps 15
+.venv/bin/python -m src.main --deliveries-file data/brazil_capitals_sample.csv --vehicle-id 3 --population-size 200 --mutation-probability 0.3 --elite-size 2 --fps 15
 ```
 
 Exemplo VRP:
 
 ```bash
-.venv/bin/python -m src.main --mode vrp --deliveries-file data/brazil_capitals_sample.csv --population-size 100 --mutation-probability 0.3 --fps 15
+.venv/bin/python -m src.main --mode vrp --deliveries-file data/brazil_capitals_sample.csv --population-size 100 --mutation-probability 0.3 --elite-size 2 --fps 15
 ```
 
 Para restringir a frota do VRP, use `--vehicle-ids`:
 
 ```bash
-.venv/bin/python -m src.main --mode vrp --vehicle-ids 1 3 5 --deliveries-file data/brazil_capitals_sample.csv --population-size 100 --mutation-probability 0.3 --fps 15
+.venv/bin/python -m src.main --mode vrp --vehicle-ids 1 3 5 --deliveries-file data/brazil_capitals_sample.csv --population-size 100 --mutation-probability 0.3 --elite-size 2 --fps 15
 ```
 
 ## VRP
@@ -147,7 +147,7 @@ Resultado atual validado:
 Ultima validacao conhecida:
 
 ```text
-40 passed
+41 passed
 ```
 
 # Trabalhos Futuros

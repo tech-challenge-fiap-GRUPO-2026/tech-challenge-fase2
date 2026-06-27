@@ -2,7 +2,7 @@ import random
 
 from src.ga.genetic_algorithm import GeneticAlgorithmConfig
 from src.models import City, Vehicle
-from src.routing.tsp import TSPProblem, route_distance, solve_tsp
+from src.routing.tsp import TSPProblem, iterate_tsp, route_distance, solve_tsp
 
 
 def test_route_distance_delegates_to_closed_tsp_fitness() -> None:
@@ -51,3 +51,16 @@ def test_solve_tsp_applies_vehicle_distance_limit() -> None:
 
     assert solution.distance == 62
     assert solution.distance == solution.fitness_history[-1]
+
+
+def test_iterate_tsp_preserves_configured_elite_size() -> None:
+    problem = TSPProblem(cities=((0, 0), (1, 0), (1, 1), (0, 1)))
+    config = GeneticAlgorithmConfig(population_size=8, generations=3, mutation_probability=0.1, elite_size=2)
+    iterator = iterate_tsp(problem, config, random.Random(4))
+
+    first_state = next(iterator)
+    second_state = next(iterator)
+    first_elites = {tuple(route) for route in first_state.population[:2]}
+    second_population = {tuple(route) for route in second_state.population}
+
+    assert first_elites <= second_population

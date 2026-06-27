@@ -54,6 +54,7 @@ def test_parse_args_uses_defaults_when_no_options_are_passed() -> None:
     assert args.mode == "tsp"
     assert args.population_size == 100
     assert args.mutation_probability == 0.5
+    assert args.elite_size == 1
     assert args.fps == 30
     assert str(args.deliveries_file).endswith("data/deliveries_sample.csv")
     assert str(args.vehicles_file).endswith("data/vehicles_sample.csv")
@@ -72,6 +73,8 @@ def test_parse_args_reads_custom_options() -> None:
         "42",
         "--mutation-probability",
         "0.25",
+        "--elite-size",
+        "4",
         "--fps",
         "12",
         "--deliveries-file",
@@ -85,6 +88,7 @@ def test_parse_args_reads_custom_options() -> None:
     assert args.mode == "vrp"
     assert args.population_size == 42
     assert args.mutation_probability == 0.25
+    assert args.elite_size == 4
     assert args.fps == 12
     assert str(args.deliveries_file) == "data/custom_deliveries.csv"
     assert str(args.vehicles_file) == "data/custom_vehicles.csv"

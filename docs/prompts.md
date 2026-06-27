@@ -107,6 +107,7 @@ Atualizar o demo visual para aceitar parametros via CLI:
 - `--vehicle-id`
 - `--population-size`
 - `--mutation-probability`
+- `--elite-size`
 - `--fps`
 - `--deliveries-file`
 - `--vehicles-file`
