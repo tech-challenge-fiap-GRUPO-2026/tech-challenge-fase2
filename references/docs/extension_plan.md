@@ -4,7 +4,7 @@
 
 Este documento registra a evolucao do baseline em `references/` para o Projeto 2 do Tech Challenge Fase 2: otimizacao de rotas para distribuicao de medicamentos e insumos com Algoritmos Geneticos e apoio futuro de LLM.
 
-O projeto saiu de um TSP didatico e hoje possui uma implementacao em `src/` com restricoes de prioridade, capacidade e autonomia. O foco das proximas sprints e completar VRP, LLM, experimentos e artefatos finais.
+O projeto saiu de um TSP didatico e hoje possui uma implementacao em `src/` com restricoes de prioridade, capacidade, autonomia e VRP inicial com multiplos veiculos. O foco das proximas sprints e completar LLM, experimentos e artefatos finais.
 
 ## Escopo do Projeto 2
 
@@ -49,6 +49,10 @@ Requisitos tecnicos:
 - Penalizacao por atraso por prioridade.
 - Penalizacao por excesso de capacidade.
 - Penalizacao por excesso de autonomia.
+- VRP inicial com distribuicao de entregas entre veiculos.
+- Fitness agregado por frota.
+- Visualizacao VRP animada com uma rota por veiculo.
+- Selecao de frota no modo VRP via `--vehicle-ids`.
 - Leitura de entregas e veiculos via CSV.
 - Dataset de entregas sinteticas.
 - Dataset de capitais brasileiras em 2D.
@@ -64,7 +68,7 @@ Requisitos tecnicos:
 Ultima validacao conhecida:
 
 ```text
-30 passed
+40 passed
 ```
 
 ## Arquitetura Atual
@@ -79,13 +83,13 @@ src/data_loader.py
 Delivery / Vehicle / City / Priority
    |
    v
-TSPProblem
+TSPProblem / VRPProblem
    |
    v
 src/ga/genetic_algorithm.py
    |
    v
-TSPSolution / TSPGenerationState
+TSPSolution / TSPGenerationState / VRPSolution
    |
    v
 src/main.py + src/visualization/
@@ -125,6 +129,20 @@ Responsabilidades:
 - propagar limites de capacidade e autonomia;
 - disponibilizar execucao completa e iterativa.
 
+### Roteamento VRP
+
+- `src/routing/vrp.py`
+
+Responsabilidades:
+
+- representar problema de multiplos veiculos;
+- distribuir entregas entre veiculos;
+- evoluir cromossomos completos de frota;
+- agregar fitness da frota;
+- mover e trocar entregas entre veiculos;
+- expor rotas por veiculo;
+- alimentar a visualizacao animada do modo VRP.
+
 ### Visualizacao e CLI
 
 - `src/main.py`
@@ -134,6 +152,8 @@ Responsabilidades:
 Opcoes atuais da CLI:
 
 - `--vehicle-id`
+- `--vehicle-ids`
+- `--mode`
 - `--population-size`
 - `--mutation-probability`
 - `--fps`
@@ -173,7 +193,7 @@ Penalidades:
 | Visualizacao de rotas | Atendido parcialmente |
 | Testes automatizados | Atendido |
 | Documentacao tecnica | Atendido parcialmente |
-| Multiplos veiculos / VRP | Pendente |
+| Multiplos veiculos / VRP | Atendido parcialmente |
 | Integracao com LLM | Pendente |
 | Instrucoes para motoristas | Pendente |
 | Relatorios operacionais | Pendente |
@@ -185,17 +205,15 @@ Penalidades:
 
 ## Riscos Tecnicos Atuais
 
-### VRP ainda ausente
+### VRP ainda inicial
 
-O enunciado exige multiplos veiculos. Hoje o sistema resolve uma rota principal por vez.
+O enunciado exige multiplos veiculos. O sistema ja otimiza uma frota completa, mas os operadores geneticos de VRP ainda sao simples.
 
 Mitigacao:
 
-- implementar `src/routing/vrp.py`;
-- criar representacao de frota;
-- distribuir entregas entre veiculos;
-- calcular fitness agregado por frota;
-- testar capacidade e autonomia por veiculo.
+- refinar crossover para preservar agrupamentos geograficos;
+- adicionar mutacoes como inversao de segmento e realocacao guiada por capacidade;
+- comparar os operadores atuais com abordagens alternativas.
 
 ### LLM ainda ausente
 
@@ -305,7 +323,7 @@ Status: Concluida.
 
 Entregaveis:
 
-- CLI com `--vehicle-id`, `--population-size`, `--mutation-probability`, `--fps`, `--deliveries-file`, `--vehicles-file`;
+- CLI com `--vehicle-id`, `--vehicle-ids`, `--population-size`, `--mutation-probability`, `--fps`, `--deliveries-file`, `--vehicles-file`;
 - dataset `data/brazil_capitals_sample.csv`;
 - deposito coerente para o dataset de capitais;
 - README atualizado;
@@ -316,7 +334,7 @@ Entregaveis:
 
 ### Sprint 6 - VRP
 
-Status: Pendente.
+Status: Concluida.
 
 Objetivo:
 
@@ -330,7 +348,9 @@ Entregaveis:
 - distribuir entregas entre veiculos;
 - calcular fitness agregado;
 - respeitar capacidade e autonomia por veiculo;
-- documentar estrategia.
+- integrar modo visual `--mode vrp`;
+- permitir selecionar frota com `--vehicle-ids`, mantendo todos os veiculos como padrao;
+- documentar estrategia em `docs/sprint6_vrp.md`.
 
 ### Sprint 7 - LLM
 
@@ -391,13 +411,6 @@ Entregaveis:
 
 ## Criterios de Aceite para as Proximas Sprints
 
-### Sprint 6
-
-- Uma frota com pelo menos dois veiculos deve receber entregas distribuidas.
-- Cada rota deve respeitar ou penalizar capacidade e autonomia individualmente.
-- O resultado deve expor rotas por veiculo e fitness total.
-- Testes devem cobrir distribuicao e penalidades por veiculo.
-
 ### Sprint 7
 
 - O sistema deve gerar instrucoes legiveis para motoristas.
@@ -414,6 +427,6 @@ Entregaveis:
 
 ## Conclusao
 
-O projeto ja atende ao nucleo de TSP com Algoritmo Genetico e as principais restricoes logisticas individuais: prioridade, capacidade e autonomia. A implementacao atual e testavel, configuravel via CLI e possui visualizacao 2D.
+O projeto ja atende ao nucleo de TSP com Algoritmo Genetico, as principais restricoes logisticas individuais e um VRP inicial com multiplas rotas. A implementacao atual e testavel, configuravel via CLI e possui visualizacao 2D.
 
-Para aderencia completa ao Projeto 2, as proximas prioridades sao VRP com multiplos veiculos, LLM para instrucoes e relatorios, e experimentos comparativos com artefatos finais.
+Para aderencia completa ao Projeto 2, as proximas prioridades sao LLM para instrucoes e relatorios, experimentos comparativos, artefatos finais e evolucao do VRP para otimizacao conjunta da frota.

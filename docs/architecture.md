@@ -4,7 +4,7 @@
 
 Este projeto implementa o Projeto 2 do Tech Challenge Fase 2: otimizacao de rotas para distribuicao de medicamentos e insumos usando Algoritmos Geneticos.
 
-O estado atual cobre TSP com restricoes de prioridade, capacidade e autonomia. VRP com multiplos veiculos e LLM ainda estao planejados.
+O estado atual cobre TSP com restricoes de prioridade, capacidade e autonomia, alem de um VRP inicial com multiplas rotas por veiculo. A camada LLM ainda esta planejada.
 
 ## Visao Geral
 
@@ -20,13 +20,13 @@ src/data_loader.py
 Delivery / Vehicle
         |
         v
-TSPProblem
+TSPProblem / VRPProblem
         |
         v
 Algoritmo Genetico
         |
         v
-Melhor rota + historico de fitness
+Melhor rota ou rotas por veiculo + historico de fitness
         |
         v
 Visualizacao Pygame + grafico Matplotlib
@@ -119,6 +119,19 @@ Ele recebe:
 
 Quando o veiculo existe, `max_capacity` e `max_distance` sao usados no fitness.
 
+`src/routing/vrp.py` expande o fluxo para multiplos veiculos.
+
+Ele fornece:
+
+- `VRPProblem`: entregas, veiculos e deposito;
+- `VRPRoute`: rota resolvida para um veiculo;
+- `VRPSolution`: conjunto de rotas e fitness agregado;
+- `distribute_deliveries`: heuristica usada para uma solucao inicial;
+- `generate_fleet_population`: populacao de solucoes completas de frota;
+- `fleet_crossover`: crossover para cromossomos de frota;
+- `mutate_fleet`: mutacoes que podem mover/trocar entregas entre veiculos;
+- `iterate_vrp`: evolucao geracional da frota completa.
+
 ### Visualizacao
 
 `src/main.py` executa o demo visual com Pygame.
@@ -128,8 +141,8 @@ A tela mostra:
 - grafico de fitness;
 - deposito;
 - pontos de entrega;
-- melhor rota atual;
-- rota secundaria da populacao.
+- no modo TSP, melhor rota atual e rota secundaria da populacao;
+- no modo VRP, a evolucao geracional da frota com uma rota por veiculo em cores diferentes e tracado progressivo.
 
 O argumento `--fps` controla a velocidade da animacao.
 
@@ -144,6 +157,8 @@ Comando principal:
 Opcoes:
 
 - `--vehicle-id`
+- `--vehicle-ids`
+- `--mode`
 - `--population-size`
 - `--mutation-probability`
 - `--fps`
@@ -165,20 +180,24 @@ Os testes cobrem:
 - autonomia;
 - leitura de CSV;
 - parsing da CLI;
-- integracao basica do TSP.
+- modo visual VRP;
+- selecao de frota por CLI;
+- integracao basica do TSP;
+- distribuicao VRP;
+- fitness agregado de frota.
 
 ## Limitacoes Atuais
 
 - Distancias sao euclidianas em 2D, nao por malha viaria real.
-- O sistema ainda resolve uma rota principal por vez, nao VRP completo.
+- O VRP atual otimiza a frota em conjunto, mas ainda usa operadores geneticos simples e distancia euclidiana.
 - A camada LLM ainda nao esta implementada.
 - Os modulos de metricas e experimentos ainda estao pendentes.
 - A visualizacao nao usa mapa geografico real.
 
 ## Evolucao Planejada
 
-1. Implementar VRP em `src/routing/vrp.py`.
-2. Implementar geracao de relatorios e instrucoes em `src/llm/`.
-3. Executar experimentos com `config/pop50.yaml`, `config/pop100.yaml` e `config/pop500.yaml`.
+1. Implementar geracao de relatorios e instrucoes em `src/llm/`.
+2. Executar experimentos com `config/pop50.yaml`, `config/pop100.yaml` e `config/pop500.yaml`.
+3. Evoluir o VRP para otimizar a frota inteira de forma conjunta.
 4. Gerar artefatos comparativos e completar `reports/final_report.md`.
 5. Preparar o video de demonstracao.

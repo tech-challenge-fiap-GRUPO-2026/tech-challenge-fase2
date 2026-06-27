@@ -125,7 +125,7 @@ Atualizar documentacao:
 
 # Sprint 6 - VRP com Multiplos Veiculos
 
-Status: Pendente.
+Status: Concluida.
 
 Expandir TSP para VRP.
 
@@ -140,7 +140,13 @@ Implementar:
 - distribuicao de entregas entre veiculos;
 - fitness agregado da frota;
 - validacao de capacidade e autonomia por veiculo;
-- testes de alocacao.
+- testes de alocacao;
+- modo visual `--mode vrp` animado com uma rota por veiculo;
+- `--vehicle-ids` para selecionar a frota do modo VRP, mantendo todos os veiculos como padrao.
+
+Documentar alteracoes em:
+
+- `docs/sprint6_vrp.md`
 
 # Sprint 7 - Camada LLM
 

@@ -60,6 +60,7 @@ def draw_route(
     route: Sequence[object],
     color: tuple[int, int, int] = DEFAULT_ROUTE_COLOR,
     width: int = 2,
+    closed: bool = True,
 ) -> None:
     if len(route) >= 2:
-        pygame.draw.lines(screen, color, True, [_point(point) for point in route], width)
+        pygame.draw.lines(screen, color, closed, [_point(point) for point in route], width)

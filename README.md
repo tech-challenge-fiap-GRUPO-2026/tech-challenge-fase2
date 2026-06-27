@@ -18,6 +18,7 @@ O projeto esta sendo construido em sprints. O baseline atual migra o resolvedor 
 Implementado:
 
 - TSP com Algoritmo Genetico;
+- VRP inicial com multiplas rotas por veiculo;
 - representacao genetica de rotas;
 - operadores de crossover, mutacao, selecao por fitness e elitismo;
 - fitness com distancia, prioridade, atraso, capacidade e autonomia;
@@ -28,7 +29,6 @@ Implementado:
 
 Ainda pendente para aderencia completa ao enunciado:
 
-- VRP com multiplos veiculos;
 - camada LLM para instrucoes, relatorios e perguntas sobre rotas;
 - experimentos comparativos com diferentes configuracoes;
 - relatorio tecnico final completo;
@@ -67,6 +67,8 @@ Executar a interface visual:
 Opcoes disponiveis:
 
 - `--vehicle-id <id>`: seleciona o veiculo de `data/vehicles_sample.csv` usado na simulacao. Padrao: primeiro veiculo do arquivo.
+- `--vehicle-ids <id...>`: seleciona os veiculos usados no modo `vrp`. Padrao: todos os veiculos do arquivo.
+- `--mode <tsp|vrp>`: define o modo da visualizacao. Padrao: `tsp`.
 - `--population-size <n>`: define o tamanho da populacao do algoritmo genetico. Padrao: `100`.
 - `--mutation-probability <p>`: define a probabilidade de mutacao. Padrao: `0.5`.
 - `--fps <n>`: define a taxa de quadros da animacao. Padrao: `30`.
@@ -78,6 +80,14 @@ Exemplo:
 ```bash
 .venv/bin/python -m src.main --vehicle-id 3 --population-size 200 --mutation-probability 0.3 --fps 15
 ```
+
+Exemplo com multiplos veiculos:
+
+```bash
+.venv/bin/python -m src.main --mode vrp --vehicle-ids 1 3 5 --deliveries-file data/brazil_capitals_sample.csv --population-size 100 --mutation-probability 0.3 --fps 15
+```
+
+Se `--vehicle-ids` nao for informado no modo `vrp`, todos os veiculos de `data/vehicles_sample.csv` sao usados.
 
 Fechar a janela:
 
@@ -99,6 +109,7 @@ Executar os testes:
 - `docs/sprint3_priorities.md`: prioridades e penalizacao por atraso HIGH
 - `docs/sprint4_capacity.md`: peso e capacidade maxima do veiculo
 - `docs/sprint5_autonomy.md`: distancia maxima e penalizacao por autonomia
+- `docs/sprint6_vrp.md`: VRP inicial com multiplos veiculos
 - `docs/brazil_capitals_map.md`: mapeamento das capitais brasileiras em 2D
 - `docs/video_script.md`: roteiro do video de demonstracao
 - `references/docs/architecture.md`: arquitetura do baseline TSP
@@ -108,4 +119,4 @@ Executar os testes:
 
 - O entrypoint atual esta em `src/main.py`.
 - A visualizacao em `src/main.py` usa o solver migrado da Sprint 2 como base de execucao.
-- O projeto ainda evolui para VRP, LLM e novas otimizacoes nas proximas sprints.
+- O projeto ainda evolui para LLM, experimentos e novas otimizacoes nas proximas sprints.

@@ -4,7 +4,7 @@ Este relatorio descreve o desenvolvimento do Projeto 2 do Tech Challenge Fase 2:
 
 O projeto parte de um codigo base de TSP e evolui para um resolvedor em `src/` com Algoritmo Genetico, restricoes operacionais, visualizacao e testes automatizados.
 
-Estado atual: TSP com prioridades, capacidade e autonomia implementado. VRP com multiplos veiculos, LLM e comparativos experimentais ainda estao planejados.
+Estado atual: TSP com prioridades, capacidade e autonomia implementado, alem de VRP inicial com multiplos veiculos. LLM e comparativos experimentais ainda estao planejados.
 
 # Fundamentação Teórica
 
@@ -24,7 +24,7 @@ No contexto do projeto, os pontos representam entregas de medicamentos e insumos
 
 O Vehicle Routing Problem, ou VRP, generaliza o TSP para multiplos veiculos e multiplas rotas.
 
-O VRP e um requisito do enunciado, mas ainda nao foi implementado no estado atual do projeto. O modulo `src/routing/vrp.py` existe como ponto de extensao.
+O VRP e um requisito do enunciado e foi implementado com um cromossomo de frota. O modulo `src/routing/vrp.py` evolui distribuicao e ordem das entregas em conjunto, permitindo mover e trocar entregas entre veiculos durante a evolucao genetica.
 
 ## Large Language Models
 
@@ -41,6 +41,7 @@ O projeto foi conduzido em sprints incrementais:
 3. Inclusao de prioridades e penalizacao por atraso.
 4. Inclusao de peso e capacidade maxima dos veiculos.
 5. Inclusao de autonomia maxima dos veiculos.
+6. Inclusao de VRP inicial com multiplas rotas por veiculo.
 
 A validacao foi feita com testes automatizados usando `pytest`.
 
@@ -50,6 +51,7 @@ A validacao foi feita com testes automatizados usando `pytest`.
 
 - `src/ga/genetic_algorithm.py`: algoritmo genetico e fitness.
 - `src/routing/tsp.py`: adaptacao do algoritmo para TSP.
+- `src/routing/vrp.py`: distribuicao de entregas e solucao de multiplas rotas.
 - `src/models/`: modelos de entrega, prioridade, cidade e veiculo.
 - `src/data_loader.py`: leitura dos arquivos CSV.
 - `src/visualization/`: desenho da rota e grafico de fitness.
@@ -91,6 +93,34 @@ Exemplo:
 .venv/bin/python -m src.main --deliveries-file data/brazil_capitals_sample.csv --vehicle-id 3 --population-size 200 --mutation-probability 0.3 --fps 15
 ```
 
+Exemplo VRP:
+
+```bash
+.venv/bin/python -m src.main --mode vrp --deliveries-file data/brazil_capitals_sample.csv --population-size 100 --mutation-probability 0.3 --fps 15
+```
+
+Para restringir a frota do VRP, use `--vehicle-ids`:
+
+```bash
+.venv/bin/python -m src.main --mode vrp --vehicle-ids 1 3 5 --deliveries-file data/brazil_capitals_sample.csv --population-size 100 --mutation-probability 0.3 --fps 15
+```
+
+## VRP
+
+O VRP atual cria uma solucao de frota, com uma rota por veiculo, e evolui essa solucao como um individuo completo.
+
+O processo e:
+
+1. criar uma populacao inicial de frotas completas;
+2. avaliar cada frota pelo fitness agregado;
+3. aplicar crossover entre solucoes de frota;
+4. aplicar mutacoes que podem mover, trocar ou reordenar entregas;
+5. manter as melhores frotas por elitismo.
+
+Essa abordagem permite otimizar distribuicao e ordem das rotas em conjunto.
+
+A visualizacao do modo VRP anima a evolucao geracional, desenha uma rota por veiculo com cores diferentes, revela o tracado progressivamente e exibe o historico agregado de fitness da frota.
+
 # Experimentos
 
 Ainda nao foram executados experimentos comparativos formais.
@@ -108,6 +138,7 @@ Proxima etapa: executar esses cenarios, registrar tempo, melhor fitness e curva 
 Resultado atual validado:
 
 - TSP funcional com visualizacao;
+- VRP inicial com multiplas rotas;
 - fitness com distancia, atraso, capacidade e autonomia;
 - leitura de entregas e veiculos via CSV;
 - CLI configuravel;
@@ -116,16 +147,16 @@ Resultado atual validado:
 Ultima validacao conhecida:
 
 ```text
-30 passed
+40 passed
 ```
 
 # Trabalhos Futuros
 
 Prioridades para aderencia completa ao enunciado:
 
-1. Implementar VRP com multiplos veiculos.
-2. Implementar camada LLM para instrucoes, relatorios e perguntas.
-3. Executar experimentos comparativos.
+1. Implementar camada LLM para instrucoes, relatorios e perguntas.
+2. Executar experimentos comparativos.
+3. Evoluir o VRP para otimizacao conjunta da frota.
 4. Gerar graficos e artefatos de resultados.
 5. Completar analise final e video de demonstracao.
 
