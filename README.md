@@ -18,7 +18,7 @@ O projeto esta sendo construido em sprints. O baseline atual migra o resolvedor 
 Implementado:
 
 - TSP com Algoritmo Genetico;
-- VRP inicial com multiplas rotas por veiculo;
+- VRP com multiplas rotas e evolucao conjunta da frota;
 - representacao genetica de rotas;
 - operadores de crossover, mutacao, selecao por fitness e elitismo;
 - fitness com distancia, prioridade, atraso, capacidade e autonomia;
@@ -31,8 +31,8 @@ Ainda pendente para aderencia completa ao enunciado:
 
 - camada LLM para instrucoes, relatorios e perguntas sobre rotas;
 - experimentos comparativos com diferentes configuracoes;
-- relatorio tecnico final completo;
-- roteiro e gravacao do video de demonstracao.
+- consolidacao do relatorio tecnico apos experimentos/LLM;
+- gravacao do video de demonstracao.
 
 ## Estrutura
 
@@ -109,7 +109,7 @@ Executar os testes:
 - `docs/sprint3_priorities.md`: prioridades e penalizacao por atraso HIGH
 - `docs/sprint4_capacity.md`: peso e capacidade maxima do veiculo
 - `docs/sprint5_autonomy.md`: distancia maxima e penalizacao por autonomia
-- `docs/sprint6_vrp.md`: VRP inicial com multiplos veiculos
+- `docs/sprint6_vrp.md`: VRP com multiplos veiculos e evolucao conjunta da frota
 - `docs/brazil_capitals_map.md`: mapeamento das capitais brasileiras em 2D
 - `docs/video_script.md`: roteiro do video de demonstracao
 - `references/docs/architecture.md`: arquitetura do baseline TSP

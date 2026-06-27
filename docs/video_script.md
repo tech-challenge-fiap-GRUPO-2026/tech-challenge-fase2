@@ -20,7 +20,7 @@ Conteudo:
 
 - Mostrar a estrutura do repositorio.
 - Explicar `src/`, `tests/`, `data/`, `docs/`, `config/` e `reports/`.
-- Explicar que a solucao atual resolve TSP com restricoes e possui modo VRP inicial.
+- Explicar que a solucao atual resolve TSP com restricoes e possui modo VRP com multiplos veiculos.
 
 ## 3. Algoritmo Genetico
 
@@ -30,6 +30,7 @@ Conteudo:
 
 - Mostrar `src/ga/genetic_algorithm.py`.
 - Explicar representacao da rota como permutacao.
+- Explicar que, no VRP, o individuo representa uma frota completa.
 - Explicar populacao, crossover, mutacao e elitismo.
 - Explicar que o objetivo e minimizar o fitness.
 
@@ -68,6 +69,7 @@ Conteudo:
 ```
 
 - Mostrar a evolucao do fitness agregado e o tracado progressivo das rotas por veiculo com cores diferentes.
+- Explicar que o VRP evolui distribuicao e ordem das entregas em conjunto.
 
 ## 6. Testes
 
@@ -92,7 +94,7 @@ Conteudo:
 - Explicar o que ainda falta para aderencia completa:
 - LLM para instrucoes e relatorios.
 - Experimentos comparativos.
-- Relatorio final completo.
+- Graficos e artefatos finais de resultados.
 
 ## 8. Encerramento
 
@@ -100,5 +102,5 @@ Tempo sugerido: 30 segundos.
 
 Conteudo:
 
-- Reforcar que o projeto ja cobre TSP, VRP inicial, restricoes principais e visualizacao.
+- Reforcar que o projeto ja cobre TSP, VRP com frota, restricoes principais e visualizacao.
 - Indicar que a evolucao natural e LLM + experimentos.

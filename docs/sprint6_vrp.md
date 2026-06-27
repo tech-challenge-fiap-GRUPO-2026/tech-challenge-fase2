@@ -2,7 +2,7 @@
 
 ## Objetivo
 
-Expandir o TSP para um VRP inicial com multiplos veiculos.
+Expandir o TSP para um VRP com multiplos veiculos e evolucao conjunta da frota.
 
 ## Modelo
 
@@ -106,10 +106,10 @@ Os testes cobrem:
 - erro quando nao ha veiculos;
 - uma rota por veiculo;
 - fitness agregado;
-- penalidade de capacidade por rota.
+- penalidade de capacidade por rota;
 - parsing do modo VRP na CLI;
 - selecao padrao e customizada de veiculos no VRP;
 - historico agregado de fitness da frota;
-- estados geracionais do VRP.
+- estados geracionais do VRP;
 - populacao inicial de frota preservando cada entrega uma unica vez;
 - mutacao de frota alterando distribuicao/rotas sem perder entregas.

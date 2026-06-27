@@ -4,7 +4,7 @@
 
 Este projeto implementa o Projeto 2 do Tech Challenge Fase 2: otimizacao de rotas para distribuicao de medicamentos e insumos usando Algoritmos Geneticos.
 
-O estado atual cobre TSP com restricoes de prioridade, capacidade e autonomia, alem de um VRP inicial com multiplas rotas por veiculo. A camada LLM ainda esta planejada.
+O estado atual cobre TSP com restricoes de prioridade, capacidade e autonomia, alem de VRP com multiplos veiculos e evolucao conjunta da frota. A camada LLM ainda esta planejada.
 
 ## Visao Geral
 
@@ -198,6 +198,6 @@ Os testes cobrem:
 
 1. Implementar geracao de relatorios e instrucoes em `src/llm/`.
 2. Executar experimentos com `config/pop50.yaml`, `config/pop100.yaml` e `config/pop500.yaml`.
-3. Evoluir o VRP para otimizar a frota inteira de forma conjunta.
-4. Gerar artefatos comparativos e completar `reports/final_report.md`.
+3. Refinar operadores geneticos do VRP para preservar melhor agrupamentos geograficos.
+4. Gerar artefatos comparativos e atualizar `reports/final_report.md` com os resultados.
 5. Preparar o video de demonstracao.

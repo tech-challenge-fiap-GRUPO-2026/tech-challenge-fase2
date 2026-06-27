@@ -4,7 +4,7 @@ Este relatorio descreve o desenvolvimento do Projeto 2 do Tech Challenge Fase 2:
 
 O projeto parte de um codigo base de TSP e evolui para um resolvedor em `src/` com Algoritmo Genetico, restricoes operacionais, visualizacao e testes automatizados.
 
-Estado atual: TSP com prioridades, capacidade e autonomia implementado, alem de VRP inicial com multiplos veiculos. LLM e comparativos experimentais ainda estao planejados.
+Estado atual: TSP com prioridades, capacidade e autonomia implementado, alem de VRP com multiplos veiculos e evolucao conjunta da frota. LLM e comparativos experimentais ainda estao planejados.
 
 # Fundamentação Teórica
 
@@ -12,7 +12,7 @@ Estado atual: TSP com prioridades, capacidade e autonomia implementado, alem de 
 
 Algoritmos Geneticos sao metodos de otimizacao inspirados em processos evolutivos. Uma populacao de solucoes candidatas e avaliada por uma funcao fitness, e novas geracoes sao criadas por operadores como selecao, crossover, mutacao e elitismo.
 
-Neste projeto, cada individuo representa uma rota. A qualidade da rota e avaliada por distancia total e penalidades ligadas ao contexto logistico medico.
+Neste projeto, cada individuo representa uma rota no TSP ou uma frota completa no VRP. A qualidade da solucao e avaliada por distancia total e penalidades ligadas ao contexto logistico medico.
 
 ## Problema do Caixeiro Viajante
 
@@ -41,7 +41,7 @@ O projeto foi conduzido em sprints incrementais:
 3. Inclusao de prioridades e penalizacao por atraso.
 4. Inclusao de peso e capacidade maxima dos veiculos.
 5. Inclusao de autonomia maxima dos veiculos.
-6. Inclusao de VRP inicial com multiplas rotas por veiculo.
+6. Inclusao de VRP com multiplas rotas e evolucao conjunta da frota.
 
 A validacao foi feita com testes automatizados usando `pytest`.
 
@@ -51,7 +51,7 @@ A validacao foi feita com testes automatizados usando `pytest`.
 
 - `src/ga/genetic_algorithm.py`: algoritmo genetico e fitness.
 - `src/routing/tsp.py`: adaptacao do algoritmo para TSP.
-- `src/routing/vrp.py`: distribuicao de entregas e solucao de multiplas rotas.
+- `src/routing/vrp.py`: otimizacao de frota com multiplas rotas.
 - `src/models/`: modelos de entrega, prioridade, cidade e veiculo.
 - `src/data_loader.py`: leitura dos arquivos CSV.
 - `src/visualization/`: desenho da rota e grafico de fitness.
@@ -138,7 +138,7 @@ Proxima etapa: executar esses cenarios, registrar tempo, melhor fitness e curva 
 Resultado atual validado:
 
 - TSP funcional com visualizacao;
-- VRP inicial com multiplas rotas;
+- VRP com multiplas rotas e evolucao conjunta da frota;
 - fitness com distancia, atraso, capacidade e autonomia;
 - leitura de entregas e veiculos via CSV;
 - CLI configuravel;
@@ -156,9 +156,9 @@ Prioridades para aderencia completa ao enunciado:
 
 1. Implementar camada LLM para instrucoes, relatorios e perguntas.
 2. Executar experimentos comparativos.
-3. Evoluir o VRP para otimizacao conjunta da frota.
+3. Refinar operadores geneticos do VRP para preservar melhor agrupamentos geograficos.
 4. Gerar graficos e artefatos de resultados.
-5. Completar analise final e video de demonstracao.
+5. Completar video de demonstracao.
 
 # Referências
 

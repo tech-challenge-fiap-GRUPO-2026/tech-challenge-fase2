@@ -4,7 +4,7 @@
 
 Este documento registra a evolucao do baseline em `references/` para o Projeto 2 do Tech Challenge Fase 2: otimizacao de rotas para distribuicao de medicamentos e insumos com Algoritmos Geneticos e apoio futuro de LLM.
 
-O projeto saiu de um TSP didatico e hoje possui uma implementacao em `src/` com restricoes de prioridade, capacidade, autonomia e VRP inicial com multiplos veiculos. O foco das proximas sprints e completar LLM, experimentos e artefatos finais.
+O projeto saiu de um TSP didatico e hoje possui uma implementacao em `src/` com restricoes de prioridade, capacidade, autonomia e VRP com multiplos veiculos e evolucao conjunta da frota. O foco das proximas sprints e completar LLM, experimentos e artefatos finais.
 
 ## Escopo do Projeto 2
 
@@ -49,7 +49,7 @@ Requisitos tecnicos:
 - Penalizacao por atraso por prioridade.
 - Penalizacao por excesso de capacidade.
 - Penalizacao por excesso de autonomia.
-- VRP inicial com distribuicao de entregas entre veiculos.
+- VRP com cromossomo de frota e distribuicao evolutiva de entregas entre veiculos.
 - Fitness agregado por frota.
 - Visualizacao VRP animada com uma rota por veiculo.
 - Selecao de frota no modo VRP via `--vehicle-ids`.
@@ -200,12 +200,12 @@ Penalidades:
 | Perguntas em linguagem natural | Pendente |
 | Experimentos comparativos | Pendente |
 | Graficos e artefatos finais | Pendente |
-| Relatorio final completo | Em andamento |
+| Relatorio tecnico consolidado | Em andamento |
 | Video de demonstracao | Planejado |
 
 ## Riscos Tecnicos Atuais
 
-### VRP ainda inicial
+### VRP com operadores simples
 
 O enunciado exige multiplos veiculos. O sistema ja otimiza uma frota completa, mas os operadores geneticos de VRP ainda sao simples.
 
@@ -427,6 +427,6 @@ Entregaveis:
 
 ## Conclusao
 
-O projeto ja atende ao nucleo de TSP com Algoritmo Genetico, as principais restricoes logisticas individuais e um VRP inicial com multiplas rotas. A implementacao atual e testavel, configuravel via CLI e possui visualizacao 2D.
+O projeto ja atende ao nucleo de TSP com Algoritmo Genetico, as principais restricoes logisticas individuais e um VRP com multiplas rotas e evolucao conjunta da frota. A implementacao atual e testavel, configuravel via CLI e possui visualizacao 2D.
 
-Para aderencia completa ao Projeto 2, as proximas prioridades sao LLM para instrucoes e relatorios, experimentos comparativos, artefatos finais e evolucao do VRP para otimizacao conjunta da frota.
+Para aderencia completa ao Projeto 2, as proximas prioridades sao LLM para instrucoes e relatorios, experimentos comparativos, artefatos finais e refinamento dos operadores do VRP.

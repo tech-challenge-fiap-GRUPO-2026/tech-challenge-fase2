@@ -63,7 +63,7 @@
 ## 9. Limitacoes
 
 - Distancia euclidiana, nao malha viaria.
-- VRP ainda pendente no estado atual.
+- VRP implementado com frota completa, ainda com operadores geneticos simples.
 - LLM ainda pendente no estado atual.
 - Dados de exemplo sinteticos.
 
