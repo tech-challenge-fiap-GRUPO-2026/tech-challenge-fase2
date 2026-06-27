@@ -24,12 +24,15 @@ def scale_points(
     padding: int = 20,
     offset_x: int = 0,
     offset_y: int = 0,
+    invert_y: bool = False,
+    reference_points: Sequence[object] | None = None,
 ) -> list[Point]:
     scaled_points = [_point(point) for point in points]
-    min_x = min(point[0] for point in scaled_points)
-    max_x = max(point[0] for point in scaled_points)
-    min_y = min(point[1] for point in scaled_points)
-    max_y = max(point[1] for point in scaled_points)
+    bounds_points = [_point(point) for point in (reference_points or points)]
+    min_x = min(point[0] for point in bounds_points)
+    max_x = max(point[0] for point in bounds_points)
+    min_y = min(point[1] for point in bounds_points)
+    max_y = max(point[1] for point in bounds_points)
     usable_width = max(1, target_width - padding * 2)
     usable_height = max(1, target_height - padding * 2)
     span_x = max(1e-9, max_x - min_x)
@@ -38,7 +41,7 @@ def scale_points(
     return [
         (
             int((point[0] - min_x) * scale + padding + offset_x),
-            int((point[1] - min_y) * scale + padding + offset_y),
+            int(((max_y - point[1]) if invert_y else (point[1] - min_y)) * scale + padding + offset_y),
         )
         for point in scaled_points
     ]

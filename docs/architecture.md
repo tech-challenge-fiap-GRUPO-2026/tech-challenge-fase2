@@ -141,6 +141,7 @@ A tela mostra:
 - grafico de fitness;
 - deposito;
 - pontos de entrega;
+- fundo simplificado do Brasil quando o CSV de capitais e usado;
 - no modo TSP, melhor rota atual e rota secundaria da populacao;
 - no modo VRP, a evolucao geracional da frota com uma rota por veiculo em cores diferentes e tracado progressivo.
 
@@ -193,7 +194,7 @@ Os testes cobrem:
 - O VRP atual otimiza a frota em conjunto, mas ainda usa operadores geneticos simples e distancia euclidiana.
 - A camada LLM ainda nao esta implementada.
 - Os modulos de metricas e experimentos ainda estao pendentes.
-- A visualizacao nao usa mapa geografico real.
+- A visualizacao usa um fundo simplificado do Brasil para o dataset de capitais, mas nao usa mapa geografico real nem malha viaria.
 
 ## Evolucao Planejada
 

@@ -68,7 +68,7 @@ Requisitos tecnicos:
 Ultima validacao conhecida:
 
 ```text
-41 passed
+42 passed
 ```
 
 ## Arquitetura Atual

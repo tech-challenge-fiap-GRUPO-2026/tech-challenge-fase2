@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from src.main import parse_args, route_slice_for_generation, select_depot_location, select_vehicle, select_vehicles
+from src.main import parse_args, route_slice_for_generation, select_depot_location, select_vehicle, select_vehicles, uses_brazil_map_background
 from src.models import Vehicle
 
 
@@ -104,6 +104,11 @@ def test_select_depot_location_uses_default_depot_for_other_files() -> None:
     depot = select_depot_location(Path("data/deliveries_sample.csv"))
 
     assert depot == (-1.4615, -48.4968)
+
+
+def test_uses_brazil_map_background_only_for_capitals_dataset() -> None:
+    assert uses_brazil_map_background(Path("data/brazil_capitals_sample.csv")) is True
+    assert uses_brazil_map_background(Path("data/deliveries_sample.csv")) is False
 
 
 def test_route_slice_for_generation_reveals_route_progressively() -> None:

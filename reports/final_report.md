@@ -119,7 +119,7 @@ O processo e:
 
 Essa abordagem permite otimizar distribuicao e ordem das rotas em conjunto.
 
-A visualizacao do modo VRP anima a evolucao geracional, desenha uma rota por veiculo com cores diferentes, revela o tracado progressivamente e exibe o historico agregado de fitness da frota.
+A visualizacao do modo VRP anima a evolucao geracional, desenha uma rota por veiculo com cores diferentes, revela o tracado progressivamente e exibe o historico agregado de fitness da frota. Quando o dataset de capitais brasileiras e usado, a tela tambem exibe um fundo simplificado do mapa do Brasil.
 
 # Experimentos
 
@@ -147,7 +147,7 @@ Resultado atual validado:
 Ultima validacao conhecida:
 
 ```text
-41 passed
+42 passed
 ```
 
 # Trabalhos Futuros

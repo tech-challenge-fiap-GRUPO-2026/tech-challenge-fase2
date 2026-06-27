@@ -23,7 +23,7 @@ Implementado:
 - operadores de crossover, mutacao, selecao por fitness e elitismo;
 - fitness com distancia, prioridade, atraso, capacidade e autonomia;
 - leitura de entregas e veiculos via CSV;
-- visualizacao 2D das rotas;
+- visualizacao 2D das rotas, com fundo simplificado do Brasil para o dataset de capitais;
 - CLI configuravel;
 - testes automatizados.
 
@@ -46,7 +46,7 @@ Ainda pendente para aderencia completa ao enunciado:
 ## Dados de Exemplo
 
 - `data/deliveries_sample.csv`: entregas sintéticas usadas no demo atual
-- `data/brazil_capitals_sample.csv`: capitais brasileiras posicionadas em 2D para simulação visual
+- `data/brazil_capitals_sample.csv`: capitais brasileiras posicionadas em 2D para simulação visual com fundo do Brasil
 
 ## Requisitos
 

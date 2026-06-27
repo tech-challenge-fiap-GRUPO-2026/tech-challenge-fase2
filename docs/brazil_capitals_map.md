@@ -8,6 +8,10 @@ Mapear os pontos do problema como as capitais dos 26 estados e do Distrito Feder
 
 As coordenadas sao abstratas e servem para simulacao visual e otimização por distancia euclidiana.
 
+Quando este dataset e usado no demo visual, o Pygame desenha um fundo simplificado do Brasil atras dos pontos das capitais.
+
+O fundo e ilustrativo e nao representa malha viaria real.
+
 ## Arquivo
 
 O conjunto de pontos fica em:

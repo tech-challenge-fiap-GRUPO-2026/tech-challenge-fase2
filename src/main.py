@@ -25,6 +25,79 @@ RED = (220, 60, 60)
 BLUE = (40, 90, 220)
 GRAY = (130, 130, 130)
 PLOT_X_OFFSET = 450
+BRAZIL_MAP_PADDING = 38
+BRAZIL_MAP_OUTLINE = (
+    (-73.9, -7.5),
+    (-72.6, -4.6),
+    (-70.8, 0.0),
+    (-68.2, 1.7),
+    (-63.8, 5.2),
+    (-60.0, 4.6),
+    (-56.0, 4.3),
+    (-51.0, 4.2),
+    (-48.0, 2.4),
+    (-44.5, 1.0),
+    (-41.0, -1.7),
+    (-38.0, -4.4),
+    (-35.2, -5.8),
+    (-34.8, -7.9),
+    (-35.2, -9.6),
+    (-36.1, -10.8),
+    (-37.4, -12.2),
+    (-38.7, -13.8),
+    (-39.1, -16.4),
+    (-40.3, -18.5),
+    (-41.2, -20.6),
+    (-43.1, -22.9),
+    (-44.9, -23.7),
+    (-46.8, -24.8),
+    (-48.6, -25.7),
+    (-49.6, -27.6),
+    (-51.2, -30.0),
+    (-52.2, -32.0),
+    (-54.8, -31.8),
+    (-57.4, -30.8),
+    (-58.6, -28.2),
+    (-57.9, -25.4),
+    (-57.6, -22.2),
+    (-59.8, -20.0),
+    (-61.8, -18.2),
+    (-62.9, -15.8),
+    (-65.0, -13.4),
+    (-67.5, -11.5),
+    (-70.3, -10.1),
+    (-72.7, -8.8),
+)
+BRAZIL_CAPITAL_VISUAL_LOCATIONS = {
+    "Rio Branco": (-67.81, -9.97),
+    "Porto Velho": (-63.9, -8.76),
+    "Manaus": (-60.02, -3.12),
+    "Boa Vista": (-60.67, 2.82),
+    "Belem": (-48.5, -1.45),
+    "Macapa": (-51.05, 0.03),
+    "Palmas": (-48.33, -10.18),
+    "Sao Luis": (-44.3, -2.53),
+    "Teresina": (-42.8, -5.09),
+    "Fortaleza": (-38.54, -3.73),
+    "Natal": (-35.21, -5.79),
+    "Joao Pessoa": (-34.86, -7.12),
+    "Recife": (-34.88, -8.05),
+    "Maceio": (-35.74, -9.65),
+    "Aracaju": (-37.07, -10.91),
+    "Salvador": (-38.5, -12.97),
+    "Cuiaba": (-56.1, -15.6),
+    "Campo Grande": (-54.65, -20.47),
+    "Goiania": (-49.26, -16.68),
+    "Brasilia": (-47.88, -15.79),
+    "Belo Horizonte": (-43.94, -19.92),
+    "Vitoria": (-40.31, -20.32),
+    "Rio de Janeiro": (-43.17, -22.91),
+    "Sao Paulo": (-46.63, -23.55),
+    "Curitiba": (-49.27, -25.43),
+    "Florianopolis": (-48.55, -27.59),
+    "Porto Alegre": (-51.23, -30.03),
+}
+BRAZIL_CAPITALS_DEPOT_VISUAL_LOCATION = BRAZIL_CAPITAL_VISUAL_LOCATIONS["Brasilia"]
 VRP_ROUTE_COLORS = (
     (40, 90, 220),
     (30, 150, 80),
@@ -92,6 +165,33 @@ def select_depot_location(deliveries_file: Path) -> tuple[float, float]:
     return DEPOT_LOCATION
 
 
+def uses_brazil_map_background(deliveries_file: Path) -> bool:
+    return deliveries_file.resolve() == BRAZIL_CAPITALS_SAMPLE_PATH.resolve()
+
+
+def brazil_visual_location(delivery: object) -> tuple[float, float]:
+    delivery_id = getattr(delivery, "id", "")
+    return BRAZIL_CAPITAL_VISUAL_LOCATIONS.get(str(delivery_id), getattr(delivery, "location", delivery))  # type: ignore[return-value]
+
+
+def draw_brazil_map_background(screen: object, pygame_module: object, reference_points: list[object]) -> None:
+    map_surface = pygame_module.Surface((WIDTH - PLOT_X_OFFSET, HEIGHT), pygame_module.SRCALPHA)
+    map_surface.fill((242, 248, 255, 255))
+    outline = scale_points(
+        BRAZIL_MAP_OUTLINE,
+        WIDTH - PLOT_X_OFFSET,
+        HEIGHT,
+        padding=BRAZIL_MAP_PADDING,
+        invert_y=True,
+        reference_points=reference_points,
+    )
+
+    pygame_module.draw.polygon(map_surface, (226, 241, 219, 230), outline)
+    pygame_module.draw.lines(map_surface, (95, 145, 95), True, outline, 3)
+    pygame_module.draw.rect(map_surface, (210, 225, 238), map_surface.get_rect(), 1)
+    screen.blit(map_surface, (PLOT_X_OFFSET, 0))
+
+
 def route_slice_for_generation(route: list[object], generation: int, offset: int = 0) -> tuple[list[object], bool]:
     if len(route) < 2:
         return route, False
@@ -118,7 +218,27 @@ def run_visual_demo(args: argparse.Namespace | None = None) -> None:
         raise SystemExit("Modo VRP requer ao menos um veiculo no arquivo de veiculos.")
 
     depot = City(id="depot", location=select_depot_location(args.deliveries_file))
-    scaled_locations = scale_points([depot, *raw_deliveries], WIDTH - PLOT_X_OFFSET, HEIGHT, padding=NODE_RADIUS, offset_x=PLOT_X_OFFSET)
+    use_brazil_map = uses_brazil_map_background(args.deliveries_file)
+    visual_source_depot = City(id=depot.id, location=BRAZIL_CAPITALS_DEPOT_VISUAL_LOCATION if use_brazil_map else depot.location)
+    visual_source_deliveries = [
+        Delivery(
+            id=delivery.id,
+            location=brazil_visual_location(delivery) if use_brazil_map else delivery.location,
+            priority=delivery.priority,
+            due_time=delivery.due_time,
+        )
+        for delivery in raw_deliveries
+    ]
+    brazil_reference_points = [visual_source_depot, *visual_source_deliveries, *BRAZIL_MAP_OUTLINE] if use_brazil_map else None
+    scaled_locations = scale_points(
+        [visual_source_depot, *visual_source_deliveries],
+        WIDTH - PLOT_X_OFFSET,
+        HEIGHT,
+        padding=BRAZIL_MAP_PADDING,
+        offset_x=PLOT_X_OFFSET,
+        invert_y=use_brazil_map,
+        reference_points=brazil_reference_points,
+    )
     scaled_depot = scaled_locations[0]
     scaled_delivery_locations = scaled_locations[1:]
     visual_deliveries = [
@@ -165,6 +285,8 @@ def run_visual_demo(args: argparse.Namespace | None = None) -> None:
             generation = next(generation_counter)
 
             screen.fill(WHITE)
+            if use_brazil_map:
+                draw_brazil_map_background(screen, pygame, brazil_reference_points or [])
             print(f"VRP Generation {generation}: Total fleet fitness = {round(state.total_fitness, 2)}")
             draw_fitness_plot(
                 screen,
@@ -202,6 +324,8 @@ def run_visual_demo(args: argparse.Namespace | None = None) -> None:
         generation = next(generation_counter)
 
         screen.fill(WHITE)
+        if use_brazil_map:
+            draw_brazil_map_background(screen, pygame, brazil_reference_points or [])
         print(f"Generation {generation}: Best fitness = {round(state.best_fitness, 2)}")
 
         draw_fitness_plot(

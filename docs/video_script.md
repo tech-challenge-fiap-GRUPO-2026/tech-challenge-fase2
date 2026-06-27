@@ -55,6 +55,7 @@ Conteudo:
 - Mostrar `data/deliveries_sample.csv`.
 - Mostrar `data/brazil_capitals_sample.csv`.
 - Mostrar `data/vehicles_sample.csv`.
+- Explicar que, com o dataset de capitais, a tela exibe um fundo simplificado do Brasil.
 - Executar:
 
 ```bash
