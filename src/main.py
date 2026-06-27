@@ -187,7 +187,7 @@ def draw_brazil_map_background(screen: object, pygame_module: object, reference_
     )
 
     pygame_module.draw.polygon(map_surface, (226, 241, 219, 230), outline)
-    pygame_module.draw.lines(map_surface, (95, 145, 95), True, outline, 3)
+    pygame_module.draw.lines(map_surface, (92, 78, 62), True, outline, 3)
     pygame_module.draw.rect(map_surface, (210, 225, 238), map_surface.get_rect(), 1)
     screen.blit(map_surface, (PLOT_X_OFFSET, 0))
 
