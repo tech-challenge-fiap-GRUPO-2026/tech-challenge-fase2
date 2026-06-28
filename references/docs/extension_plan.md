@@ -62,14 +62,14 @@ Requisitos tecnicos:
 - CLI configuravel.
 - Testes automatizados com `pytest`.
 - Documentacao de arquitetura, sprints, roteiro e relatorio inicial.
-- Referencia de agente LLM em `references/agent-llm.py`.
+- Camada LLM em `src/llm/` baseada na referencia `references/agent-llm.py`.
 
 ### Validacao Atual
 
 Ultima validacao conhecida:
 
 ```text
-42 passed
+56 passed
 ```
 
 ## Arquitetura Atual
@@ -196,10 +196,10 @@ Penalidades:
 | Testes automatizados | Atendido |
 | Documentacao tecnica | Atendido parcialmente |
 | Multiplos veiculos / VRP | Atendido parcialmente |
-| Integracao com LLM | Pendente |
-| Instrucoes para motoristas | Pendente |
-| Relatorios operacionais | Pendente |
-| Perguntas em linguagem natural | Pendente |
+| Integracao com LLM | Atendido parcialmente |
+| Instrucoes para motoristas | Atendido |
+| Relatorios operacionais | Atendido |
+| Perguntas em linguagem natural | Atendido parcialmente |
 | Experimentos comparativos | Pendente |
 | Graficos e artefatos finais | Pendente |
 | Relatorio tecnico consolidado | Em andamento |
@@ -217,16 +217,15 @@ Mitigacao:
 - adicionar mutacoes como inversao de segmento e realocacao guiada por capacidade;
 - comparar os operadores atuais com abordagens alternativas.
 
-### LLM ainda ausente no `src/`
+### LLM com cliente externo opcional
 
-Os arquivos em `src/llm/` ainda nao possuem implementacao. O arquivo `references/agent-llm.py` foi adicionado como referencia de integracao com OpenAI, historico de mensagens e function calling.
+A camada em `src/llm/` monta prompts, relatorios, instrucoes e respostas. A chamada real ao provedor externo ainda depende de cliente injetado pela aplicacao.
 
 Mitigacao:
 
-- criar prompts reutilizaveis;
-- implementar gerador de relatorio operacional;
-- implementar explicador de rotas;
-- manter funcoes testaveis sem depender obrigatoriamente de chamada externa.
+- implementar um cliente OpenAI concreto se a demonstracao exigir chamada real;
+- manter funcoes testaveis sem depender obrigatoriamente de chamada externa;
+- documentar exemplos de respostas geradas.
 
 ### Experimentos ainda nao automatizados
 
@@ -356,7 +355,7 @@ Entregaveis:
 
 ### Sprint 7 - LLM
 
-Status: Proxima.
+Status: Concluida.
 
 Objetivo:
 
@@ -368,13 +367,17 @@ Referencia:
 
 Esse exemplo deve orientar o desenho da integracao LLM, mas o dominio financeiro deve ser substituido pelo dominio de rotas medicas.
 
-Entregaveis:
+Entregaveis implementados:
 
 - `src/llm/prompts.py`;
 - `src/llm/report_generator.py`;
 - `src/llm/route_explainer.py`;
+- `src/llm/openai_client.py`;
+- `src/llm/__main__.py`;
 - prompts para relatorio, instrucoes e perguntas;
-- testes de formatacao e montagem de prompt;
+- CLI `python -m src.llm`;
+- integracao externa opcional por cliente injetado ou `--provider openai`;
+- testes de formatacao, montagem de prompt e fallback offline;
 - documentacao de uso em `docs/sprint7_llm.md`.
 
 ### Sprint 8 - Experimentos
@@ -405,18 +408,6 @@ Entregaveis:
 - roteiro final de apresentacao;
 - evidencias de execucao.
 
-### Sprint 10 - Integracao Final com LLM
-
-Status: Planejada.
-
-Entregaveis:
-
-- LLM integrada ao fluxo final;
-- relatorio gerado a partir da rota;
-- instrucoes por motorista ou veiculo;
-- perguntas e respostas sobre rotas;
-- exemplos documentados.
-
 ## Criterios de Aceite para as Proximas Sprints
 
 ### Sprint 7
@@ -426,6 +417,7 @@ Entregaveis:
 - O sistema deve responder perguntas simples sobre rotas.
 - Prompts devem ficar centralizados e testaveis.
 - A integracao real com OpenAI deve ser opcional nos testes.
+- A execucao demonstravel deve estar disponivel via `python -m src.llm`.
 
 ### Sprint 8
 

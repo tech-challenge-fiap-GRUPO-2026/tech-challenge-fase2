@@ -22,6 +22,7 @@ Implementado:
 - representacao genetica de rotas;
 - operadores de crossover, mutacao, selecao por fitness e elitismo;
 - fitness com distancia, prioridade, atraso, capacidade e autonomia;
+- camada LLM testavel para relatorios, instrucoes e perguntas sobre rotas;
 - leitura de entregas e veiculos via CSV;
 - visualizacao 2D das rotas, com fundo simplificado do Brasil para o dataset de capitais;
 - CLI configuravel;
@@ -29,7 +30,6 @@ Implementado:
 
 Ainda pendente para aderencia completa ao enunciado:
 
-- camada LLM para instrucoes, relatorios e perguntas sobre rotas;
 - experimentos comparativos com diferentes configuracoes;
 - consolidacao do relatorio tecnico apos experimentos/LLM;
 - gravacao do video de demonstracao.
@@ -90,6 +90,54 @@ Exemplo com multiplos veiculos:
 
 Se `--vehicle-ids` nao for informado no modo `vrp`, todos os veiculos de `data/vehicles_sample.csv` sao usados.
 
+## Execucao da Camada LLM
+
+A camada LLM pode ser executada sem chave de API. Nesse modo, o sistema otimiza uma rota/frota e gera uma resposta textual deterministica.
+
+Gerar relatorio operacional VRP:
+
+```bash
+.venv/bin/python -m src.llm --mode vrp --output report --deliveries-file data/brazil_capitals_sample.csv --generations 80 --population-size 80
+```
+
+Gerar instrucoes para motoristas:
+
+```bash
+.venv/bin/python -m src.llm --mode vrp --output instructions --vehicle-ids 1 3 5 --deliveries-file data/brazil_capitals_sample.csv
+```
+
+Responder uma pergunta sobre a rota:
+
+```bash
+.venv/bin/python -m src.llm --mode tsp --output question --question "Qual e o fitness da rota?" --deliveries-file data/brazil_capitals_sample.csv --vehicle-id 3
+```
+
+Opcoes principais:
+
+- `--mode <tsp|vrp>`: escolhe se a solucao textual sera gerada para uma rota unica ou frota.
+- `--output <report|instructions|question>`: define o tipo de texto gerado.
+- `--question <texto>`: pergunta usada com `--output question`.
+- `--generations <n>`: numero de geracoes antes de gerar o texto. Padrao: `80`.
+- `--population-size <n>`: tamanho da populacao. Padrao: `80`.
+- `--seed <n>`: semente para reproducibilidade. Padrao: `7`.
+
+Essa execucao usa o fallback offline da Sprint 7. A integracao real com OpenAI pode ser feita depois injetando um cliente LLM compatível com `complete(messages)`.
+
+Para usar OpenAI de verdade, instale a dependencia opcional e configure a chave:
+
+```bash
+.venv/bin/pip install openai python-dotenv
+export OPENAI_API_KEY="sua-chave"
+```
+
+Depois execute com `--provider openai`:
+
+```bash
+.venv/bin/python -m src.llm --provider openai --model gpt-4o-mini --mode vrp --output report --deliveries-file data/brazil_capitals_sample.csv
+```
+
+Se existir um arquivo `.env` com `OPENAI_API_KEY=...`, ele sera carregado automaticamente quando `python-dotenv` estiver instalado.
+
 Fechar a janela:
 
 - pressione `q`, ou
@@ -111,7 +159,7 @@ Executar os testes:
 - `docs/sprint4_capacity.md`: peso e capacidade maxima do veiculo
 - `docs/sprint5_autonomy.md`: distancia maxima e penalizacao por autonomia
 - `docs/sprint6_vrp.md`: VRP com multiplos veiculos e evolucao conjunta da frota
-- `docs/sprint7_llm.md`: plano da camada LLM baseada em `references/agent-llm.py`
+- `docs/sprint7_llm.md`: camada LLM baseada em `references/agent-llm.py`
 - `docs/brazil_capitals_map.md`: mapeamento das capitais brasileiras em 2D
 - `docs/video_script.md`: roteiro do video de demonstracao
 - `references/docs/architecture.md`: arquitetura do baseline TSP
@@ -121,4 +169,4 @@ Executar os testes:
 
 - O entrypoint atual esta em `src/main.py`.
 - A visualizacao em `src/main.py` usa o solver migrado da Sprint 2 como base de execucao.
-- O projeto ainda evolui para LLM, experimentos e novas otimizacoes nas proximas sprints.
+- O projeto ainda evolui para experimentos, artefatos finais e novas otimizacoes nas proximas sprints.

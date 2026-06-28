@@ -4,7 +4,7 @@
 
 Este projeto implementa o Projeto 2 do Tech Challenge Fase 2: otimizacao de rotas para distribuicao de medicamentos e insumos usando Algoritmos Geneticos.
 
-O estado atual cobre TSP com restricoes de prioridade, capacidade e autonomia, alem de VRP com multiplos veiculos e evolucao conjunta da frota. A proxima sprint inicia a camada LLM usando `references/agent-llm.py` como referencia tecnica.
+O estado atual cobre TSP com restricoes de prioridade, capacidade e autonomia, VRP com multiplos veiculos e evolucao conjunta da frota, alem de uma camada LLM testavel para relatorios, instrucoes e perguntas sobre rotas.
 
 ## Visao Geral
 
@@ -147,9 +147,9 @@ A tela mostra:
 
 O argumento `--fps` controla a velocidade da animacao.
 
-### Camada LLM Planejada
+### Camada LLM
 
-`references/agent-llm.py` foi adicionado como referencia para a Sprint 7.
+`references/agent-llm.py` foi usado como referencia para a Sprint 7.
 
 O arquivo demonstra:
 
@@ -159,7 +159,17 @@ O arquivo demonstra:
 - execucao de funcoes locais chamadas pela LLM;
 - interface Streamlit.
 
-No projeto principal, a camada LLM deve ficar em `src/llm/` e gerar instrucoes, relatorios e respostas sobre rotas. O dominio financeiro do exemplo nao sera reaproveitado.
+No projeto principal, a camada LLM fica em `src/llm/` e gera instrucoes, relatorios e respostas sobre rotas. O dominio financeiro do exemplo nao foi reaproveitado.
+
+Arquivos principais:
+
+- `src/llm/prompts.py`: contexto da solucao e prompts reutilizaveis;
+- `src/llm/report_generator.py`: relatorio operacional e instrucoes para motoristas;
+- `src/llm/route_explainer.py`: respostas e explicacoes sobre rotas.
+- `src/llm/openai_client.py`: cliente OpenAI opcional;
+- `src/llm/__main__.py`: execucao via `python -m src.llm`.
+
+A integracao com provedor externo e opcional por cliente injetado ou `--provider openai`, o que permite testes sem internet ou `OPENAI_API_KEY`.
 
 ### CLI
 
@@ -201,19 +211,20 @@ Os testes cobrem:
 - integracao basica do TSP;
 - distribuicao VRP;
 - fitness agregado de frota.
+- prompts e respostas offline da camada LLM.
 
 ## Limitacoes Atuais
 
 - Distancias sao euclidianas em 2D, nao por malha viaria real.
 - O VRP atual otimiza a frota em conjunto, mas ainda usa operadores geneticos simples e distancia euclidiana.
-- A camada LLM ainda nao esta implementada; a referencia inicial esta em `references/agent-llm.py`.
+- A camada LLM possui fallback deterministico e ainda nao inclui cliente OpenAI concreto no `src/`.
 - Os modulos de metricas e experimentos ainda estao pendentes.
 - A visualizacao usa um fundo simplificado do Brasil para o dataset de capitais, mas nao usa mapa geografico real nem malha viaria.
 
 ## Evolucao Planejada
 
-1. Implementar geracao de relatorios e instrucoes em `src/llm/`.
-2. Executar experimentos com `config/pop50.yaml`, `config/pop100.yaml` e `config/pop500.yaml`.
-3. Refinar operadores geneticos do VRP para preservar melhor agrupamentos geograficos.
+1. Executar experimentos com `config/pop50.yaml`, `config/pop100.yaml` e `config/pop500.yaml`.
+2. Refinar operadores geneticos do VRP para preservar melhor agrupamentos geograficos.
+3. Integrar cliente OpenAI concreto se a demonstracao exigir chamada real.
 4. Gerar artefatos comparativos e atualizar `reports/final_report.md` com os resultados.
 5. Preparar o video de demonstracao.

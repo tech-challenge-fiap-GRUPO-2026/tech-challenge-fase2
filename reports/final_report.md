@@ -4,7 +4,7 @@ Este relatorio descreve o desenvolvimento do Projeto 2 do Tech Challenge Fase 2:
 
 O projeto parte de um codigo base de TSP e evolui para um resolvedor em `src/` com Algoritmo Genetico, restricoes operacionais, visualizacao e testes automatizados.
 
-Estado atual: TSP com prioridades, capacidade e autonomia implementado, alem de VRP com multiplos veiculos e evolucao conjunta da frota. LLM e comparativos experimentais ainda estao planejados.
+Estado atual: TSP com prioridades, capacidade e autonomia implementado, VRP com multiplos veiculos e evolucao conjunta da frota, alem de camada LLM testavel. Comparativos experimentais ainda estao planejados.
 
 # Fundamentação Teórica
 
@@ -30,7 +30,7 @@ O VRP e um requisito do enunciado e foi implementado com um cromossomo de frota.
 
 Large Language Models podem transformar dados operacionais em explicacoes, instrucoes e relatorios em linguagem natural.
 
-No Projeto 2, a LLM deve gerar instrucoes para motoristas, relatorios de eficiencia e respostas sobre rotas. O arquivo `references/agent-llm.py` foi adicionado como referencia tecnica para iniciar essa camada na proxima sprint.
+No Projeto 2, a LLM deve gerar instrucoes para motoristas, relatorios de eficiencia e respostas sobre rotas. A Sprint 7 implementou uma camada LLM testavel em `src/llm/`, usando `references/agent-llm.py` como referencia tecnica de mensagens e function calling.
 
 # Metodologia
 
@@ -42,6 +42,7 @@ O projeto foi conduzido em sprints incrementais:
 4. Inclusao de peso e capacidade maxima dos veiculos.
 5. Inclusao de autonomia maxima dos veiculos.
 6. Inclusao de VRP com multiplas rotas e evolucao conjunta da frota.
+7. Inclusao de camada LLM para relatorios, instrucoes e perguntas sobre rotas.
 
 A validacao foi feita com testes automatizados usando `pytest`.
 
@@ -55,6 +56,7 @@ A validacao foi feita com testes automatizados usando `pytest`.
 - `src/models/`: modelos de entrega, prioridade, cidade e veiculo.
 - `src/data_loader.py`: leitura dos arquivos CSV.
 - `src/visualization/`: desenho da rota e grafico de fitness.
+- `src/llm/`: prompts, relatorios, instrucoes e explicacoes sobre rotas.
 - `src/main.py`: CLI e demo visual.
 - `tests/`: testes automatizados.
 
@@ -121,6 +123,30 @@ Essa abordagem permite otimizar distribuicao e ordem das rotas em conjunto.
 
 A visualizacao do modo VRP anima a evolucao geracional, desenha uma rota por veiculo com cores diferentes, revela o tracado progressivamente e exibe o historico agregado de fitness da frota. Quando o dataset de capitais brasileiras e usado, a tela tambem exibe um fundo simplificado do mapa do Brasil.
 
+## LLM
+
+A camada LLM monta contexto textual a partir de `TSPSolution` ou `VRPSolution`.
+
+Ela permite:
+
+1. gerar relatorio operacional;
+2. gerar instrucoes para motoristas;
+3. responder perguntas sobre rotas.
+
+Sem cliente externo, a camada retorna respostas deterministicas. Com cliente injetado ou `--provider openai`, ela envia mensagens com prompt de sistema e prompt do usuario ao provedor LLM.
+
+Exemplo de execucao:
+
+```bash
+.venv/bin/python -m src.llm --mode vrp --output report --deliveries-file data/brazil_capitals_sample.csv
+```
+
+Exemplo com OpenAI:
+
+```bash
+.venv/bin/python -m src.llm --provider openai --model gpt-4o-mini --mode vrp --output report --deliveries-file data/brazil_capitals_sample.csv
+```
+
 # Experimentos
 
 Ainda nao foram executados experimentos comparativos formais.
@@ -141,22 +167,23 @@ Resultado atual validado:
 - VRP com multiplas rotas e evolucao conjunta da frota;
 - fitness com distancia, atraso, capacidade e autonomia;
 - leitura de entregas e veiculos via CSV;
+- camada LLM testavel para relatorios, instrucoes e perguntas;
 - CLI configuravel;
 - suite de testes automatizados passando.
 
 Ultima validacao conhecida:
 
 ```text
-42 passed
+56 passed
 ```
 
 # Trabalhos Futuros
 
 Prioridades para aderencia completa ao enunciado:
 
-1. Implementar camada LLM para instrucoes, relatorios e perguntas usando `references/agent-llm.py` como referencia tecnica.
-2. Executar experimentos comparativos.
-3. Refinar operadores geneticos do VRP para preservar melhor agrupamentos geograficos.
+1. Executar experimentos comparativos.
+2. Refinar operadores geneticos do VRP para preservar melhor agrupamentos geograficos.
+3. Integrar cliente OpenAI concreto se a demonstracao exigir chamada real.
 4. Gerar graficos e artefatos de resultados.
 5. Completar video de demonstracao.
 

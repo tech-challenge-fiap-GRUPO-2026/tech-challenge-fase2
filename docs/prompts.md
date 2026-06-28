@@ -151,7 +151,7 @@ Documentar alteracoes em:
 
 # Sprint 7 - Camada LLM
 
-Status: Proxima.
+Status: Concluida.
 
 Referencia adicionada:
 
@@ -167,20 +167,25 @@ Usar esse arquivo como referencia de arquitetura para:
 
 Nao reaproveitar o dominio financeiro do exemplo; adaptar o padrao para rotas medicas.
 
-Implementar:
+Implementado:
 
 - `src/llm/report_generator.py`
 - `src/llm/route_explainer.py`
 - `src/llm/prompts.py`
+- `src/llm/openai_client.py`
+- `src/llm/__main__.py`
 
 Funcoes esperadas:
 
 - gerar relatorio operacional;
 - gerar instrucoes para motoristas;
 - responder perguntas sobre rotas;
-- criar prompts reutilizaveis.
+- criar prompts reutilizaveis;
+- executar a camada por CLI com `python -m src.llm`;
+- permitir integracao externa via cliente injetado compatível com `complete(messages)`;
+- manter a chamada real a OpenAI como opcional via `--provider openai`.
 
-Criar testes sem depender de chamada externa obrigatoria a provedor LLM.
+Criados testes sem depender de chamada externa obrigatoria a provedor LLM.
 
 Documentar alteracoes em:
 
@@ -223,17 +228,3 @@ Atualizar:
 
 - `docs/video_script.md`
 - `reports/final_report.md`
-
-# Sprint 10 - Integracao Final com LLM
-
-Status: Planejada.
-
-Integrar a camada LLM ao fluxo final do sistema.
-
-Entregaveis:
-
-- relatorio gerado a partir da rota otimizada;
-- instrucoes por rota ou por veiculo;
-- respostas a perguntas sobre entregas;
-- documentacao de uso;
-- exemplos de prompts e respostas.
