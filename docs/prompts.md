@@ -193,13 +193,15 @@ Documentar alteracoes em:
 
 # Sprint 8 - Experimentos
 
-Status: Pendente.
+Status: Concluida.
 
-Executar configuracoes:
+Executar configuracoes em modo VRP:
 
 - `config/pop50.yaml`
 - `config/pop100.yaml`
+- `config/pop100_no_elitism.yaml`
 - `config/pop500.yaml`
+- `config/pop500_no_elitism.yaml`
 
 Comparar:
 
@@ -212,6 +214,32 @@ Gerar:
 - artefatos em `artifacts/charts/`;
 - tabelas de resultados;
 - atualizacao de `reports/final_report.md`.
+
+Implementado:
+
+- `src/metrics/experiments.py`
+- `src/metrics/experiment_logger.py`
+- `src/metrics/statistics.py`
+- `src/metrics/__main__.py`
+- saídas em `artifacts/experiments/` e `artifacts/charts/`
+- comparacao de fitness final, convergencia e tempo de execucao
+
+Resultado de referencia obtido no dataset de entregas sinteticas em VRP:
+
+- `pop50`: melhor fitness `0.16`, convergencia na geracao `103`, tempo `1.323s`
+- `pop100`: melhor fitness `0.16`, convergencia na geracao `187`, tempo `2.588s`
+- `pop100_no_elitism`: melhor fitness `0.16`, convergencia na geracao `176`, tempo `2.639s`
+- `pop500`: melhor fitness `0.16`, convergencia na geracao `33`, tempo `13.404s`
+- `pop500_no_elitism`: melhor fitness `0.16`, convergencia na geracao `33`, tempo `13.425s`
+
+Conclusoes iniciais:
+
+- as cinco configuracoes chegaram ao mesmo fitness final no smoke test VRP;
+- o experimento sem elitismo convergiu antes que o `pop100` com elitismo;
+- `pop500` convergiu muito antes, mas com custo de execucao muito maior;
+- `pop500_no_elitism` manteve a mesma convergencia do `pop500`, mas com tempo levemente maior;
+- `pop50` teve o melhor equilibrio entre tempo e convergencia observada;
+- `pop100` foi a configuracao intermediaria mais lenta para convergir.
 
 # Sprint 9 - Consolidacao Final
 

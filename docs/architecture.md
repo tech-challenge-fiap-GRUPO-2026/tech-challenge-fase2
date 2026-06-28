@@ -218,13 +218,11 @@ Os testes cobrem:
 - Distancias sao euclidianas em 2D, nao por malha viaria real.
 - O VRP atual otimiza a frota em conjunto, mas ainda usa operadores geneticos simples e distancia euclidiana.
 - A camada LLM possui fallback deterministico e cliente OpenAI opcional em `src/llm/openai_client.py`.
-- Os modulos de metricas e experimentos ainda estao pendentes.
+- Os modulos de metricas e experimentos foram implementados em `src/metrics/` e executam comparacoes em VRP por padrao.
 - A visualizacao usa um fundo simplificado do Brasil para o dataset de capitais, mas nao usa mapa geografico real nem malha viaria.
 
 ## Evolucao Planejada
 
-1. Executar experimentos com `config/pop50.yaml`, `config/pop100.yaml` e `config/pop500.yaml`.
-2. Refinar operadores geneticos do VRP para preservar melhor agrupamentos geograficos.
-3. Integrar cliente OpenAI concreto se a demonstracao exigir chamada real.
-4. Gerar artefatos comparativos e atualizar `reports/final_report.md` com os resultados.
-5. Preparar o video de demonstracao.
+1. Refinar operadores geneticos do VRP para preservar melhor agrupamentos geograficos.
+2. Integrar cliente OpenAI concreto se a demonstracao exigir chamada real.
+3. Preparar o video de demonstracao.

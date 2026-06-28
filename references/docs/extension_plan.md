@@ -69,7 +69,7 @@ Requisitos tecnicos:
 Ultima validacao conhecida:
 
 ```text
-56 passed
+62 passed
 ```
 
 ## Arquitetura Atual
@@ -200,9 +200,9 @@ Penalidades:
 | Instrucoes para motoristas | Atendido |
 | Relatorios operacionais | Atendido |
 | Perguntas em linguagem natural | Atendido parcialmente |
-| Experimentos comparativos | Pendente |
-| Graficos e artefatos finais | Pendente |
-| Relatorio tecnico consolidado | Em andamento |
+| Experimentos comparativos | Atendido |
+| Graficos e artefatos finais | Atendido |
+| Relatorio tecnico consolidado | Atendido |
 | Video de demonstracao | Planejado |
 
 ## Riscos Tecnicos Atuais
@@ -382,7 +382,7 @@ Entregaveis implementados:
 
 ### Sprint 8 - Experimentos
 
-Status: Pendente.
+Status: Concluida.
 
 Objetivo:
 
@@ -391,10 +391,19 @@ Comparar configuracoes do algoritmo genetico.
 Entregaveis:
 
 - runner de experimentos;
-- uso de `config/pop50.yaml`, `config/pop100.yaml`, `config/pop500.yaml`;
+- uso de `config/pop50.yaml`, `config/pop100.yaml`, `config/pop100_no_elitism.yaml`, `config/pop500.yaml` e `config/pop500_no_elitism.yaml`;
+- uso de `config/pop100_no_elitism.yaml` e `config/pop500_no_elitism.yaml` para comparar elitismo ligado e desligado;
 - metricas de tempo, fitness e convergencia;
 - graficos em `artifacts/charts/`;
 - atualizacao de `reports/final_report.md`.
+
+Resultado de referencia em VRP:
+
+- `pop50`, `pop100`, `pop100_no_elitism`, `pop500` e `pop500_no_elitism` convergiram para o mesmo fitness final (`0.16`) no smoke test local;
+- `pop100_no_elitism` convergiu na geracao `176`, um pouco antes do `pop100` com elitismo;
+- `pop50` convergiu na geracao `103` e executou mais rapido que `pop100` e `pop500`;
+- `pop100` convergiu na geracao `187`, indicando custo maior para estabilizacao;
+- `pop500` e `pop500_no_elitism` convergiram na geracao `33`, mas foram os mais custosos em tempo, sem ganho adicional de fitness final.
 
 ### Sprint 9 - Consolidacao
 
@@ -421,13 +430,15 @@ Entregaveis:
 
 ### Sprint 8
 
-- Os tres cenarios de configuracao devem ser executaveis.
+- Os cinco cenarios de configuracao devem ser executaveis.
 - Resultados devem ser comparaveis em tabela.
 - Graficos de convergencia devem ser gerados.
 - O relatorio deve incluir analise dos experimentos.
 
+Status atual: atendido.
+
 ## Conclusao
 
-O projeto ja atende ao nucleo de TSP com Algoritmo Genetico, as principais restricoes logisticas individuais, um VRP com multiplas rotas e evolucao conjunta da frota, e uma camada LLM testavel.
+O projeto ja atende ao nucleo de TSP com Algoritmo Genetico, as principais restricoes logisticas individuais, um VRP com multiplas rotas e evolucao conjunta da frota, uma camada LLM testavel e a Sprint 8 de experimentos comparativos.
 
-Para aderencia completa ao Projeto 2, as proximas prioridades sao experimentos comparativos, artefatos finais e refinamento dos operadores do VRP.
+Para aderencia completa ao Projeto 2, as proximas prioridades sao refinamento dos operadores do VRP e preparacao final de apresentacao.

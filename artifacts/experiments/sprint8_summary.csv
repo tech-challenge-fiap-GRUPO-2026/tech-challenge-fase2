@@ -1,0 +1,6 @@
+name,config_path,population_size,mutation_rate,crossover_rate,elitism_size,parent_pool_size,max_generations,best_fitness,initial_fitness,improvement,improvement_percent,best_generation,final_generation,duration_seconds,route_count
+pop50,/home/jefferson/Workspace/tech-challenge-fase2/config/pop50.yaml,50,0.14,0.68,1,6,500,0.1617927352169,0.5650463128369835,0.4032535776200835,71.36646474081545,103,500,1.3227399429997604,5
+pop100,/home/jefferson/Workspace/tech-challenge-fase2/config/pop100.yaml,100,0.08,0.8,2,10,500,0.1617927352169,0.5650463128369835,0.4032535776200835,71.36646474081545,187,500,2.587851550000778,5
+pop100_no_elitism,/home/jefferson/Workspace/tech-challenge-fase2/config/pop100_no_elitism.yaml,100,0.08,0.8,0,10,500,0.1617927352169,0.5650463128369835,0.4032535776200835,71.36646474081545,176,500,2.6388588219997473,5
+pop500,/home/jefferson/Workspace/tech-challenge-fase2/config/pop500.yaml,500,0.02,0.9,6,20,500,0.1617927352169,0.5087731009330316,0.34698036571613167,68.19943213975137,33,500,13.404218448002212,5
+pop500_no_elitism,/home/jefferson/Workspace/tech-challenge-fase2/config/pop500_no_elitism.yaml,500,0.02,0.9,0,20,500,0.1617927352169,0.5087731009330316,0.34698036571613167,68.19943213975137,33,500,13.425235769002029,5

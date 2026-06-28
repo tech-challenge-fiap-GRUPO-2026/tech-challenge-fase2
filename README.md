@@ -30,9 +30,11 @@ Implementado:
 
 Ainda pendente para aderencia completa ao enunciado:
 
-- experimentos comparativos com diferentes configuracoes;
-- consolidacao do relatorio tecnico apos experimentos/LLM;
 - gravacao do video de demonstracao.
+
+Experimentos disponíveis em VRP:
+
+- `python -m src.metrics`: executa `pop50`, `pop100`, `pop100_no_elitism`, `pop500` e `pop500_no_elitism` em modo VRP, gera tabelas e graficos.
 
 ## Estrutura
 
@@ -160,6 +162,8 @@ Executar os testes:
 - `docs/sprint5_autonomy.md`: distancia maxima e penalizacao por autonomia
 - `docs/sprint6_vrp.md`: VRP com multiplos veiculos e evolucao conjunta da frota
 - `docs/sprint7_llm.md`: camada LLM baseada em `references/agent-llm.py`
+- `docs/sprint8_experiments.md`: experimentos comparativos em VRP e artefatos da Sprint 8
+- `src/metrics/`: experimentos comparativos e graficos da Sprint 8
 - `docs/brazil_capitals_map.md`: mapeamento das capitais brasileiras em 2D
 - `docs/video_script.md`: roteiro do video de demonstracao
 - `references/docs/architecture.md`: arquitetura do baseline TSP
@@ -169,4 +173,4 @@ Executar os testes:
 
 - O entrypoint atual esta em `src/main.py`.
 - A visualizacao em `src/main.py` usa o solver migrado da Sprint 2 como base de execucao.
-- O projeto ainda evolui para experimentos, artefatos finais e novas otimizacoes nas proximas sprints.
+- O projeto ainda evolui para consolidacao final, video de demonstracao e novas otimizacoes do VRP.

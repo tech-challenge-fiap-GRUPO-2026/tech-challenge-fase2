@@ -42,9 +42,12 @@
 ## 6. Experimentos
 
 - Configuracoes `pop50`, `pop100`, `pop500`.
+- Configuracao adicional `pop100_no_elitism` para comparar elitismo ligado e desligado.
+- Configuracao adicional `pop500_no_elitism` para comparar elitismo ligado e desligado em populacao grande.
 - Comparar melhor fitness.
 - Comparar convergencia.
 - Comparar tempo de execucao.
+- Reportar artefatos gerados em `artifacts/experiments/` e `artifacts/charts/`.
 
 ## 7. Resultados
 
@@ -65,6 +68,7 @@
 - Distancia euclidiana, nao malha viaria.
 - VRP implementado com frota completa, ainda com operadores geneticos simples.
 - LLM implementada de forma testavel e opcionalmente integrada com OpenAI.
+- Experimentos comparativos executados com `pop50`, `pop100` e `pop500`.
 - Dados de exemplo sinteticos.
 
 ## 10. Conclusao

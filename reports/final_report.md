@@ -149,15 +149,28 @@ Exemplo com OpenAI:
 
 # Experimentos
 
-Ainda nao foram executados experimentos comparativos formais.
+A Sprint 8 foi concluida com um runner em `src/metrics/` e comparacao das configuracoes `pop50`, `pop100`, `pop100_no_elitism`, `pop500` e `pop500_no_elitism` em modo VRP.
 
-Arquivos de configuracao previstos:
+Artefatos gerados:
 
-- `config/pop50.yaml`
-- `config/pop100.yaml`
-- `config/pop500.yaml`
+- `artifacts/experiments/sprint8_summary.csv`
+- `artifacts/experiments/sprint8_summary.md`
+- `artifacts/experiments/sprint8_summary.json`
+- `artifacts/charts/fitness_curves.png`
+- `artifacts/charts/final_fitness.png`
+- `artifacts/charts/execution_time.png`
 
-Proxima etapa: executar esses cenarios, registrar tempo, melhor fitness e curva de convergencia.
+Resultado de referencia no dataset de entregas sinteticas:
+
+| Configuracao | Fitness final | Convergencia | Tempo | Melhoria |
+| --- | ---: | ---: | ---: | ---: |
+| pop50 | 0.16 | 103 | 1.323s | 0.40 |
+| pop100 | 0.16 | 187 | 2.588s | 0.40 |
+| pop100_no_elitism | 0.16 | 176 | 2.639s | 0.40 |
+| pop500 | 0.16 | 33 | 13.404s | 0.35 |
+| pop500_no_elitism | 0.16 | 33 | 13.425s | 0.35 |
+
+As cinco configuracoes atingiram o mesmo fitness final no smoke test VRP. O cenario `pop100_no_elitism` convergiu um pouco antes que o `pop100` com elitismo, enquanto `pop500_no_elitism` manteve a mesma convergencia do `pop500` com tempo levemente maior. O `pop50` entregou o melhor equilibrio entre convergencia e tempo.
 
 # Resultados
 
@@ -168,24 +181,24 @@ Resultado atual validado:
 - fitness com distancia, atraso, capacidade e autonomia;
 - leitura de entregas e veiculos via CSV;
 - camada LLM testavel para relatorios, instrucoes e perguntas;
+- experimento comparativo em VRP com cinco configuracoes, incluindo elitismo desligado;
+- comparacao de convergencia entre cinco cenarios VRP;
 - CLI configuravel;
 - suite de testes automatizados passando.
 
 Ultima validacao conhecida:
 
 ```text
-56 passed
+62 passed
 ```
 
 # Trabalhos Futuros
 
 Prioridades para aderencia completa ao enunciado:
 
-1. Executar experimentos comparativos.
-2. Refinar operadores geneticos do VRP para preservar melhor agrupamentos geograficos.
-3. Integrar cliente OpenAI concreto se a demonstracao exigir chamada real.
-4. Gerar graficos e artefatos de resultados.
-5. Completar video de demonstracao.
+1. Refinar operadores geneticos do VRP para preservar melhor agrupamentos geograficos.
+2. Integrar cliente OpenAI concreto se a demonstracao exigir chamada real.
+3. Completar video de demonstracao.
 
 # Referências
 

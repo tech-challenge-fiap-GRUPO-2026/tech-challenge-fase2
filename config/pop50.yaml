@@ -1,5 +1,6 @@
 population_size: 50
-mutation_rate: 0.05
-crossover_rate: 0.8
-elitism_size: 2
+mutation_rate: 0.14
+crossover_rate: 0.68
+elitism_size: 1
+parent_pool_size: 6
 max_generations: 500
