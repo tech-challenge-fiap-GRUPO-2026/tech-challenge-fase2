@@ -2,9 +2,11 @@
 
 ## Objetivo
 
-Iniciar a camada LLM do Projeto 2 para gerar textos operacionais a partir das rotas otimizadas.
+Concluir a camada LLM do Projeto 2 para gerar textos operacionais a partir das rotas otimizadas.
 
 Status: concluida.
+
+Resumo: a Sprint 7 foi finalizada com uma camada LLM testavel, offline por padrao e com integracao opcional com OpenAI.
 
 ## Referencia Adicionada
 

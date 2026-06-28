@@ -4,7 +4,7 @@
 
 - Contextualizar o Projeto 2.
 - Explicar o problema logistico de distribuicao de medicamentos e insumos.
-- Declarar o objetivo: otimizar rotas com Algoritmos Geneticos e preparar integracao com LLM.
+- Declarar o objetivo: otimizar rotas com Algoritmos Geneticos e integrar uma camada LLM.
 
 ## 2. Fundamentacao Teorica
 
@@ -64,7 +64,7 @@
 
 - Distancia euclidiana, nao malha viaria.
 - VRP implementado com frota completa, ainda com operadores geneticos simples.
-- LLM ainda pendente no estado atual.
+- LLM implementada de forma testavel e opcionalmente integrada com OpenAI.
 - Dados de exemplo sinteticos.
 
 ## 10. Conclusao

@@ -217,7 +217,7 @@ Os testes cobrem:
 
 - Distancias sao euclidianas em 2D, nao por malha viaria real.
 - O VRP atual otimiza a frota em conjunto, mas ainda usa operadores geneticos simples e distancia euclidiana.
-- A camada LLM possui fallback deterministico e ainda nao inclui cliente OpenAI concreto no `src/`.
+- A camada LLM possui fallback deterministico e cliente OpenAI opcional em `src/llm/openai_client.py`.
 - Os modulos de metricas e experimentos ainda estao pendentes.
 - A visualizacao usa um fundo simplificado do Brasil para o dataset de capitais, mas nao usa mapa geografico real nem malha viaria.
 

@@ -428,6 +428,6 @@ Entregaveis:
 
 ## Conclusao
 
-O projeto ja atende ao nucleo de TSP com Algoritmo Genetico, as principais restricoes logisticas individuais e um VRP com multiplas rotas e evolucao conjunta da frota. A implementacao atual e testavel, configuravel via CLI e possui visualizacao 2D.
+O projeto ja atende ao nucleo de TSP com Algoritmo Genetico, as principais restricoes logisticas individuais, um VRP com multiplas rotas e evolucao conjunta da frota, e uma camada LLM testavel.
 
-Para aderencia completa ao Projeto 2, as proximas prioridades sao LLM para instrucoes e relatorios, experimentos comparativos, artefatos finais e refinamento dos operadores do VRP.
+Para aderencia completa ao Projeto 2, as proximas prioridades sao experimentos comparativos, artefatos finais e refinamento dos operadores do VRP.

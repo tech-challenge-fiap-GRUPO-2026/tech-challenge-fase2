@@ -4,7 +4,7 @@ Este relatorio descreve o desenvolvimento do Projeto 2 do Tech Challenge Fase 2:
 
 O projeto parte de um codigo base de TSP e evolui para um resolvedor em `src/` com Algoritmo Genetico, restricoes operacionais, visualizacao e testes automatizados.
 
-Estado atual: TSP com prioridades, capacidade e autonomia implementado, VRP com multiplos veiculos e evolucao conjunta da frota, alem de camada LLM testavel. Comparativos experimentais ainda estao planejados.
+Estado atual: TSP com prioridades, capacidade e autonomia implementado, VRP com multiplos veiculos e evolucao conjunta da frota, e Sprint 7 de LLM finalizada. Comparativos experimentais ainda estao planejados.
 
 # Fundamentação Teórica
 
