@@ -151,7 +151,21 @@ Documentar alteracoes em:
 
 # Sprint 7 - Camada LLM
 
-Status: Pendente.
+Status: Proxima.
+
+Referencia adicionada:
+
+- `references/agent-llm.py`
+
+Usar esse arquivo como referencia de arquitetura para:
+
+- historico de mensagens;
+- chamada da API da OpenAI;
+- function calling;
+- funcoes locais acionadas pela LLM;
+- carregamento de variaveis com `dotenv`.
+
+Nao reaproveitar o dominio financeiro do exemplo; adaptar o padrao para rotas medicas.
 
 Implementar:
 
@@ -167,6 +181,10 @@ Funcoes esperadas:
 - criar prompts reutilizaveis.
 
 Criar testes sem depender de chamada externa obrigatoria a provedor LLM.
+
+Documentar alteracoes em:
+
+- `docs/sprint7_llm.md`
 
 # Sprint 8 - Experimentos
 

@@ -111,6 +111,7 @@ Executar os testes:
 - `docs/sprint4_capacity.md`: peso e capacidade maxima do veiculo
 - `docs/sprint5_autonomy.md`: distancia maxima e penalizacao por autonomia
 - `docs/sprint6_vrp.md`: VRP com multiplos veiculos e evolucao conjunta da frota
+- `docs/sprint7_llm.md`: plano da camada LLM baseada em `references/agent-llm.py`
 - `docs/brazil_capitals_map.md`: mapeamento das capitais brasileiras em 2D
 - `docs/video_script.md`: roteiro do video de demonstracao
 - `references/docs/architecture.md`: arquitetura do baseline TSP

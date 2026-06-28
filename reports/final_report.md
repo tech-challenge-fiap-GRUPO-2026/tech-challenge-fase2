@@ -30,7 +30,7 @@ O VRP e um requisito do enunciado e foi implementado com um cromossomo de frota.
 
 Large Language Models podem transformar dados operacionais em explicacoes, instrucoes e relatorios em linguagem natural.
 
-No Projeto 2, a LLM deve gerar instrucoes para motoristas, relatorios de eficiencia e respostas sobre rotas. Esta camada ainda esta pendente no estado atual.
+No Projeto 2, a LLM deve gerar instrucoes para motoristas, relatorios de eficiencia e respostas sobre rotas. O arquivo `references/agent-llm.py` foi adicionado como referencia tecnica para iniciar essa camada na proxima sprint.
 
 # Metodologia
 
@@ -154,7 +154,7 @@ Ultima validacao conhecida:
 
 Prioridades para aderencia completa ao enunciado:
 
-1. Implementar camada LLM para instrucoes, relatorios e perguntas.
+1. Implementar camada LLM para instrucoes, relatorios e perguntas usando `references/agent-llm.py` como referencia tecnica.
 2. Executar experimentos comparativos.
 3. Refinar operadores geneticos do VRP para preservar melhor agrupamentos geograficos.
 4. Gerar graficos e artefatos de resultados.

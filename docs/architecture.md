@@ -4,7 +4,7 @@
 
 Este projeto implementa o Projeto 2 do Tech Challenge Fase 2: otimizacao de rotas para distribuicao de medicamentos e insumos usando Algoritmos Geneticos.
 
-O estado atual cobre TSP com restricoes de prioridade, capacidade e autonomia, alem de VRP com multiplos veiculos e evolucao conjunta da frota. A camada LLM ainda esta planejada.
+O estado atual cobre TSP com restricoes de prioridade, capacidade e autonomia, alem de VRP com multiplos veiculos e evolucao conjunta da frota. A proxima sprint inicia a camada LLM usando `references/agent-llm.py` como referencia tecnica.
 
 ## Visao Geral
 
@@ -147,6 +147,20 @@ A tela mostra:
 
 O argumento `--fps` controla a velocidade da animacao.
 
+### Camada LLM Planejada
+
+`references/agent-llm.py` foi adicionado como referencia para a Sprint 7.
+
+O arquivo demonstra:
+
+- uso de OpenAI com `dotenv`;
+- historico de mensagens;
+- function calling;
+- execucao de funcoes locais chamadas pela LLM;
+- interface Streamlit.
+
+No projeto principal, a camada LLM deve ficar em `src/llm/` e gerar instrucoes, relatorios e respostas sobre rotas. O dominio financeiro do exemplo nao sera reaproveitado.
+
 ### CLI
 
 Comando principal:
@@ -192,7 +206,7 @@ Os testes cobrem:
 
 - Distancias sao euclidianas em 2D, nao por malha viaria real.
 - O VRP atual otimiza a frota em conjunto, mas ainda usa operadores geneticos simples e distancia euclidiana.
-- A camada LLM ainda nao esta implementada.
+- A camada LLM ainda nao esta implementada; a referencia inicial esta em `references/agent-llm.py`.
 - Os modulos de metricas e experimentos ainda estao pendentes.
 - A visualizacao usa um fundo simplificado do Brasil para o dataset de capitais, mas nao usa mapa geografico real nem malha viaria.
 

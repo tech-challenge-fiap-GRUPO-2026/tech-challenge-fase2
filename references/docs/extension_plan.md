@@ -62,6 +62,7 @@ Requisitos tecnicos:
 - CLI configuravel.
 - Testes automatizados com `pytest`.
 - Documentacao de arquitetura, sprints, roteiro e relatorio inicial.
+- Referencia de agente LLM em `references/agent-llm.py`.
 
 ### Validacao Atual
 
@@ -216,9 +217,9 @@ Mitigacao:
 - adicionar mutacoes como inversao de segmento e realocacao guiada por capacidade;
 - comparar os operadores atuais com abordagens alternativas.
 
-### LLM ainda ausente
+### LLM ainda ausente no `src/`
 
-Os arquivos em `src/llm/` ainda nao possuem implementacao.
+Os arquivos em `src/llm/` ainda nao possuem implementacao. O arquivo `references/agent-llm.py` foi adicionado como referencia de integracao com OpenAI, historico de mensagens e function calling.
 
 Mitigacao:
 
@@ -355,11 +356,17 @@ Entregaveis:
 
 ### Sprint 7 - LLM
 
-Status: Pendente.
+Status: Proxima.
 
 Objetivo:
 
 Gerar textos operacionais a partir das rotas otimizadas.
+
+Referencia:
+
+- `references/agent-llm.py`
+
+Esse exemplo deve orientar o desenho da integracao LLM, mas o dominio financeiro deve ser substituido pelo dominio de rotas medicas.
 
 Entregaveis:
 
@@ -368,7 +375,7 @@ Entregaveis:
 - `src/llm/route_explainer.py`;
 - prompts para relatorio, instrucoes e perguntas;
 - testes de formatacao e montagem de prompt;
-- documentacao de uso.
+- documentacao de uso em `docs/sprint7_llm.md`.
 
 ### Sprint 8 - Experimentos
 
@@ -418,6 +425,7 @@ Entregaveis:
 - O sistema deve gerar relatorio operacional com distancia, entregas e restricoes.
 - O sistema deve responder perguntas simples sobre rotas.
 - Prompts devem ficar centralizados e testaveis.
+- A integracao real com OpenAI deve ser opcional nos testes.
 
 ### Sprint 8
 
