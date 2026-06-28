@@ -4,7 +4,7 @@
 
 Este documento registra a evolucao do baseline em `references/` para o Projeto 2 do Tech Challenge Fase 2: otimizacao de rotas para distribuicao de medicamentos e insumos com Algoritmos Geneticos e apoio futuro de LLM.
 
-O projeto saiu de um TSP didatico e hoje possui uma implementacao em `src/` com restricoes de prioridade, capacidade, autonomia e VRP com multiplos veiculos e evolucao conjunta da frota. O foco das proximas sprints e completar LLM, experimentos e artefatos finais.
+O projeto saiu de um TSP didatico e hoje possui uma implementacao em `src/` com restricoes de prioridade, capacidade, autonomia, VRP com multiplos veiculos, camada LLM, experimentos comparativos e artefatos finais.
 
 ## Escopo do Projeto 2
 
@@ -203,7 +203,7 @@ Penalidades:
 | Experimentos comparativos | Atendido |
 | Graficos e artefatos finais | Atendido |
 | Relatorio tecnico consolidado | Atendido |
-| Video de demonstracao | Planejado |
+| Video de demonstracao | Roteiro atendido |
 
 ## Riscos Tecnicos Atuais
 
@@ -407,7 +407,7 @@ Resultado de referencia em VRP:
 
 ### Sprint 9 - Consolidacao
 
-Status: Planejada.
+Status: Concluida.
 
 Entregaveis:
 
@@ -416,6 +416,8 @@ Entregaveis:
 - relatorio consolidado;
 - roteiro final de apresentacao;
 - evidencias de execucao.
+
+Status atual: atendido em documentacao e artefatos reproduziveis.
 
 ## Criterios de Aceite para as Proximas Sprints
 
@@ -439,6 +441,6 @@ Status atual: atendido.
 
 ## Conclusao
 
-O projeto ja atende ao nucleo de TSP com Algoritmo Genetico, as principais restricoes logisticas individuais, um VRP com multiplas rotas e evolucao conjunta da frota, uma camada LLM testavel e a Sprint 8 de experimentos comparativos.
+O projeto ja atende ao nucleo de TSP com Algoritmo Genetico, as principais restricoes logisticas individuais, um VRP com multiplas rotas e evolucao conjunta da frota, uma camada LLM testavel, experimentos comparativos e a consolidacao final da Sprint 9.
 
-Para aderencia completa ao Projeto 2, as proximas prioridades sao refinamento dos operadores do VRP e preparacao final de apresentacao.
+Como evolucao futura, as proximas prioridades tecnicas sao refinamento dos operadores do VRP, dados reais e malha viaria real.

@@ -23,14 +23,18 @@ Implementado:
 - operadores de crossover, mutacao, selecao por fitness e elitismo;
 - fitness com distancia, prioridade, atraso, capacidade e autonomia;
 - camada LLM testavel para relatorios, instrucoes e perguntas sobre rotas;
+- experimentos comparativos em VRP com artefatos em `artifacts/`;
 - leitura de entregas e veiculos via CSV;
 - visualizacao 2D das rotas, com fundo simplificado do Brasil para o dataset de capitais;
+- relatorio tecnico e roteiro de demonstracao consolidados;
 - CLI configuravel;
 - testes automatizados.
 
-Ainda pendente para aderencia completa ao enunciado:
+Entrega final consolidada:
 
-- gravacao do video de demonstracao.
+- relatorio tecnico em `reports/final_report.md`;
+- roteiro de demonstracao em `docs/video_script.md`;
+- manifesto de artefatos em `artifacts/final/manifest.md`.
 
 Experimentos disponíveis em VRP:
 
@@ -57,6 +61,18 @@ Experimentos disponíveis em VRP:
 - `matplotlib`
 - `numpy`
 - `pytest`
+
+Instalar dependencias principais:
+
+```bash
+.venv/bin/pip install -r requirements.txt
+```
+
+Dependencias opcionais para chamada real da OpenAI:
+
+```bash
+.venv/bin/pip install -r requirements-llm.txt
+```
 
 ## Execucao
 
@@ -125,10 +141,10 @@ Opcoes principais:
 
 Essa execucao usa o fallback offline da Sprint 7. A integracao real com OpenAI pode ser feita depois injetando um cliente LLM compatível com `complete(messages)`.
 
-Para usar OpenAI de verdade, instale a dependencia opcional e configure a chave:
+Para usar OpenAI de verdade, instale as dependencias opcionais e configure a chave:
 
 ```bash
-.venv/bin/pip install openai python-dotenv
+.venv/bin/pip install -r requirements-llm.txt
 export OPENAI_API_KEY="sua-chave"
 ```
 
@@ -154,7 +170,7 @@ Executar os testes:
 ## Documentacao
 
 - `docs/project_context.md`: contexto do projeto
-- `docs/architecture.md`: arquitetura atual e componentes planejados
+- `docs/architecture.md`: arquitetura atual e evolucao futura
 - `docs/prompts.md`: definicao das sprints
 - `docs/report_outline.md`: estrutura sugerida do relatorio tecnico
 - `docs/sprint3_priorities.md`: prioridades e penalizacao por atraso HIGH
@@ -163,6 +179,7 @@ Executar os testes:
 - `docs/sprint6_vrp.md`: VRP com multiplos veiculos e evolucao conjunta da frota
 - `docs/sprint7_llm.md`: camada LLM baseada em `references/agent-llm.py`
 - `docs/sprint8_experiments.md`: experimentos comparativos em VRP e artefatos da Sprint 8
+- `docs/sprint9_consolidation.md`: consolidacao final, comandos e evidencias
 - `src/metrics/`: experimentos comparativos e graficos da Sprint 8
 - `docs/brazil_capitals_map.md`: mapeamento das capitais brasileiras em 2D
 - `docs/video_script.md`: roteiro do video de demonstracao
@@ -173,4 +190,4 @@ Executar os testes:
 
 - O entrypoint atual esta em `src/main.py`.
 - A visualizacao em `src/main.py` usa o solver migrado da Sprint 2 como base de execucao.
-- O projeto ainda evolui para consolidacao final, video de demonstracao e novas otimizacoes do VRP.
+- Evolucoes futuras naturais incluem operadores VRP mais especializados, dados reais e malha viaria real.

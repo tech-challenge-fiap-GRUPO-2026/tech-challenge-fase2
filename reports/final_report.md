@@ -4,7 +4,7 @@ Este relatorio descreve o desenvolvimento do Projeto 2 do Tech Challenge Fase 2:
 
 O projeto parte de um codigo base de TSP e evolui para um resolvedor em `src/` com Algoritmo Genetico, restricoes operacionais, visualizacao e testes automatizados.
 
-Estado atual: TSP com prioridades, capacidade e autonomia implementado, VRP com multiplos veiculos e evolucao conjunta da frota, e Sprint 7 de LLM finalizada. Comparativos experimentais ainda estao planejados.
+Estado atual: TSP com prioridades, capacidade e autonomia implementado, VRP com multiplos veiculos e evolucao conjunta da frota, camada LLM finalizada, experimentos VRP executados e documentacao final consolidada.
 
 # Fundamentação Teórica
 
@@ -43,6 +43,8 @@ O projeto foi conduzido em sprints incrementais:
 5. Inclusao de autonomia maxima dos veiculos.
 6. Inclusao de VRP com multiplas rotas e evolucao conjunta da frota.
 7. Inclusao de camada LLM para relatorios, instrucoes e perguntas sobre rotas.
+8. Execucao de experimentos comparativos em VRP.
+9. Consolidacao final de relatorio, roteiro e artefatos de demonstracao.
 
 A validacao foi feita com testes automatizados usando `pytest`.
 
@@ -57,6 +59,7 @@ A validacao foi feita com testes automatizados usando `pytest`.
 - `src/data_loader.py`: leitura dos arquivos CSV.
 - `src/visualization/`: desenho da rota e grafico de fitness.
 - `src/llm/`: prompts, relatorios, instrucoes e explicacoes sobre rotas.
+- `src/metrics/`: runner de experimentos, metricas e exportacao de artefatos.
 - `src/main.py`: CLI e demo visual.
 - `tests/`: testes automatizados.
 
@@ -198,7 +201,7 @@ Prioridades para aderencia completa ao enunciado:
 
 1. Refinar operadores geneticos do VRP para preservar melhor agrupamentos geograficos.
 2. Integrar cliente OpenAI concreto se a demonstracao exigir chamada real.
-3. Completar video de demonstracao.
+3. Usar dados reais e malha viaria real em uma evolucao futura.
 
 # Referências
 

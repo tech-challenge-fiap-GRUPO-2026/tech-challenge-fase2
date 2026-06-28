@@ -243,7 +243,7 @@ Conclusoes iniciais:
 
 # Sprint 9 - Consolidacao Final
 
-Status: Planejada.
+Status: Concluida.
 
 Gerar:
 
@@ -256,3 +256,11 @@ Atualizar:
 
 - `docs/video_script.md`
 - `reports/final_report.md`
+
+Implementado:
+
+- `docs/sprint9_consolidation.md`
+- `artifacts/final/manifest.md`
+- roteiro de video atualizado com LLM e experimentos;
+- relatorio final consolidado;
+- indice de artefatos finais.

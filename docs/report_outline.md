@@ -69,6 +69,7 @@
 - VRP implementado com frota completa, ainda com operadores geneticos simples.
 - LLM implementada de forma testavel e opcionalmente integrada com OpenAI.
 - Experimentos comparativos executados com `pop50`, `pop100` e `pop500`.
+- Consolidacao final registrada em `docs/sprint9_consolidation.md` e `artifacts/final/manifest.md`.
 - Dados de exemplo sinteticos.
 
 ## 10. Conclusao

@@ -221,8 +221,8 @@ Os testes cobrem:
 - Os modulos de metricas e experimentos foram implementados em `src/metrics/` e executam comparacoes em VRP por padrao.
 - A visualizacao usa um fundo simplificado do Brasil para o dataset de capitais, mas nao usa mapa geografico real nem malha viaria.
 
-## Evolucao Planejada
+## Evolucao Futura
 
 1. Refinar operadores geneticos do VRP para preservar melhor agrupamentos geograficos.
 2. Integrar cliente OpenAI concreto se a demonstracao exigir chamada real.
-3. Preparar o video de demonstracao.
+3. Usar dados reais e malha viaria real.

@@ -86,16 +86,22 @@ Conteudo:
 
 - Mostrar a suite passando.
 
-## 7. Proximos Passos
+## 7. LLM e Experimentos
 
 Tempo sugerido: 2 minutos.
 
 Conteudo:
 
-- Explicar o que ainda falta para aderencia completa:
-- LLM para instrucoes e relatorios.
-- Experimentos comparativos.
-- Graficos e artefatos finais de resultados.
+- Executar a LLM offline:
+
+```bash
+.venv/bin/python -m src.llm --mode vrp --output report --deliveries-file data/brazil_capitals_sample.csv
+```
+
+- Mostrar o relatorio textual gerado para a frota.
+- Mostrar `artifacts/experiments/sprint8_summary.md`.
+- Mostrar `artifacts/charts/fitness_curves.png`, `final_fitness.png` e `execution_time.png`.
+- Explicar que os experimentos foram executados em modo VRP com cinco configuracoes.
 
 ## 8. Encerramento
 
@@ -104,4 +110,5 @@ Tempo sugerido: 30 segundos.
 Conteudo:
 
 - Reforcar que o projeto ja cobre TSP, VRP com frota, restricoes principais e visualizacao.
-- Indicar que a evolucao natural e LLM + experimentos.
+- Reforcar que a entrega tambem cobre LLM, experimentos, relatorio final e artefatos de demonstracao.
+- Indicar como evolucao futura o uso de malha viaria real e operadores VRP mais especializados.
