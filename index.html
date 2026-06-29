@@ -1200,10 +1200,57 @@ p{margin-bottom:10px}
 
       <div class="box box-b mt">
         <strong>🔁 Fluxo Evolutivo (VRP)</strong>
-        População inicial → Avaliação do fitness agregado → Seleção por torneio →
-        Crossover de frotas → Mutação inter/intra-rota → Elitismo → Nova geração → repetir.
+        População inicial → Avaliação do fitness agregado → Seleção por pool dos top-K →
+        Crossover de frotas (OX achatado + repartição) → Mutação inter/intra-rota → Elitismo → Nova geração → repetir.
       </div>
     </div>
+  </div>
+
+  <h3>Crossover VRP — <code>fleet_crossover</code></h3>
+  <p class="sec-desc" style="margin-bottom:16px">O crossover adapta o OX clássico ao cromossomo de frota completa em três etapas.</p>
+  <div class="fitness-components" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">
+    <div class="fc c1">
+      <h5>1 · Achatamento</h5>
+      <p>As rotas de cada pai são concatenadas em uma <strong>sequência plana</strong> de todas as entregas, eliminando a estrutura de veículos temporariamente.</p>
+    </div>
+    <div class="fc c4">
+      <h5>2 · Order Crossover (OX)</h5>
+      <p>Um segmento aleatório do pai 1 é copiado ao filho. As entregas restantes são preenchidas <strong>na ordem do pai 2</strong>, sem duplicatas.</p>
+    </div>
+    <div class="fc c3">
+      <h5>3 · Repartição</h5>
+      <p>A sequência filho é redistribuída em rotas usando os <strong>tamanhos de rota herdados de um dos pais</strong> (sorteio 50/50). Nenhuma entrega é duplicada ou perdida.</p>
+    </div>
+  </div>
+
+  <h3>Mutação VRP — <code>mutate_fleet</code></h3>
+  <p class="sec-desc" style="margin-bottom:16px">Sorteia aleatoriamente um dos três operadores a cada aplicação.</p>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr><th>Operador</th><th>Ação</th><th class="c">Escopo</th><th>Papel no VRP</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>move</code></td>
+          <td>Remove uma entrega de uma rota e insere em posição aleatória de <strong>qualquer outra rota</strong></td>
+          <td class="c"><span class="tag tag-a">inter-rota</span></td>
+          <td>Redistribui carga entre veículos — reduz excesso de capacidade</td>
+        </tr>
+        <tr>
+          <td><code>swap</code></td>
+          <td>Troca uma entrega entre <strong>duas rotas distintas</strong> (exige ≥ 2 rotas não-vazias)</td>
+          <td class="c"><span class="tag tag-a">inter-rota</span></td>
+          <td>Equilibra rotas sem alterar o total de entregas por veículo</td>
+        </tr>
+        <tr>
+          <td><code>reorder</code></td>
+          <td>Troca dois elementos <strong>adjacentes</strong> dentro da mesma rota</td>
+          <td class="c"><span class="tag tag-p">intra-rota</span></td>
+          <td>Refina a ordem de visita — reduz distância total da rota</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 
   <h3>Função de Fitness</h3>
@@ -1236,6 +1283,24 @@ p{margin-bottom:10px}
       <h5>🛣️ Penalidade de Autonomia</h5>
       <p>25× por unidade de distância acima da autonomia máxima do veículo designado.</p>
     </div>
+  </div>
+
+  <h3>Fitness Agregado VRP</h3>
+  <div class="fitness-box">
+    <div class="formula">
+      <span class="kw">fitness_total</span> <span class="op">=</span> <span class="fn">Σ</span> fitness(rota<sub style="color:#6EE7B7">i</sub>, veículo<sub style="color:#6EE7B7">i</sub>)<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="op">=</span> <span class="fn">Σ</span> (distância<sub style="color:#6EE7B7">i</sub> <span class="op">+</span> penalidade_atraso<sub style="color:#6EE7B7">i</sub> <span class="op">+</span> penalidade_cap<sub style="color:#6EE7B7">i</sub> <span class="op">+</span> penalidade_aut<sub style="color:#6EE7B7">i</sub>)
+    </div>
+    <p style="opacity:.7;font-size:.8rem;margin-top:12px;margin-bottom:0">
+      Cada veículo tem seu próprio <code style="color:#C4B5FD">max_capacity</code> e <code style="color:#C4B5FD">max_distance</code> — penalidades calculadas individualmente por rota
+    </p>
+  </div>
+
+  <div class="box box-b">
+    <strong>🔗 Por que fitness agregado?</strong>
+    Somar o fitness de cada rota incentiva o AG a equilibrar a carga entre veículos: penalizar
+    <em>cada veículo</em> por excesso de capacidade ou autonomia direciona os operadores <code>move</code>
+    e <code>swap</code> a redistribuir entregas até que nenhuma rota individual viole suas restrições.
   </div>
 </section>
 

@@ -50,10 +50,32 @@ O núcleo da solução é um **Algoritmo Genético (AG)** capaz de operar em doi
 
 | Operador | Descrição |
 |----------|-----------|
-| **Seleção** | Torneio por fitness — favorece os melhores indivíduos |
-| **Crossover** | Combinação de sub-rotas entre pais (OX-style) |
-| **Mutação** | Swap, inversão e relocação de entregas dentro e entre rotas |
+| **Seleção** | Pool dos `parent_pool_size` melhores — filhos gerados por amostragem aleatória do pool |
+| **Crossover** | Order Crossover (OX) adaptado para frotas em modo VRP |
+| **Mutação** | Swap, reorder e move de entregas dentro e entre rotas (VRP) |
 | **Elitismo** | Preserva os `k` melhores indivíduos entre gerações |
+
+### Crossover VRP — `fleet_crossover`
+
+O crossover em modo VRP adapta o OX clássico ao cromossomo de frota completa em **três etapas**:
+
+1. **Achatamento** — as rotas de cada pai são concatenadas em uma sequência plana de entregas
+2. **OX sobre a sequência plana** — um segmento aleatório do pai 1 é copiado para o filho; as entregas ausentes são preenchidas na ordem em que aparecem no pai 2
+3. **Repartição** — a sequência filho é redistribuída em rotas usando os tamanhos de rota herdados de um dos pais (sorteio 50/50)
+
+Essa estratégia garante que **nenhuma entrega seja duplicada ou perdida** e que o filho herde a estrutura de distribuição de frota de um dos pais.
+
+### Mutação VRP — `mutate_fleet`
+
+Em modo VRP, a mutação sorteaia aleatoriamente um dos três operadores:
+
+| Tipo | Ação | Escopo |
+|------|------|--------|
+| **`move`** | Remove uma entrega de uma rota e a insere em posição aleatória de qualquer outra rota | Inter-rota |
+| **`swap`** | Troca uma entrega entre duas rotas distintas | Inter-rota |
+| **`reorder`** | Troca dois elementos adjacentes dentro de uma mesma rota | Intra-rota |
+
+Os operadores `move` e `swap` permitem que o algoritmo redistribua carga entre veículos, essencial para satisfazer restrições de capacidade e autonomia.
 
 ---
 
@@ -77,6 +99,17 @@ fitness = distância_total
 | Excesso de autonomia | `25.0` × unidades acima do limite |
 
 > O algoritmo **minimiza** o fitness — soluções melhores têm valores menores.
+
+### Fitness Agregado VRP
+
+Em modo VRP, o fitness total é a **soma do fitness individual de cada rota**:
+
+```
+fitness_total = Σ fitness(rota_i, veículo_i)
+             = Σ (distância_i + penalidade_atraso_i + penalidade_capacidade_i + penalidade_autonomia_i)
+```
+
+Cada veículo tem seu próprio `max_capacity` e `max_distance`, e as penalidades são calculadas individualmente por rota. Isso incentiva o AG a equilibrar a carga entre veículos e respeitar as restrições de cada um.
 
 ---
 
