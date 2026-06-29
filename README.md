@@ -351,7 +351,7 @@ Resultado esperado: **62 passed**.
 
 O relatório visual completo com os resultados dos experimentos está disponível em:
 
-> [`docs/resultado.html`](docs/resultado.html) — abra diretamente no navegador
+> [`docs/index.html`](docs/index.html) — abra diretamente no navegador
 
 ---
 
