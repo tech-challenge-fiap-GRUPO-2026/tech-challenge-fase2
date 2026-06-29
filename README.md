@@ -353,7 +353,7 @@ O relatório visual completo com os resultados dos experimentos está disponíve
 
 > 🔗 **[tech-challenge-fiap-grupo-2026.github.io/tech-challenge-fase2/index.html](https://tech-challenge-fiap-grupo-2026.github.io/tech-challenge-fase2/index.html)**
 
-Ou abra localmente: [`docs/index.html`](docs/index.html)
+Ou abra localmente: [`index.html`](docs/index.html)
 
 ---
 
