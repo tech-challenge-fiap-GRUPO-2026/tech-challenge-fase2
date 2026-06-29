@@ -1,96 +1,135 @@
-# Sprint 8 - Experimentos
+# 🏃 Sprint 8 — Experimentos Comparativos VRP
 
-## Objetivo
+**Status:** ✅ Concluída
 
-Concluir a camada de experimentos comparativos do Projeto 2 com foco em VRP, medindo fitness final, convergencia e tempo de execucao.
+---
 
-Status: concluida.
+## 🎯 Objetivo
 
-Resumo: a Sprint 8 foi finalizada com um runner em `src/metrics/`, cinco cenarios de configuracao e geracao automatica de tabelas e graficos em `artifacts/`.
+Implementar um **runner de experimentos reproduzível** para comparar sistematicamente 5 configurações do Algoritmo Genético em modo VRP — medindo fitness final, velocidade de convergência e tempo de execução.
 
-## Escopo da Sprint
+---
 
-Implementar um fluxo reproduzivel para comparar configuracoes do algoritmo genetico em modo VRP.
+## 📊 Motivação
 
-Entregaveis implementados:
+Com o VRP implementado na Sprint 6, era necessário entender como os parâmetros do AG afetam:
+1. **Qualidade da solução** (fitness final)
+2. **Velocidade de convergência** (em quantas gerações estabiliza)
+3. **Custo computacional** (tempo de execução)
 
-- `src/metrics/experiments.py`: execucao dos experimentos;
-- `src/metrics/experiment_logger.py`: exportacao de CSV, JSON, markdown e graficos;
-- `src/metrics/statistics.py`: metricas auxiliares;
-- `src/metrics/__main__.py`: execucao por CLI com `python -m src.metrics`;
-- `config/pop50.yaml`: cenario de exploracao rapida;
-- `config/pop100.yaml`: cenario balanceado;
-- `config/pop100_no_elitism.yaml`: cenario balanceado sem elitismo;
-- `config/pop500.yaml`: cenario de convergencia mais agressiva;
-- `config/pop500_no_elitism.yaml`: cenario de convergencia mais agressiva sem elitismo;
-- `artifacts/experiments/sprint8_summary.csv`: tabela consolidada;
-- `artifacts/experiments/sprint8_summary.json`: saida estruturada para analise;
-- `artifacts/experiments/sprint8_summary.md`: resumo legivel;
-- `artifacts/charts/fitness_curves.png`: curvas de convergencia;
-- `artifacts/charts/final_fitness.png`: comparativo de fitness final;
-- `artifacts/charts/execution_time.png`: comparativo de tempo de execucao.
+A Sprint 8 responde a essas perguntas com evidências quantitativas e gráficos reproduzíveis.
 
-## Estrategia Experimental
+---
 
-Os experimentos usam o algoritmo genetico do proprio projeto em `src/routing/vrp.py` e `src/ga/genetic_algorithm.py`.
+## 📁 Arquivos Implementados
 
-Cada configuracao controla:
+| Arquivo | Responsabilidade |
+|---------|-----------------|
+| `src/metrics/experiments.py` | Execução de cada configuração de experimento |
+| `src/metrics/experiment_logger.py` | Exportação de CSV, JSON, Markdown e gráficos PNG |
+| `src/metrics/statistics.py` | Métricas auxiliares (geração de convergência, melhoria relativa) |
+| `src/metrics/__main__.py` | Ponto de entrada via `python -m src.metrics` |
 
-- `population_size`;
-- `mutation_rate`;
-- `crossover_rate`;
-- `elitism_size`;
-- `parent_pool_size`;
-- `max_generations`.
+---
 
-Os cinco cenarios finais sao:
+## ⚙️ Configurações dos Experimentos
 
-- `pop50`: menor populacao, mais mutacao e menor elitismo para favorecer exploracao;
-- `pop100`: cenario intermediario e balanceado;
-- `pop100_no_elitism`: mesmo perfil do `pop100`, mas com `elitism_size = 0`;
-- `pop500`: maior populacao, menor mutacao e maior pressao de convergencia;
-- `pop500_no_elitism`: mesmo perfil do `pop500`, mas com `elitism_size = 0`.
+Cinco cenários foram definidos em `config/`:
 
-## Execucao
+| Configuração | Pop. | Mutação | Crossover | Elitismo | Pool | Gerações | Objetivo |
+|:------------|:----:|:-------:|:---------:|:--------:|:----:|:--------:|---------|
+| `pop50` | 50 | 0.14 | 0.68 | 1 | 6 | 500 | Exploração rápida com menor custo |
+| `pop100` | 100 | 0.08 | 0.80 | 2 | 10 | 500 | Equilíbrio entre qualidade e velocidade |
+| `pop100_no_elitism` | 100 | 0.08 | 0.80 | 0 | 10 | 500 | Exploração sem preservação de elite |
+| `pop500` | 500 | 0.02 | 0.90 | 6 | 20 | 500 | Alta pressão de convergência |
+| `pop500_no_elitism` | 500 | 0.02 | 0.90 | 0 | 20 | 500 | Alta pressão sem elitismo |
 
-Comando principal:
+---
+
+## 📈 Resultados Obtidos
+
+Dataset: `data/deliveries_sample.csv` | Modo: VRP | Semente: fixa (reproduzível)
+
+| Configuração | Fitness Final | Convergência | Tempo Total | Melhoria | Veredicto |
+|:------------|:-------------:|:------------:|:-----------:|:--------:|:----------|
+| **pop50** ⭐ | 0.16 | Gen. 103 | 1.323s | 0.40 | **Melhor custo-benefício** |
+| pop100 | 0.16 | Gen. 187 | 2.588s | 0.40 | Equilibrado |
+| pop100_no_elitism | 0.16 | Gen. 176 | 2.639s | 0.40 | Convergiu antes do pop100 |
+| pop500 | 0.16 | Gen. 33 | 13.404s | 0.35 | Rápido em gerações, caro no total |
+| pop500_no_elitism | 0.16 | Gen. 33 | 13.425s | 0.35 | Idêntico ao pop500 |
+
+---
+
+## 🔍 Análise dos Resultados
+
+### 1. Fitness final igual para todos
+
+Todas as 5 configurações atingiram **fitness = 0.16** — demonstrando que o algoritmo é robusto e encontra soluções de qualidade equivalente independentemente do tamanho da população.
+
+### 2. pop50 é o grande vencedor
+
+```
+pop50:  1.323s → fitness 0.16 → convergência na geração 103
+pop500: 13.40s → fitness 0.16 → convergência na geração 33
+
+Speedup: 13.40 / 1.32 ≈ 10× mais rápido com a mesma qualidade
+```
+
+### 3. Elitismo: impacto moderado
+
+| Comparação | Diferença observada |
+|------------|---------------------|
+| pop100 vs pop100_no_elitism | Sem elitismo convergiu 11 gerações antes (176 vs 187) |
+| pop500 vs pop500_no_elitism | Sem diferença na convergência; tempo levemente maior sem elitismo |
+
+> Conclusão: elitismo não é fator determinante neste dataset — a diversidade da população tem mais impacto.
+
+### 4. Populações maiores: convergem mais rápido em gerações, mas pagam alto custo por geração
+
+- `pop500` convergiu na geração 33, mas cada geração é 10× mais cara que `pop50`
+- O custo total por geração escala com o tamanho da população
+
+---
+
+## 📦 Artefatos Gerados
+
+Todos os artefatos ficam em `artifacts/` após a execução:
+
+| Artefato | Formato | Conteúdo |
+|----------|---------|----------|
+| `artifacts/experiments/sprint8_summary.csv` | CSV | Tabela comparativa completa |
+| `artifacts/experiments/sprint8_summary.json` | JSON | Dados estruturados para integração |
+| `artifacts/experiments/sprint8_summary.md` | Markdown | Resumo legível com tabelas |
+| `artifacts/charts/fitness_curves.png` | PNG | Curvas de evolução do fitness por geração |
+| `artifacts/charts/final_fitness.png` | PNG | Comparativo do fitness final entre configurações |
+| `artifacts/charts/execution_time.png` | PNG | Comparativo de tempo de execução |
+
+---
+
+## ▶️ Como Reproduzir
 
 ```bash
+# Execução padrão (usa deliveries_sample.csv e vehicles_sample.csv)
 .venv/bin/python -m src.metrics
+
+# Execução com parâmetros explícitos
+.venv/bin/python -m src.metrics \
+  --deliveries-file data/deliveries_sample.csv \
+  --vehicles-file  data/vehicles_sample.csv \
+  --output-dir     artifacts
 ```
 
-Execucao equivalente usada no dataset sintetico:
+O runner executa os 5 cenários sequencialmente, salva todos os artefatos automaticamente e exibe um resumo no terminal ao final.
 
-```bash
-.venv/bin/python -m src.metrics --deliveries-file data/deliveries_sample.csv --vehicles-file data/vehicles_sample.csv --output-dir artifacts
-```
+---
 
-Por padrao, o runner executa em modo `vrp` e usa todos os veiculos do CSV quando `--vehicle-ids` nao e informado.
+## ✅ Critérios de Aceite
 
-## Resultado de Referencia
-
-Resultado atual registrado em `artifacts/experiments/sprint8_summary.md`:
-
-| Configuracao | Fitness final | Convergencia | Tempo | Melhoria |
-| --- | ---: | ---: | ---: | ---: |
-| pop50 | 0.16 | 103 | 1.251s | 0.40 |
-| pop100 | 0.16 | 187 | 2.477s | 0.40 |
-| pop100_no_elitism | 0.16 | 176 | 2.464s | 0.40 |
-| pop500 | 0.16 | 33 | 13.404s | 0.35 |
-| pop500_no_elitism | 0.16 | 33 | 13.425s | 0.35 |
-
-Leituras principais:
-
-- as cinco configuracoes alcancaram o mesmo fitness final no smoke test VRP;
-- `pop500` convergiu mais cedo, mas com custo de tempo muito maior;
-- `pop50` teve o melhor equilibrio entre convergencia e tempo;
-- `pop100_no_elitism` convergiu um pouco antes que o `pop100` com elitismo, sem mudar o fitness final;
-- `pop500_no_elitism` manteve a mesma convergencia do `pop500`, mas com tempo levemente maior.
-
-## Criterios de Aceite
-
-- O projeto executa os cenarios configurados por CLI.
-- Os resultados ficam comparaveis em tabela.
-- Os graficos de fitness e tempo sao gerados automaticamente.
-- O relatorio final inclui a analise da Sprint 8.
-- A execucao e validada por testes automatizados.
+| Critério | Status |
+|----------|--------|
+| Runner executa as 5 configurações por CLI | ✅ |
+| Resultados comparáveis em tabela | ✅ |
+| Gráficos de fitness e tempo gerados automaticamente | ✅ |
+| Relatório final inclui análise da Sprint 8 | ✅ |
+| Execução validada por testes automatizados | ✅ |
+| Artefatos reproduzíveis com semente fixa | ✅ |

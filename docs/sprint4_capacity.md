@@ -1,58 +1,102 @@
-# Sprint 4 - Capacidade
+# 🏃 Sprint 4 — Capacidade Máxima dos Veículos
 
-## Objetivo
+**Status:** ✅ Concluída
 
-Adicionar peso por entrega e capacidade maxima por veiculo ao fitness.
+---
 
-## Modelo
+## 🎯 Objetivo
 
-O modelo `Delivery` agora inclui:
+Adicionar **peso por entrega** e **capacidade máxima por veículo** ao problema de otimização — fazendo o algoritmo penalizar rotas que excedam a carga suportada pelo veículo.
 
-- `weight`: peso da entrega;
-- `priority`: mantida da Sprint 3;
-- `due_time`: mantido da Sprint 3.
+---
 
-O modelo `Vehicle` fica em `src/models/vehicle.py` e inclui:
+## 📦 Modelos Atualizados
 
-- `id`
-- `max_capacity`
-- `max_distance` opcional
+### `Delivery` — `src/models/delivery.py`
 
-## Regra de fitness
+O campo `weight` foi adicionado ao modelo de entrega:
 
-O fitness continua sendo a distancia da rota somada as penalidades.
-
-Para capacidade, o algoritmo soma o peso total da rota e compara com `max_capacity`.
-
-Se houver excesso, aplica:
-
-```text
-penalty = excesso_de_peso * CAPACITY_EXCESS_PENALTY
+```python
+@dataclass
+class Delivery:
+    id: str
+    location: tuple[float, float]
+    priority: Priority
+    due_time: float | None
+    weight: float                 # ← NOVO — peso da entrega em kg
 ```
 
-Onde `CAPACITY_EXCESS_PENALTY` vale `25.0`.
+### `Vehicle` — `src/models/vehicle.py`
 
-## Dados
+O modelo de veículo foi criado nesta sprint:
 
-Os arquivos de exemplo usados nesta sprint sao:
+```python
+@dataclass
+class Vehicle:
+    id: str
+    max_capacity: float           # capacidade máxima de carga (kg)
+    max_distance: float | None    # autonomia máxima — adicionada na Sprint 5
+```
 
-- `data/deliveries_sample.csv`
-- `data/vehicles_sample.csv`
+---
 
-## Execucao
+## 📐 Regra de Fitness — Penalidade de Capacidade
 
-O demo visual aceita a opcao:
+O fitness agora inclui penalidade quando a **soma dos pesos das entregas da rota** excede `max_capacity` do veículo designado.
 
-- `--vehicle-id <id>`: seleciona qual veiculo do CSV sera usado. Padrao: primeiro veiculo do arquivo.
-- `--population-size <n>`: define o tamanho da populacao. Padrao: `100`.
-- `--mutation-probability <p>`: define a probabilidade de mutacao. Padrao: `0.5`.
-- `--deliveries-file <path>`: define o arquivo de entregas. Padrao: `data/deliveries_sample.csv`.
-- `--vehicles-file <path>`: define o arquivo de veiculos. Padrao: `data/vehicles_sample.csv`.
+```
+peso_total = Σ weight de todas as entregas da rota
 
-## Testes
+if peso_total > max_capacity:
+    penalty = (peso_total − max_capacity) × CAPACITY_EXCESS_PENALTY
+```
 
-Os testes cobrem:
+Onde `CAPACITY_EXCESS_PENALTY = 25.0`.
 
-- carregamento do CSV de veiculos;
-- penalizacao quando a capacidade e excedida;
-- ausencia de penalidade quando a carga cabe no veiculo.
+### Exemplo prático
+
+```
+Veículo com max_capacity = 100 kg
+Entregas: 40 kg + 35 kg + 40 kg = 115 kg
+
+Excesso = 115 − 100 = 15 kg
+Penalidade = 15 × 25.0 = 375.0 adicionado ao fitness
+```
+
+> O algoritmo **não impede** a alocação de entregas acima da capacidade — ele penaliza economicamente essa escolha para que soluções válidas sejam favorecidas pela seleção natural.
+
+---
+
+## 📂 Datasets
+
+Dois arquivos CSV são usados nesta sprint:
+
+| Arquivo | Conteúdo |
+|---------|----------|
+| `data/deliveries_sample.csv` | Entregas com campo `weight` preenchido |
+| `data/vehicles_sample.csv` | Veículos com `max_capacity` definido |
+
+---
+
+## ⌨️ CLI — Novas Opções
+
+O demo visual recebeu opções adicionais nesta sprint:
+
+| Opção | Padrão | Descrição |
+|-------|--------|-----------|
+| `--vehicle-id <id>` | 1º do CSV | Seleciona o veículo pelo `id` no arquivo CSV |
+| `--population-size <n>` | `100` | Tamanho da população do AG |
+| `--mutation-probability <p>` | `0.5` | Probabilidade de mutação |
+| `--deliveries-file <path>` | `data/deliveries_sample.csv` | Arquivo de entregas |
+| `--vehicles-file <path>` | `data/vehicles_sample.csv` | Arquivo de veículos |
+
+---
+
+## ✅ Testes Implementados
+
+| Cenário | Resultado esperado |
+|---------|--------------------|
+| Carregamento do CSV de veículos | Veículo com `id`, `max_capacity` e `max_distance` carregados corretamente |
+| Rota dentro da capacidade | Nenhuma penalidade adicionada ao fitness |
+| Rota acima da capacidade | `(excesso) × 25.0` adicionado ao fitness |
+| Excesso zero (exatamente no limite) | Nenhuma penalidade (limite é inclusivo) |

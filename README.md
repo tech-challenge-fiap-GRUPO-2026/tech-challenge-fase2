@@ -1,193 +1,360 @@
-# Tech Challenge - Fase 2
+<div align="center">
 
-Sistema de otimizacao de rotas medicas com Algoritmos Geneticos.
+# 🚚 Otimização de Rotas Médicas — VRP com Algoritmos Genéticos
 
-## Visao geral
+**Tech Challenge Fase 2 · Pós-Graduação IA Para Desenvolvedores · FIAP**
 
-O projeto escolhido e o **Projeto 2: Otimizacao de Rotas para Distribuicao de Medicamentos e Insumos**.
+![Python](https://img.shields.io/badge/Python-3.12%2B-blue?logo=python&logoColor=white)
+![Pygame](https://img.shields.io/badge/Pygame-2.x-green?logo=python&logoColor=white)
+![NumPy](https://img.shields.io/badge/NumPy-1.24%2B-013243?logo=numpy&logoColor=white)
+![Matplotlib](https://img.shields.io/badge/Matplotlib-3.7%2B-11557c?logo=python&logoColor=white)
+![pytest](https://img.shields.io/badge/pytest-7.x-0A9EDC?logo=pytest&logoColor=white)
+![License](https://img.shields.io/badge/License-Academic-lightgrey)
 
-O projeto esta sendo construido em sprints. O baseline atual migra o resolvedor de TSP da pasta `references/` para `src/`, com:
+</div>
 
-- algoritmo genetico para TSP;
-- visualizacao com Pygame;
-- grafico de fitness com Matplotlib;
-- testes unitarios com `pytest`.
+---
 
-## Estado Atual
+## 👥 Equipe
 
-Implementado:
+| Nome | E-mail |
+|------|--------|
+| Jefferson Antônio Pantoja Silva | jeffkd35@gmail.com |
+| Wilson Lima da Silva | wilson.slima@gmail.com |
+| Gustavo Lopes da Silva | gustavo_lsilva@hotmail.com |
+| Felipe Soeiro Lopes | felipesoeiro.contato@outlook.com.br |
+| Vinicius Tavares Sousa da Silva | viniciustavares2014@gmail.com |
 
-- TSP com Algoritmo Genetico;
-- VRP com multiplas rotas e evolucao conjunta da frota;
-- representacao genetica de rotas;
-- operadores de crossover, mutacao, selecao por fitness e elitismo;
-- fitness com distancia, prioridade, atraso, capacidade e autonomia;
-- camada LLM testavel para relatorios, instrucoes e perguntas sobre rotas;
-- experimentos comparativos em VRP com artefatos em `artifacts/`;
-- leitura de entregas e veiculos via CSV;
-- visualizacao 2D das rotas, com fundo simplificado do Brasil para o dataset de capitais;
-- relatorio tecnico e roteiro de demonstracao consolidados;
-- CLI configuravel;
-- testes automatizados.
+---
 
-Entrega final consolidada:
+## 📋 Visão Geral
 
-- relatorio tecnico em `reports/final_report.md`;
-- roteiro de demonstracao em `docs/video_script.md`;
-- manifesto de artefatos em `artifacts/final/manifest.md`.
+Projeto de otimização combinatória para **distribuição de medicamentos e insumos em rotas médicas**, utilizando **Algoritmos Genéticos** para resolver o Problema do Caixeiro Viajante (TSP) e o Problema de Roteamento de Veículos (VRP).
 
-Experimentos disponíveis em VRP:
+O sistema parte de um código base de TSP e evolui incrementalmente em **9 sprints** para um resolvedor completo com restrições operacionais, visualização interativa, integração com LLMs e suite de experimentos comparativos.
 
-- `python -m src.metrics`: executa `pop50`, `pop100`, `pop100_no_elitism`, `pop500` e `pop500_no_elitism` em modo VRP, gera tabelas e graficos.
+> Repositório: **[github.com/tech-challenge-fiap-GRUPO-2026/tech-challenge-fase2](https://github.com/tech-challenge-fiap-GRUPO-2026/tech-challenge-fase2)**
 
-## Estrutura
+---
 
-- `src/`: implementacao principal
-- `tests/`: testes unitarios
-- `references/`: baseline e documentacao tecnica de apoio
-- `docs/`: contexto do projeto e roteiro das sprints
-- `data/`: datasets de exemplo
-- `config/`: configuracoes de experimentos
+## 🧬 Algoritmo Genético
 
-## Dados de Exemplo
+O núcleo da solução é um **Algoritmo Genético (AG)** capaz de operar em dois modos:
 
-- `data/deliveries_sample.csv`: entregas sintéticas usadas no demo atual
-- `data/brazil_capitals_sample.csv`: capitais brasileiras posicionadas em 2D para simulação visual com fundo do Brasil
+| Modo | Representação | Objetivo |
+|------|:-------------:|---------|
+| **TSP** | Permutação de entregas | Encontrar a rota mínima para um único veículo |
+| **VRP** | Cromossomo de frota completa | Otimizar simultaneamente distribuição e ordem das entregas entre múltiplos veículos |
 
-## Requisitos
+### Operadores Implementados
 
-- Python 3.12
-- `pygame`
-- `matplotlib`
-- `numpy`
-- `pytest`
+| Operador | Descrição |
+|----------|-----------|
+| **Seleção** | Torneio por fitness — favorece os melhores indivíduos |
+| **Crossover** | Combinação de sub-rotas entre pais (OX-style) |
+| **Mutação** | Swap, inversão e relocação de entregas dentro e entre rotas |
+| **Elitismo** | Preserva os `k` melhores indivíduos entre gerações |
 
-Instalar dependencias principais:
+---
 
-```bash
-.venv/bin/pip install -r requirements.txt
+## 📐 Função de Fitness
+
+O fitness de cada solução é calculado como:
+
+```
+fitness = distância_total
+        + penalidade_de_atraso
+        + penalidade_de_capacidade
+        + penalidade_de_autonomia
 ```
 
-Dependencias opcionais para chamada real da OpenAI:
+| Componente | Penalidade |
+|-----------|:-----------:|
+| Atraso `HIGH` | `100.0` × unidades de atraso |
+| Atraso `MEDIUM` | `30.0` × unidades de atraso |
+| Atraso `LOW` | `10.0` × unidades de atraso |
+| Excesso de capacidade | `25.0` × unidades acima do limite |
+| Excesso de autonomia | `25.0` × unidades acima do limite |
 
-```bash
-.venv/bin/pip install -r requirements-llm.txt
+> O algoritmo **minimiza** o fitness — soluções melhores têm valores menores.
+
+---
+
+## 📊 Experimentos VRP
+
+Cinco configurações foram comparadas em modo VRP, executadas com o dataset de entregas sintéticas:
+
+| Configuração | Fitness Final | Convergência | Tempo | Melhoria |
+|:------------|:-------------:|:------------:|:-----:|:--------:|
+| pop50 | 0.16 | 103 | 1.323s | 0.40 |
+| pop100 | 0.16 | 187 | 2.588s | 0.40 |
+| pop100_no_elitism | 0.16 | 176 | 2.639s | 0.40 |
+| pop500 | 0.16 | 33 | 13.404s | 0.35 |
+| pop500_no_elitism | 0.16 | 33 | 13.425s | 0.35 |
+
+> **`pop50` apresentou o melhor equilíbrio** entre tempo de execução e convergência — atingindo o mesmo fitness final que populações 10× maiores.
+
+Artefatos gerados em `artifacts/`:
+- `experiments/sprint8_summary.csv` — tabela comparativa
+- `experiments/sprint8_summary.json` — dados estruturados
+- `charts/fitness_curves.png` — curvas de convergência
+- `charts/final_fitness.png` — comparativo de fitness final
+- `charts/execution_time.png` — comparativo de tempo
+
+---
+
+## 📁 Estrutura do Projeto
+
+```
+tech-challenge-fase2/
+│
+├── src/                                      # Implementação principal
+│   ├── ga/
+│   │   └── genetic_algorithm.py             # Algoritmo genético e operadores
+│   ├── routing/
+│   │   ├── tsp.py                           # Resolvedor TSP
+│   │   └── vrp.py                           # Resolvedor VRP (cromossomo de frota)
+│   ├── models/                              # Dataclasses: Entrega, Veículo, Cidade
+│   ├── visualization/                       # Pygame (rota) + Matplotlib (fitness)
+│   ├── llm/                                 # Camada LLM — relatórios e instruções
+│   ├── metrics/                             # Runner de experimentos comparativos
+│   ├── data_loader.py                       # Leitura de CSV
+│   └── main.py                              # CLI e demo visual
+│
+├── tests/                                   # Testes automatizados (62 passing)
+│
+├── data/
+│   ├── deliveries_sample.csv               # Entregas sintéticas
+│   ├── brazil_capitals_sample.csv          # Capitais brasileiras em plano 2D
+│   └── vehicles_sample.csv                 # Veículos com capacidade e autonomia
+│
+├── config/                                  # Configurações dos experimentos
+├── docs/                                    # Documentação técnica por sprint
+├── reports/
+│   └── final_report.md                     # Relatório técnico consolidado
+├── artifacts/
+│   ├── experiments/                        # Resultados dos experimentos VRP
+│   └── final/                              # Manifesto final de artefatos
+├── references/                             # Baseline TSP e referências técnicas
+├── requirements.txt                        # Dependências principais
+└── requirements-llm.txt                    # Dependências opcionais (OpenAI)
 ```
 
-## Execucao
+---
 
-Executar a interface visual:
+## 🚀 Instruções de Execução
+
+### ✅ Pré-requisitos
+
+- Python 3.12 ou superior
+- pip
+
+---
+
+### 1. 📥 Clonar o repositório
+
+```bash
+git clone https://github.com/tech-challenge-fiap-GRUPO-2026/tech-challenge-fase2
+cd tech-challenge-fase2
+```
+
+### 2. 🐍 Criar ambiente virtual
+
+```bash
+python -m venv .venv
+
+# Linux / Mac
+source .venv/bin/activate
+
+# Windows
+.venv\Scripts\activate
+```
+
+### 3. 📦 Instalar as dependências
+
+```bash
+pip install -r requirements.txt
+```
+
+Dependências opcionais para integração real com OpenAI:
+
+```bash
+pip install -r requirements-llm.txt
+```
+
+---
+
+### 4. 🖥️ Executar a visualização (modo TSP)
 
 ```bash
 .venv/bin/python -m src.main
 ```
 
-Opcoes disponiveis:
-
-- `--vehicle-id <id>`: seleciona o veiculo de `data/vehicles_sample.csv` usado na simulacao. Padrao: primeiro veiculo do arquivo.
-- `--vehicle-ids <id...>`: seleciona os veiculos usados no modo `vrp`. Padrao: todos os veiculos do arquivo.
-- `--mode <tsp|vrp>`: define o modo da visualizacao. Padrao: `tsp`.
-- `--population-size <n>`: define o tamanho da populacao do algoritmo genetico. Padrao: `100`.
-- `--mutation-probability <p>`: define a probabilidade de mutacao. Padrao: `0.5`.
-- `--elite-size <n>`: define quantos melhores individuos sao preservados entre geracoes. Padrao: `1`.
-- `--fps <n>`: define a taxa de quadros da animacao. Padrao: `30`.
-- `--deliveries-file <path>`: define o CSV de entregas. Padrao: `data/deliveries_sample.csv`.
-- `--vehicles-file <path>`: define o CSV de veiculos. Padrao: `data/vehicles_sample.csv`.
-
-Exemplo:
+Exemplo com capitais brasileiras e parâmetros customizados:
 
 ```bash
-.venv/bin/python -m src.main --vehicle-id 3 --population-size 200 --mutation-probability 0.3 --elite-size 2 --fps 15
+.venv/bin/python -m src.main \
+  --deliveries-file data/brazil_capitals_sample.csv \
+  --vehicle-id 3 \
+  --population-size 200 \
+  --mutation-probability 0.3 \
+  --elite-size 2 \
+  --fps 15
 ```
 
-Exemplo com multiplos veiculos:
+### 5. 🚛 Executar a visualização (modo VRP)
 
 ```bash
-.venv/bin/python -m src.main --mode vrp --vehicle-ids 1 3 5 --deliveries-file data/brazil_capitals_sample.csv --population-size 100 --mutation-probability 0.3 --elite-size 2 --fps 15
+.venv/bin/python -m src.main \
+  --mode vrp \
+  --deliveries-file data/brazil_capitals_sample.csv \
+  --population-size 100 \
+  --mutation-probability 0.3 \
+  --elite-size 2 \
+  --fps 15
 ```
 
-Se `--vehicle-ids` nao for informado no modo `vrp`, todos os veiculos de `data/vehicles_sample.csv` sao usados.
-
-## Execucao da Camada LLM
-
-A camada LLM pode ser executada sem chave de API. Nesse modo, o sistema otimiza uma rota/frota e gera uma resposta textual deterministica.
-
-Gerar relatorio operacional VRP:
+Com veículos específicos:
 
 ```bash
-.venv/bin/python -m src.llm --mode vrp --output report --deliveries-file data/brazil_capitals_sample.csv --generations 80 --population-size 80
+.venv/bin/python -m src.main \
+  --mode vrp \
+  --vehicle-ids 1 3 5 \
+  --deliveries-file data/brazil_capitals_sample.csv \
+  --population-size 100
 ```
 
-Gerar instrucoes para motoristas:
+---
+
+### 6. 🤖 Executar a camada LLM
+
+A camada LLM funciona **sem chave de API** — retorna respostas determinísticas por padrão.
+
+**Gerar relatório operacional:**
 
 ```bash
-.venv/bin/python -m src.llm --mode vrp --output instructions --vehicle-ids 1 3 5 --deliveries-file data/brazil_capitals_sample.csv
+.venv/bin/python -m src.llm \
+  --mode vrp \
+  --output report \
+  --deliveries-file data/brazil_capitals_sample.csv \
+  --generations 80 \
+  --population-size 80
 ```
 
-Responder uma pergunta sobre a rota:
+**Gerar instruções para motoristas:**
 
 ```bash
-.venv/bin/python -m src.llm --mode tsp --output question --question "Qual e o fitness da rota?" --deliveries-file data/brazil_capitals_sample.csv --vehicle-id 3
+.venv/bin/python -m src.llm \
+  --mode vrp \
+  --output instructions \
+  --vehicle-ids 1 3 5 \
+  --deliveries-file data/brazil_capitals_sample.csv
 ```
 
-Opcoes principais:
-
-- `--mode <tsp|vrp>`: escolhe se a solucao textual sera gerada para uma rota unica ou frota.
-- `--output <report|instructions|question>`: define o tipo de texto gerado.
-- `--question <texto>`: pergunta usada com `--output question`.
-- `--generations <n>`: numero de geracoes antes de gerar o texto. Padrao: `80`.
-- `--population-size <n>`: tamanho da populacao. Padrao: `80`.
-- `--seed <n>`: semente para reproducibilidade. Padrao: `7`.
-
-Essa execucao usa o fallback offline da Sprint 7. A integracao real com OpenAI pode ser feita depois injetando um cliente LLM compatível com `complete(messages)`.
-
-Para usar OpenAI de verdade, instale as dependencias opcionais e configure a chave:
+**Responder pergunta sobre a rota:**
 
 ```bash
-.venv/bin/pip install -r requirements-llm.txt
+.venv/bin/python -m src.llm \
+  --mode tsp \
+  --output question \
+  --question "Qual é o fitness da rota?" \
+  --deliveries-file data/brazil_capitals_sample.csv \
+  --vehicle-id 3
+```
+
+**Com OpenAI (opcional):**
+
+```bash
 export OPENAI_API_KEY="sua-chave"
+.venv/bin/python -m src.llm \
+  --provider openai \
+  --model gpt-4o-mini \
+  --mode vrp \
+  --output report \
+  --deliveries-file data/brazil_capitals_sample.csv
 ```
 
-Depois execute com `--provider openai`:
+---
+
+### 7. 🔬 Executar experimentos VRP
 
 ```bash
-.venv/bin/python -m src.llm --provider openai --model gpt-4o-mini --mode vrp --output report --deliveries-file data/brazil_capitals_sample.csv
+.venv/bin/python -m src.metrics \
+  --deliveries-file data/deliveries_sample.csv \
+  --vehicles-file data/vehicles_sample.csv \
+  --output-dir artifacts
 ```
 
-Se existir um arquivo `.env` com `OPENAI_API_KEY=...`, ele sera carregado automaticamente quando `python-dotenv` estiver instalado.
+Executa os cenários `pop50`, `pop100`, `pop100_no_elitism`, `pop500` e `pop500_no_elitism` e salva artefatos em `artifacts/`.
 
-Fechar a janela:
-
-- pressione `q`, ou
-- feche a janela do Pygame
-
-Executar os testes:
+### 8. ✅ Executar os testes
 
 ```bash
-.venv/bin/pytest
+.venv/bin/python -m pytest
 ```
 
-## Documentacao
+Resultado esperado: **62 passed**.
 
-- `docs/project_context.md`: contexto do projeto
-- `docs/architecture.md`: arquitetura atual e evolucao futura
-- `docs/prompts.md`: definicao das sprints
-- `docs/report_outline.md`: estrutura sugerida do relatorio tecnico
-- `docs/sprint3_priorities.md`: prioridades e penalizacao por atraso HIGH
-- `docs/sprint4_capacity.md`: peso e capacidade maxima do veiculo
-- `docs/sprint5_autonomy.md`: distancia maxima e penalizacao por autonomia
-- `docs/sprint6_vrp.md`: VRP com multiplos veiculos e evolucao conjunta da frota
-- `docs/sprint7_llm.md`: camada LLM baseada em `references/agent-llm.py`
-- `docs/sprint8_experiments.md`: experimentos comparativos em VRP e artefatos da Sprint 8
-- `docs/sprint9_consolidation.md`: consolidacao final, comandos e evidencias
-- `src/metrics/`: experimentos comparativos e graficos da Sprint 8
-- `docs/brazil_capitals_map.md`: mapeamento das capitais brasileiras em 2D
-- `docs/video_script.md`: roteiro do video de demonstracao
-- `references/docs/architecture.md`: arquitetura do baseline TSP
-- `references/docs/extension_plan.md`: analise da Sprint 1 e plano de extensao
+---
 
-## Observacoes
+## ⚙️ Opções da CLI
 
-- O entrypoint atual esta em `src/main.py`.
-- A visualizacao em `src/main.py` usa o solver migrado da Sprint 2 como base de execucao.
-- Evolucoes futuras naturais incluem operadores VRP mais especializados, dados reais e malha viaria real.
+| Opção | Padrão | Descrição |
+|-------|:------:|-----------|
+| `--mode <tsp\|vrp>` | `tsp` | Modo de execução |
+| `--vehicle-id <id>` | 1º do CSV | Veículo usado no modo TSP |
+| `--vehicle-ids <ids>` | todos | Veículos usados no modo VRP |
+| `--population-size <n>` | `100` | Tamanho da população |
+| `--mutation-probability <p>` | `0.5` | Probabilidade de mutação |
+| `--elite-size <n>` | `1` | Indivíduos preservados por elitismo |
+| `--fps <n>` | `30` | Taxa de quadros da animação |
+| `--deliveries-file <path>` | `data/deliveries_sample.csv` | CSV de entregas |
+| `--vehicles-file <path>` | `data/vehicles_sample.csv` | CSV de veículos |
+
+> Para fechar a janela: pressione `q` ou feche a janela do Pygame.
+
+---
+
+## 🧩 Dependências
+
+| Biblioteca | Uso |
+|------------|-----|
+| `pygame` | Visualização interativa das rotas em tempo real |
+| `matplotlib` | Gráfico de evolução do fitness por geração |
+| `numpy` | Operações numéricas no algoritmo genético |
+| `pytest` | Suite de testes automatizados |
+| `openai` *(opcional)* | Integração real com LLM OpenAI |
+| `python-dotenv` *(opcional)* | Carregamento de `.env` com `OPENAI_API_KEY` |
+
+---
+
+## 📚 Documentação
+
+| Arquivo | Conteúdo |
+|---------|----------|
+| `reports/final_report.md` | Relatório técnico consolidado |
+| `docs/video_script.md` | Roteiro do vídeo de demonstração |
+| `docs/architecture.md` | Arquitetura do sistema |
+| `docs/sprint8_experiments.md` | Detalhamento dos experimentos VRP |
+| `docs/sprint9_consolidation.md` | Fechamento e evidências da entrega final |
+| `artifacts/final/manifest.md` | Manifesto de artefatos com comandos reproduzíveis |
+
+---
+
+## 🎬 Vídeo Demonstração
+
+[![Assistir no YouTube](https://img.shields.io/badge/YouTube-Assistir%20Demo-FF0000?logo=youtube&logoColor=white)](https://www.youtube.com/watch?v=DEMO_LINK)
+
+---
+
+## 🌐 Relatório de Resultados
+
+O relatório visual completo com os resultados dos experimentos está disponível em:
+
+> [`docs/resultado.html`](docs/resultado.html) — abra diretamente no navegador
+
+---
+
+## 🐙 Repositório GitHub
+
+[https://github.com/tech-challenge-fiap-GRUPO-2026/tech-challenge-fase2](https://github.com/tech-challenge-fiap-GRUPO-2026/tech-challenge-fase2)

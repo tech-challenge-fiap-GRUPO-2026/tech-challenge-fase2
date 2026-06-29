@@ -1,228 +1,263 @@
-# Arquitetura
+# 🏗️ Arquitetura do Sistema
 
-## Escopo
+**Tech Challenge Fase 2 — Otimização de Rotas Médicas com Algoritmos Genéticos**
 
-Este projeto implementa o Projeto 2 do Tech Challenge Fase 2: otimizacao de rotas para distribuicao de medicamentos e insumos usando Algoritmos Geneticos.
+---
 
-O estado atual cobre TSP com restricoes de prioridade, capacidade e autonomia, VRP com multiplos veiculos e evolucao conjunta da frota, alem de uma camada LLM testavel para relatorios, instrucoes e perguntas sobre rotas.
+## 📋 Escopo
 
-## Visao Geral
+Este projeto implementa o **Projeto 2 do Tech Challenge Fase 2**: otimização de rotas para distribuição de medicamentos e insumos usando Algoritmos Genéticos.
 
-Fluxo principal:
+A solução cobre:
+- **TSP** (Travelling Salesman Problem) — rota única com restrições de prioridade, capacidade e autonomia
+- **VRP** (Vehicle Routing Problem) — múltiplos veículos com evolução conjunta da frota
+- **Camada LLM** — relatórios operacionais, instruções para motoristas e Q&A sobre rotas
+- **Visualização interativa** — Pygame (rotas animadas) + Matplotlib (curvas de fitness)
+- **Experimentos comparativos** — 5 configurações do AG em modo VRP
 
-```text
-CSV de entregas + CSV de veiculos
-        |
-        v
-src/data_loader.py
-        |
-        v
-Delivery / Vehicle
-        |
-        v
-TSPProblem / VRPProblem
-        |
-        v
-Algoritmo Genetico
-        |
-        v
-Melhor rota ou rotas por veiculo + historico de fitness
-        |
-        v
-Visualizacao Pygame + grafico Matplotlib
+---
+
+## 🔄 Fluxo Principal de Dados
+
+```
+CSV de entregas + CSV de veículos
+         │
+         ▼
+ src/data_loader.py          ← lê e valida os arquivos CSV
+         │
+         ▼
+ Delivery / Vehicle          ← dataclasses tipadas (src/models/)
+         │
+         ▼
+ TSPProblem / VRPProblem     ← encapsula o problema de otimização
+         │
+         ▼
+ Algoritmo Genético          ← src/ga/genetic_algorithm.py
+         │
+         ▼
+ TSPSolution / VRPSolution   ← melhor rota(s) + histórico de fitness
+         │
+         ├── Visualização Pygame    ← rota animada em tempo real
+         ├── Gráfico Matplotlib     ← curva de evolução do fitness
+         └── Camada LLM             ← relatórios e instruções em texto
 ```
 
-## Componentes
+---
 
-### Entrada de Dados
+## 🧩 Componentes
 
-`src/data_loader.py` carrega:
+### 📂 Entrada de Dados — `src/data_loader.py`
 
-- `data/deliveries_sample.csv`
-- `data/brazil_capitals_sample.csv`
-- `data/vehicles_sample.csv`
+Responsável por carregar e validar os arquivos CSV de entrada.
 
-As entregas possuem:
+| Dataset | Arquivo padrão | Campos principais |
+|---------|----------------|-------------------|
+| Entregas | `data/deliveries_sample.csv` | `delivery_id`, `latitude`, `longitude`, `priority`, `weight`, `due_time` |
+| Capitais BR | `data/brazil_capitals_sample.csv` | Mesmos campos — ativa mapa do Brasil na visualização |
+| Veículos | `data/vehicles_sample.csv` | `vehicle_id`, `max_capacity`, `max_distance` |
 
-- `delivery_id`
-- `latitude`
-- `longitude`
-- `priority`
-- `weight`
-- `due_time`
+---
 
-Os veiculos possuem:
+### 📦 Modelos — `src/models/`
 
-- `vehicle_id`
-- `max_capacity`
-- `max_distance`
+Dataclasses tipadas que representam o domínio do problema.
 
-### Modelos
+**`src/models/delivery.py`**
+- `City` — ponto base (depósito ou coordenada genérica)
+- `Delivery` — ponto de entrega com prioridade, peso e prazo
 
-`src/models/delivery.py` define:
+**`src/models/vehicle.py`**
+- `Vehicle` — veículo com capacidade máxima e autonomia máxima
 
-- `City`: ponto base ou deposito;
-- `Delivery`: ponto de entrega com prioridade, peso e prazo.
+**`src/models/priority.py`**
+- `Priority.HIGH` — penalidade de atraso 100×
+- `Priority.MEDIUM` — penalidade de atraso 30×
+- `Priority.LOW` — penalidade de atraso 10×
 
-`src/models/vehicle.py` define:
+---
 
-- `Vehicle`: capacidade maxima e autonomia maxima.
+### 🧬 Algoritmo Genético — `src/ga/genetic_algorithm.py`
 
-`src/models/priority.py` define:
+Núcleo da otimização. Implementa o ciclo evolutivo completo.
 
-- `HIGH`
-- `MEDIUM`
-- `LOW`
+**Responsabilidades:**
+- Geração da população inicial (aleatória + heurística)
+- Cálculo de distância euclidiana entre pontos
+- Cálculo do fitness (distância + penalidades)
+- Crossover por ordem (OX — Order Crossover)
+- Mutação por troca de posições adjacentes
+- Elitismo — preservação dos `k` melhores indivíduos
+- Iteração por gerações até critério de parada
 
-### Algoritmo Genetico
+> **Representação:** No TSP, cada indivíduo é uma **permutação** dos pontos de entrega. O depósito é mantido como ponto fixo inicial quando fornecido.
 
-`src/ga/genetic_algorithm.py` contem:
+---
 
-- geracao de populacao inicial;
-- calculo de distancia;
-- calculo de fitness;
-- crossover por ordem;
-- mutacao por troca adjacente;
-- ordenacao por fitness;
-- execucao por geracoes.
+### 🗺️ Função de Fitness
 
-A rota e representada como uma permutacao dos pontos de entrega. Quando ha deposito, ele e mantido como ponto fixo inicial.
+O algoritmo **minimiza** este valor — soluções com fitness menor são melhores.
 
-### Fitness
-
-O fitness e minimizado:
-
-```text
-fitness = distancia_total
+```
+fitness = distância_total
         + penalidade_de_atraso
         + penalidade_de_capacidade
         + penalidade_de_autonomia
 ```
 
-Penalidades atuais:
+| Componente | Cálculo |
+|-----------|---------|
+| **Distância total** | Soma das distâncias euclidianas entre pontos consecutivos (rota fechada) |
+| **Atraso HIGH** | `(chegada − due_time) × 100.0` por unidade de atraso |
+| **Atraso MEDIUM** | `(chegada − due_time) × 30.0` por unidade de atraso |
+| **Atraso LOW** | `(chegada − due_time) × 10.0` por unidade de atraso |
+| **Excesso de capacidade** | `(peso_total − max_capacity) × 25.0` por unidade acima do limite |
+| **Excesso de autonomia** | `(distância − max_distance) × 25.0` por unidade acima do limite |
 
-- atraso `HIGH`: `100.0` por unidade de atraso;
-- atraso `MEDIUM`: `30.0` por unidade de atraso;
-- atraso `LOW`: `10.0` por unidade de atraso;
-- excesso de capacidade: `25.0` por unidade acima de `max_capacity`;
-- excesso de autonomia: `25.0` por unidade acima de `max_distance`.
+Entregas sem `due_time` definido não recebem penalidade de atraso.
 
-### Roteamento
+---
 
-`src/routing/tsp.py` adapta o algoritmo genetico para o problema TSP.
+### 🚗 Roteamento — `src/routing/`
 
-Ele recebe:
+#### TSP — `src/routing/tsp.py`
 
-- entregas;
-- deposito opcional;
-- veiculo opcional.
+Adapta o algoritmo genético para o problema de rota única.
 
-Quando o veiculo existe, `max_capacity` e `max_distance` sao usados no fitness.
+Recebe como entrada:
+- Lista de entregas
+- Depósito opcional
+- Veículo opcional (para ativar restrições de capacidade e autonomia)
 
-`src/routing/vrp.py` expande o fluxo para multiplos veiculos.
+#### VRP — `src/routing/vrp.py`
 
-Ele fornece:
+Expande o TSP para múltiplos veículos com evolução conjunta.
 
-- `VRPProblem`: entregas, veiculos e deposito;
-- `VRPRoute`: rota resolvida para um veiculo;
-- `VRPSolution`: conjunto de rotas e fitness agregado;
-- `distribute_deliveries`: heuristica usada para uma solucao inicial;
-- `generate_fleet_population`: populacao de solucoes completas de frota;
-- `fleet_crossover`: crossover para cromossomos de frota;
-- `mutate_fleet`: mutacoes que podem mover/trocar entregas entre veiculos;
-- `iterate_vrp`: evolucao geracional da frota completa.
+| Classe / Função | Responsabilidade |
+|----------------|-----------------|
+| `VRPProblem` | Encapsula entregas, veículos e depósito |
+| `VRPRoute` | Rota resolvida para um único veículo |
+| `VRPSolution` | Conjunto de rotas + fitness agregado da frota |
+| `distribute_deliveries` | Heurística de solução inicial por prioridade/prazo/capacidade |
+| `generate_fleet_population` | Gera população de soluções completas de frota |
+| `fleet_crossover` | Crossover entre cromossomos de frota |
+| `mutate_fleet` | Mutações que movem/trocam entregas entre veículos |
+| `iterate_vrp` | Evolução geracional da frota completa |
 
-### Visualizacao
+**Cromossomo VRP:**
+```
+Indivíduo = frota completa
 
-`src/main.py` executa o demo visual com Pygame.
+Veículo 1: Entrega A → C → F
+Veículo 2: Entrega B → D
+Veículo 3: Entrega E → G → H
+```
 
-A tela mostra:
+**Fitness agregado:**
+```
+fitness_total = Σ fitness(rota de cada veículo)
+```
 
-- grafico de fitness;
-- deposito;
-- pontos de entrega;
-- fundo simplificado do Brasil quando o CSV de capitais e usado;
-- no modo TSP, melhor rota atual e rota secundaria da populacao;
-- no modo VRP, a evolucao geracional da frota com uma rota por veiculo em cores diferentes e tracado progressivo.
+---
 
-O argumento `--fps` controla a velocidade da animacao.
+### 🎮 Visualização — `src/visualization/` + `src/main.py`
 
-### Camada LLM
+Executa o demo visual com Pygame e Matplotlib lado a lado.
 
-`references/agent-llm.py` foi usado como referencia para a Sprint 7.
+**Pygame (rota 2D):**
+- Modo TSP: melhor rota atual + rota secundária da população
+- Modo VRP: uma cor diferente por veículo, tracado progressivo por geração
+- Dataset de capitais brasileiras: fundo simplificado do mapa do Brasil
+- Argumento `--fps` controla a velocidade da animação
 
-O arquivo demonstra:
+**Matplotlib (fitness):**
+- Curva de evolução do fitness por geração
+- Atualizada em tempo real durante a execução
 
-- uso de OpenAI com `dotenv`;
-- historico de mensagens;
-- function calling;
-- execucao de funcoes locais chamadas pela LLM;
-- interface Streamlit.
+---
 
-No projeto principal, a camada LLM fica em `src/llm/` e gera instrucoes, relatorios e respostas sobre rotas. O dominio financeiro do exemplo nao foi reaproveitado.
+### 🤖 Camada LLM — `src/llm/`
 
-Arquivos principais:
+Transforma dados operacionais das rotas em texto legível.
 
-- `src/llm/prompts.py`: contexto da solucao e prompts reutilizaveis;
-- `src/llm/report_generator.py`: relatorio operacional e instrucoes para motoristas;
-- `src/llm/route_explainer.py`: respostas e explicacoes sobre rotas.
-- `src/llm/openai_client.py`: cliente OpenAI opcional;
-- `src/llm/__main__.py`: execucao via `python -m src.llm`.
+| Arquivo | Responsabilidade |
+|---------|-----------------|
+| `src/llm/prompts.py` | Contexto da solução e prompts reutilizáveis |
+| `src/llm/report_generator.py` | Relatório operacional da frota e instruções por motorista |
+| `src/llm/route_explainer.py` | Respostas e explicações sobre rotas |
+| `src/llm/openai_client.py` | Cliente OpenAI opcional |
+| `src/llm/__main__.py` | Ponto de entrada via `python -m src.llm` |
 
-A integracao com provedor externo e opcional por cliente injetado ou `--provider openai`, o que permite testes sem internet ou `OPENAI_API_KEY`.
+**Funcionamento:**
+- Sem cliente externo → respostas **determinísticas offline** (ideal para testes)
+- Com `--provider openai` → envia mensagens reais à API da OpenAI
 
-### CLI
+---
+
+### 📊 Experimentos — `src/metrics/`
+
+Runner para comparação sistemática de configurações do AG em modo VRP.
+
+| Arquivo | Responsabilidade |
+|---------|-----------------|
+| `src/metrics/experiments.py` | Execução das configurações de experimento |
+| `src/metrics/experiment_logger.py` | Exportação de CSV, JSON, Markdown e gráficos PNG |
+| `src/metrics/statistics.py` | Métricas auxiliares |
+| `src/metrics/__main__.py` | Ponto de entrada via `python -m src.metrics` |
+
+---
+
+### ⌨️ CLI — `src/main.py`
 
 Comando principal:
 
 ```bash
-.venv/bin/python -m src.main
+.venv/bin/python -m src.main [opções]
 ```
 
-Opcoes:
+| Opção | Padrão | Descrição |
+|-------|--------|-----------|
+| `--mode` | `tsp` | Modo de otimização: `tsp` ou `vrp` |
+| `--vehicle-id` | 1º do CSV | Veículo usado no modo TSP |
+| `--vehicle-ids` | todos | Veículos usados no modo VRP |
+| `--population-size` | `100` | Número de indivíduos na população |
+| `--mutation-probability` | `0.5` | Probabilidade de mutação |
+| `--elite-size` | `1` | Indivíduos preservados por elitismo |
+| `--fps` | `30` | Taxa de quadros da animação |
+| `--deliveries-file` | `data/deliveries_sample.csv` | CSV de entregas |
+| `--vehicles-file` | `data/vehicles_sample.csv` | CSV de veículos |
 
-- `--vehicle-id`
-- `--vehicle-ids`
-- `--mode`
-- `--population-size`
-- `--mutation-probability`
-- `--elite-size`
-- `--fps`
-- `--deliveries-file`
-- `--vehicles-file`
+---
 
-## Testes
+## ✅ Cobertura de Testes — `tests/`
 
-Os testes cobrem:
+62 testes passando com pytest. Cobrem:
 
-- distancia euclidiana;
-- fitness de rota fechada;
-- populacao inicial;
-- crossover;
-- mutacao;
-- historico de fitness;
-- prioridade e atraso;
-- capacidade;
-- autonomia;
-- leitura de CSV;
-- parsing da CLI;
-- modo visual VRP;
-- selecao de frota por CLI;
-- integracao basica do TSP;
-- distribuicao VRP;
-- fitness agregado de frota.
-- prompts e respostas offline da camada LLM.
+| Área | Exemplos de testes |
+|------|--------------------|
+| AG — núcleo | Distância euclidiana, população inicial, crossover, mutação, histórico de fitness |
+| Fitness | Rota fechada, penalidade por atraso (HIGH/MEDIUM/LOW), capacidade, autonomia |
+| Dados | Carregamento de CSV de entregas e veículos |
+| CLI | Parsing de argumentos, modo TSP/VRP, seleção de veículos |
+| VRP | Distribuição de entregas, fitness agregado, estados geracionais, mutação de frota |
+| LLM | Prompts, respostas offline, fallback sem chave de API |
 
-## Limitacoes Atuais
+---
 
-- Distancias sao euclidianas em 2D, nao por malha viaria real.
-- O VRP atual otimiza a frota em conjunto, mas ainda usa operadores geneticos simples e distancia euclidiana.
-- A camada LLM possui fallback deterministico e cliente OpenAI opcional em `src/llm/openai_client.py`.
-- Os modulos de metricas e experimentos foram implementados em `src/metrics/` e executam comparacoes em VRP por padrao.
-- A visualizacao usa um fundo simplificado do Brasil para o dataset de capitais, mas nao usa mapa geografico real nem malha viaria.
+## ⚠️ Limitações Atuais
 
-## Evolucao Futura
+| Limitação | Impacto |
+|-----------|---------|
+| Distâncias euclidianas em 2D | Não reflete rotas reais por malha viária |
+| Operadores VRP simples | Crossover pode não preservar agrupamentos geográficos |
+| LLM determinística por padrão | Cliente OpenAI é opcional e não demonstrado em produção |
+| Mapa do Brasil simplificado | Fundo visual apenas — sem georeferenciamento real |
 
-1. Refinar operadores geneticos do VRP para preservar melhor agrupamentos geograficos.
-2. Integrar cliente OpenAI concreto se a demonstracao exigir chamada real.
-3. Usar dados reais e malha viaria real.
+---
+
+## 🚀 Evolução Futura
+
+1. **Operadores VRP especializados** — preservar agrupamentos geográficos (cluster-first)
+2. **Malha viária real** — integração com OSMnx ou APIs de roteirização
+3. **VRPTW** — Vehicle Routing Problem with Time Windows
+4. **AG híbrido** — busca local 2-opt ou Or-opt para refinamento pós-genético
+5. **Cliente OpenAI concreto** — demonstração em produção com GPT-4o-mini

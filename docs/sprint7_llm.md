@@ -1,96 +1,122 @@
-# Sprint 7 - Camada LLM
+# 🏃 Sprint 7 — Camada LLM
 
-## Objetivo
+**Status:** ✅ Concluída
 
-Concluir a camada LLM do Projeto 2 para gerar textos operacionais a partir das rotas otimizadas.
+---
 
-Status: concluida.
+## 🎯 Objetivo
 
-Resumo: a Sprint 7 foi finalizada com uma camada LLM testavel, offline por padrao e com integracao opcional com OpenAI.
+Implementar uma **camada LLM testável e desacoplada** que transforma dados operacionais das rotas otimizadas em texto legível para humanos — relatórios, instruções para motoristas e respostas sobre as rotas.
 
-## Referencia Adicionada
+---
 
-Foi adicionado o arquivo:
+## 🤖 O que a Camada LLM Faz?
 
-- `references/agent-llm.py`
+Ao final da otimização (TSP ou VRP), a camada LLM recebe o objeto de solução e gera saídas em três modos:
 
-Esse arquivo e uma referencia de agente com:
+| Modo | Flag | Saída |
+|------|------|-------|
+| **Relatório operacional** | `--output report` | Resumo da frota: fitness, distâncias, tempo estimado por veículo |
+| **Instruções por motorista** | `--output instructions` | Lista ordenada de entregas para cada veículo, com observações |
+| **Q&A sobre rotas** | `--output question` | Resposta em linguagem natural para uma pergunta sobre a rota |
 
-- interface Streamlit;
-- uso da API da OpenAI;
-- carregamento de variaveis com `dotenv`;
-- historico de mensagens em `session_state`;
-- chamada de ferramentas via function calling;
-- execucao de funcoes locais a partir de chamadas da LLM.
+---
 
-O exemplo esta no dominio financeiro, entao nao deve ser copiado diretamente para producao do projeto de rotas. A referencia util para a Sprint 7 e o padrao de integracao entre interface, LLM, mensagens e ferramentas.
+## 📁 Arquivos Implementados
 
-## Escopo da Sprint
+| Arquivo | Responsabilidade |
+|---------|-----------------|
+| `src/llm/prompts.py` | Monta o contexto da solução (entregas, fitness, rotas) e os prompts reutilizáveis |
+| `src/llm/report_generator.py` | Gera o relatório operacional e as instruções por motorista |
+| `src/llm/route_explainer.py` | Responde perguntas e explica rotas em linguagem natural |
+| `src/llm/openai_client.py` | Cliente OpenAI opcional — injetável nos geradores |
+| `src/llm/__main__.py` | Ponto de entrada via `python -m src.llm` |
+| `tests/test_llm.py` | Testes sem chamada obrigatória a provedor externo |
 
-Implementar uma camada LLM testavel e desacoplada da visualizacao.
+---
 
-Entregaveis implementados:
+## 🏗️ Estratégia de Design
 
-- `src/llm/prompts.py`: prompts reutilizaveis;
-- `src/llm/report_generator.py`: geracao de relatorio operacional;
-- `src/llm/route_explainer.py`: explicacao de rotas e respostas simples;
-- `src/llm/openai_client.py`: cliente OpenAI opcional;
-- `src/llm/__main__.py`: execucao demonstravel por CLI;
-- `tests/test_llm.py`: testes sem chamada obrigatoria a provedor externo;
-- documentacao de uso.
+O código separa claramente as responsabilidades:
 
-## Funcoes Esperadas
-
-A Sprint 7 permite:
-
-- gerar instrucoes para motoristas;
-- gerar relatorio operacional da rota ou frota;
-- responder perguntas sobre entregas, atrasos, capacidade e autonomia;
-- montar prompts a partir de `TSPSolution` ou `VRPSolution`;
-- executar por `python -m src.llm`;
-- permitir integracao externa por cliente injetado;
-- usar OpenAI de forma opcional com `--provider openai`.
-
-## Estrategia Tecnica
-
-O codigo de producao separa:
-
-- montagem de contexto da rota;
-- montagem do prompt;
-- chamada opcional ao provedor LLM;
-- formatacao da resposta.
-
-Os testes validam principalmente:
-
-- conteudo dos prompts;
-- presenca de entregas, veiculos e metricas importantes;
-- comportamento com TSP e VRP;
-- fallback sem `OPENAI_API_KEY`.
-
-## Uso Basico
-
-Pela linha de comando:
-
-```bash
-.venv/bin/python -m src.llm --mode vrp --output report --deliveries-file data/brazil_capitals_sample.csv
+```
+1. Montagem de contexto     ← extrai dados da TSPSolution ou VRPSolution
+         │
+         ▼
+2. Montagem do prompt       ← formata o contexto em texto para a LLM
+         │
+         ▼
+3. Chamada ao provedor LLM  ← opcional: offline (determinístico) ou OpenAI
+         │
+         ▼
+4. Formatação da resposta   ← limpa e estrutura o texto final
 ```
 
-Outros tipos de saida:
+Essa separação permite **testar cada etapa isoladamente** sem depender de internet ou chave de API.
+
+---
+
+## ⌨️ Uso pela Linha de Comando
+
+### Modo offline (padrão — sem chave de API)
 
 ```bash
-.venv/bin/python -m src.llm --mode vrp --output instructions --vehicle-ids 1 3 5
-.venv/bin/python -m src.llm --mode tsp --output question --question "Qual e o fitness da rota?"
+# Relatório operacional VRP
+.venv/bin/python -m src.llm \
+  --mode vrp \
+  --output report \
+  --deliveries-file data/brazil_capitals_sample.csv \
+  --generations 80 \
+  --population-size 80
+
+# Instruções para motoristas (veículos específicos)
+.venv/bin/python -m src.llm \
+  --mode vrp \
+  --output instructions \
+  --vehicle-ids 1 3 5 \
+  --deliveries-file data/brazil_capitals_sample.csv
+
+# Pergunta sobre rota TSP
+.venv/bin/python -m src.llm \
+  --mode tsp \
+  --output question \
+  --question "Qual é o fitness da rota?" \
+  --deliveries-file data/brazil_capitals_sample.csv \
+  --vehicle-id 3
 ```
 
-Sem cliente externo, o sistema gera uma resposta textual deterministica:
+### Modo com OpenAI (opcional)
+
+```bash
+# Instalar dependências extras
+pip install openai python-dotenv
+
+# Configurar chave (ou criar arquivo .env)
+export OPENAI_API_KEY="sua-chave"
+
+# Executar com GPT-4o-mini
+.venv/bin/python -m src.llm \
+  --provider openai \
+  --model gpt-4o-mini \
+  --mode vrp \
+  --output report \
+  --deliveries-file data/brazil_capitals_sample.csv
+```
+
+---
+
+## 🐍 Uso Programático
+
+### Sem cliente externo (respostas determinísticas)
 
 ```python
 from src.llm import generate_operational_report
 
 report = generate_operational_report(solution)
+print(report)
 ```
 
-Com cliente externo, injete um objeto com metodo `complete(messages)`:
+### Com cliente externo injetado
 
 ```python
 from src.llm import generate_operational_report
@@ -98,48 +124,42 @@ from src.llm import generate_operational_report
 report = generate_operational_report(solution, client=my_llm_client)
 ```
 
-Essa abordagem permite testar a camada LLM sem depender de internet ou chave de API.
+O `client` pode ser qualquer objeto com o método `complete(messages: list) -> str` — ideal para mocks em testes.
 
-## Uso com OpenAI
+---
 
-A chamada real ao provedor e opcional.
+## 🔌 Referência Técnica
 
-Instalacao opcional:
+A implementação usou `references/agent-llm.py` como referência de padrões de integração:
 
-```bash
-.venv/bin/pip install openai python-dotenv
-```
+| Padrão | Uso na Sprint 7 |
+|--------|----------------|
+| Uso da API OpenAI com `dotenv` | Cliente em `src/llm/openai_client.py` |
+| Histórico de mensagens | Estrutura de prompts em `src/llm/prompts.py` |
+| Function calling | Referência de padrão (não usado diretamente) |
+| Separação interface/lógica | Desacoplamento da visualização Pygame |
 
-Configure a chave:
+> O domínio financeiro do exemplo não foi reaproveitado — apenas os padrões de integração.
 
-```bash
-export OPENAI_API_KEY="sua-chave"
-```
+---
 
-Ou crie um arquivo `.env` com:
+## 🚫 Fora do Escopo desta Sprint
 
-```text
-OPENAI_API_KEY=sua-chave
-```
+- Dependência obrigatória de internet nos testes
+- Interface Streamlit (visualização via Pygame é mantida)
+- Cliente OpenAI obrigatório em produção
+- Uso de dados financeiros do arquivo de referência
 
-Execucao:
+---
 
-```bash
-.venv/bin/python -m src.llm --provider openai --model gpt-4o-mini --mode vrp --output report --deliveries-file data/brazil_capitals_sample.csv
-```
+## ✅ Critérios de Aceite
 
-## Fora do Escopo Inicial
-
-- depender obrigatoriamente de internet nos testes;
-- usar dados financeiros do exemplo;
-- acoplar Streamlit ao nucleo de roteamento;
-- substituir a visualizacao Pygame.
-- tornar o cliente OpenAI obrigatorio.
-
-## Criterios de Aceite
-
-- O projeto gera instrucoes legiveis para motoristas.
-- O projeto gera um relatorio operacional textual.
-- O projeto monta prompts reutilizaveis e testaveis.
-- A camada LLM funciona com mock/fake client nos testes.
-- O uso real com provedor externo pode ser feito por cliente injetado ou `--provider openai`.
+| Critério | Status |
+|----------|--------|
+| Gera instruções legíveis para motoristas | ✅ |
+| Gera relatório operacional textual da frota | ✅ |
+| Monta prompts reutilizáveis e testáveis | ✅ |
+| Funciona com mock/fake client nos testes | ✅ |
+| Funciona sem OPENAI_API_KEY (modo offline) | ✅ |
+| Integração real com OpenAI via `--provider openai` | ✅ |
+| Suporta TSPSolution e VRPSolution | ✅ |

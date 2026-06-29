@@ -1,210 +1,258 @@
-# Introdução
+# Relatório Técnico — Projeto 2
 
-Este relatorio descreve o desenvolvimento do Projeto 2 do Tech Challenge Fase 2: um sistema de otimizacao de rotas medicas para distribuicao de medicamentos e insumos.
+**Tech Challenge Fase 2 · Pós-Graduação em IA para Desenvolvedores · FIAP 2026**
 
-O projeto parte de um codigo base de TSP e evolui para um resolvedor em `src/` com Algoritmo Genetico, restricoes operacionais, visualizacao e testes automatizados.
+---
 
-Estado atual: TSP com prioridades, capacidade e autonomia implementado, VRP com multiplos veiculos e evolucao conjunta da frota, camada LLM finalizada, experimentos VRP executados e documentacao final consolidada.
+## Equipe
 
-# Fundamentação Teórica
+| Nome | E-mail |
+|------|--------|
+| Jefferson Antônio Pantoja Silva | jeffkd35@gmail.com |
+| Wilson Lima da Silva | wilson.slima@gmail.com |
+| Gustavo Lopes da Silva | gustavo_lsilva@hotmail.com |
+| Felipe Soeiro Lopes | felipesoeiro.contato@outlook.com.br |
+| Vinicius Tavares Sousa da Silva | viniciustavares2014@gmail.com |
 
-## Algoritmos Genéticos
+---
 
-Algoritmos Geneticos sao metodos de otimizacao inspirados em processos evolutivos. Uma populacao de solucoes candidatas e avaliada por uma funcao fitness, e novas geracoes sao criadas por operadores como selecao, crossover, mutacao e elitismo.
+## 1. Introdução
 
-Neste projeto, cada individuo representa uma rota no TSP ou uma frota completa no VRP. A qualidade da solucao e avaliada por distancia total e penalidades ligadas ao contexto logistico medico.
+Este relatório documenta o desenvolvimento do **Projeto 2 do Tech Challenge Fase 2**: um sistema de otimização de rotas médicas para distribuição de medicamentos e insumos hospitalares.
 
-## Problema do Caixeiro Viajante
+O projeto parte de um código base de TSP (Travelling Salesman Problem) e evolui incrementalmente em **9 sprints** para um resolvedor completo com:
+- Restrições operacionais reais (prioridade, capacidade, autonomia)
+- VRP (Vehicle Routing Problem) com múltiplos veículos
+- Visualização interativa com Pygame e mapa do Brasil
+- Camada LLM para geração de relatórios e instruções
+- Suite de experimentos comparativos com artefatos reproduzíveis
+- **62 testes automatizados passando**
 
-O Problema do Caixeiro Viajante, ou TSP, busca encontrar a menor rota que visita todos os pontos uma unica vez e retorna ao ponto inicial.
+---
 
-No contexto do projeto, os pontos representam entregas de medicamentos e insumos. O deposito representa o ponto de partida da rota.
+## 2. Fundamentação Teórica
 
-## Vehicle Routing Problem
+### 2.1 Algoritmos Genéticos
 
-O Vehicle Routing Problem, ou VRP, generaliza o TSP para multiplos veiculos e multiplas rotas.
+Algoritmos Genéticos (AG) são métodos de otimização inspirados em processos evolutivos da natureza. Uma população de soluções candidatas é criada, avaliada por uma função fitness e evoluída ao longo de gerações por operadores de:
 
-O VRP e um requisito do enunciado e foi implementado com um cromossomo de frota. O modulo `src/routing/vrp.py` evolui distribuicao e ordem das entregas em conjunto, permitindo mover e trocar entregas entre veiculos durante a evolucao genetica.
+- **Seleção** — favorece soluções com melhor fitness (torneio)
+- **Crossover** — combina material genético de dois pais para gerar filhos
+- **Mutação** — introduz variações aleatórias para manter diversidade
+- **Elitismo** — preserva os melhores indivíduos entre gerações
 
-## Large Language Models
+Ao longo das gerações, a população tende a convergir para soluções cada vez melhores — sem garantia de ótimo global, mas com boa aproximação prática para problemas combinatórios complexos.
 
-Large Language Models podem transformar dados operacionais em explicacoes, instrucoes e relatorios em linguagem natural.
+### 2.2 Problema do Caixeiro Viajante (TSP)
 
-No Projeto 2, a LLM deve gerar instrucoes para motoristas, relatorios de eficiencia e respostas sobre rotas. A Sprint 7 implementou uma camada LLM testavel em `src/llm/`, usando `references/agent-llm.py` como referencia tecnica de mensagens e function calling.
+O TSP busca encontrar a **rota mais curta** que visita todos os pontos exatamente uma vez e retorna ao ponto inicial. No contexto do projeto, os pontos representam pontos de entrega de medicamentos e o depósito é o ponto de partida da rota.
 
-# Metodologia
+Representação: cada indivíduo é uma **permutação** dos pontos de entrega.
 
-O projeto foi conduzido em sprints incrementais:
+### 2.3 Vehicle Routing Problem (VRP)
 
-1. Analise do codigo base e plano de extensao.
-2. Migracao do TSP para `src/` com dataclasses, type hints e testes.
-3. Inclusao de prioridades e penalizacao por atraso.
-4. Inclusao de peso e capacidade maxima dos veiculos.
-5. Inclusao de autonomia maxima dos veiculos.
-6. Inclusao de VRP com multiplas rotas e evolucao conjunta da frota.
-7. Inclusao de camada LLM para relatorios, instrucoes e perguntas sobre rotas.
-8. Execucao de experimentos comparativos em VRP.
-9. Consolidacao final de relatorio, roteiro e artefatos de demonstracao.
+O VRP generaliza o TSP para **múltiplos veículos e múltiplas rotas simultâneas**. O objetivo é distribuir as entregas entre os veículos e otimizar a ordem de visita de cada um, respeitando restrições de capacidade e autonomia.
 
-A validacao foi feita com testes automatizados usando `pytest`.
+No projeto, o VRP usa um **cromossomo de frota**: cada indivíduo representa toda a distribuição de entregas entre os veículos, permitindo que o AG evolua simultaneamente a distribuição e a ordem das rotas.
 
-# Implementação
+### 2.4 Large Language Models (LLM)
 
-## Estrutura
+LLMs transformam dados operacionais estruturados em linguagem natural legível para humanos. No projeto, a camada LLM recebe objetos `TSPSolution` ou `VRPSolution` e gera relatórios, instruções por motorista e respostas a perguntas sobre as rotas.
 
-- `src/ga/genetic_algorithm.py`: algoritmo genetico e fitness.
-- `src/routing/tsp.py`: adaptacao do algoritmo para TSP.
-- `src/routing/vrp.py`: otimizacao de frota com multiplas rotas.
-- `src/models/`: modelos de entrega, prioridade, cidade e veiculo.
-- `src/data_loader.py`: leitura dos arquivos CSV.
-- `src/visualization/`: desenho da rota e grafico de fitness.
-- `src/llm/`: prompts, relatorios, instrucoes e explicacoes sobre rotas.
-- `src/metrics/`: runner de experimentos, metricas e exportacao de artefatos.
-- `src/main.py`: CLI e demo visual.
-- `tests/`: testes automatizados.
+A integração com OpenAI é opcional — o sistema funciona offline com respostas determinísticas.
 
-## Fitness
+---
 
-O fitness atual e:
+## 3. Metodologia
 
-```text
-fitness = distancia_total
+O projeto foi conduzido em 9 sprints incrementais, cada uma adicionando uma funcionalidade verificável:
+
+| Sprint | Funcionalidade |
+|--------|---------------|
+| 1 | Análise do código base e plano de extensão |
+| 2 | Migração do TSP para `src/` com dataclasses, type hints e testes |
+| 3 | Prioridades de entrega (HIGH/MEDIUM/LOW) e penalidade por atraso |
+| 4 | Peso das entregas e capacidade máxima dos veículos |
+| 5 | Autonomia máxima por veículo |
+| 6 | VRP com múltiplos veículos e cromossomo de frota |
+| 7 | Camada LLM para relatórios, instruções e Q&A |
+| 8 | Experimentos comparativos em VRP com 5 configurações |
+| 9 | Consolidação — relatório, roteiro de vídeo e manifesto de artefatos |
+
+A validação foi feita com testes automatizados usando `pytest` ao longo de todas as sprints.
+
+---
+
+## 4. Implementação
+
+### 4.1 Estrutura do Projeto
+
+```
+tech-challenge-fase2/
+├── src/
+│   ├── ga/genetic_algorithm.py     # AG: população, crossover, mutação, fitness
+│   ├── routing/tsp.py              # Resolvedor TSP
+│   ├── routing/vrp.py              # Resolvedor VRP (cromossomo de frota)
+│   ├── models/                     # Delivery, Vehicle, City, Priority
+│   ├── visualization/              # Pygame (rota) + Matplotlib (fitness)
+│   ├── llm/                        # Prompts, relatórios, Q&A, cliente OpenAI
+│   ├── metrics/                    # Runner de experimentos e exportação de artefatos
+│   ├── data_loader.py              # Leitura de CSV
+│   └── main.py                     # CLI + demo visual
+├── tests/                          # 62 testes automatizados
+├── data/                           # Datasets CSV de exemplo
+├── config/                         # Configurações dos experimentos (YAML)
+├── docs/                           # Documentação técnica por sprint
+├── reports/                        # Relatório consolidado
+└── artifacts/                      # Artefatos gerados pelos experimentos
+```
+
+### 4.2 Função de Fitness
+
+O algoritmo **minimiza** o fitness — valores menores indicam soluções melhores.
+
+```
+fitness = distância_total
         + penalidade_de_atraso
         + penalidade_de_capacidade
         + penalidade_de_autonomia
 ```
 
-As penalidades sao:
+Penalidades implementadas:
 
-- atraso `HIGH`: `100.0` por unidade de atraso;
-- atraso `MEDIUM`: `30.0` por unidade de atraso;
-- atraso `LOW`: `10.0` por unidade de atraso;
-- excesso de capacidade: `25.0` por unidade acima do limite;
-- excesso de autonomia: `25.0` por unidade acima do limite.
+| Componente | Cálculo |
+|-----------|---------|
+| Atraso `HIGH` | `(chegada − due_time) × 100.0` |
+| Atraso `MEDIUM` | `(chegada − due_time) × 30.0` |
+| Atraso `LOW` | `(chegada − due_time) × 10.0` |
+| Excesso de capacidade | `(peso_total − max_capacity) × 25.0` |
+| Excesso de autonomia | `(distância − max_distance) × 25.0` |
 
-## Dados
+### 4.3 Datasets
 
-O projeto possui datasets de exemplo:
+| Arquivo | Conteúdo |
+|---------|----------|
+| `data/deliveries_sample.csv` | Entregas sintéticas com prioridade, peso e prazo |
+| `data/brazil_capitals_sample.csv` | 27 capitais brasileiras — ativa mapa do Brasil na visualização |
+| `data/vehicles_sample.csv` | Veículos com capacidade máxima e autonomia máxima |
 
-- `data/deliveries_sample.csv`: entregas sinteticas;
-- `data/brazil_capitals_sample.csv`: capitais brasileiras em plano 2D;
-- `data/vehicles_sample.csv`: veiculos com capacidade e autonomia.
+### 4.4 VRP — Cromossomo de Frota
 
-## Execucao
+Cada indivíduo no VRP representa a frota completa:
 
-Exemplo:
-
-```bash
-.venv/bin/python -m src.main --deliveries-file data/brazil_capitals_sample.csv --vehicle-id 3 --population-size 200 --mutation-probability 0.3 --elite-size 2 --fps 15
+```
+Indivíduo:
+  Veículo 1: Entrega A → C → F
+  Veículo 2: Entrega B → D
+  Veículo 3: Entrega E → G → H
 ```
 
-Exemplo VRP:
+O fitness total é a soma dos fitness individuais de cada rota, avaliados com as restrições do próprio veículo.
 
-```bash
-.venv/bin/python -m src.main --mode vrp --deliveries-file data/brazil_capitals_sample.csv --population-size 100 --mutation-probability 0.3 --elite-size 2 --fps 15
+Operadores específicos do VRP:
+- **Crossover de frota** — combina sequência global de entregas de dois pais com a divisão de rotas de um deles
+- **Mutação inter-rota** — move ou troca entregas entre veículos
+- **Mutação intra-rota** — reordena entregas dentro de um único veículo
+
+### 4.5 Camada LLM
+
+A camada LLM em `src/llm/` funciona de forma desacoplada e testável:
+
+```
+TSPSolution / VRPSolution
+       │
+       ▼
+prompts.py  → monta contexto e prompt
+       │
+       ▼
+report_generator.py / route_explainer.py  → gera texto
+       │
+       ▼
+openai_client.py  → opcional: envia ao provedor externo
 ```
 
-Para restringir a frota do VRP, use `--vehicle-ids`:
+Modos de saída disponíveis: `report`, `instructions`, `question`
 
-```bash
-.venv/bin/python -m src.main --mode vrp --vehicle-ids 1 3 5 --deliveries-file data/brazil_capitals_sample.csv --population-size 100 --mutation-probability 0.3 --elite-size 2 --fps 15
+---
+
+## 5. Experimentos VRP
+
+A Sprint 8 executou 5 configurações do AG em modo VRP para comparar qualidade, velocidade de convergência e custo computacional.
+
+### 5.1 Configurações
+
+| Configuração | Pop. | Mutação | Crossover | Elitismo | Pool | Gerações |
+|:------------|:----:|:-------:|:---------:|:--------:|:----:|:--------:|
+| pop50 | 50 | 0.14 | 0.68 | 1 | 6 | 500 |
+| pop100 | 100 | 0.08 | 0.80 | 2 | 10 | 500 |
+| pop100_no_elitism | 100 | 0.08 | 0.80 | 0 | 10 | 500 |
+| pop500 | 500 | 0.02 | 0.90 | 6 | 20 | 500 |
+| pop500_no_elitism | 500 | 0.02 | 0.90 | 0 | 20 | 500 |
+
+### 5.2 Resultados
+
+| Configuração | Fitness Final | Convergência | Tempo | Melhoria |
+|:------------|:-------------:|:------------:|:-----:|:--------:|
+| **pop50** ⭐ | 0.16 | Gen. 103 | 1.323s | 0.40 |
+| pop100 | 0.16 | Gen. 187 | 2.588s | 0.40 |
+| pop100_no_elitism | 0.16 | Gen. 176 | 2.639s | 0.40 |
+| pop500 | 0.16 | Gen. 33 | 13.404s | 0.35 |
+| pop500_no_elitism | 0.16 | Gen. 33 | 13.425s | 0.35 |
+
+### 5.3 Análise
+
+**Todas as 5 configurações atingiram fitness = 0.16** — demonstrando robustez do algoritmo.
+
+**`pop50` apresentou o melhor equilíbrio:**
+- Mesmo fitness final que `pop500`
+- **10× mais rápido** (1.3s vs 13.4s)
+- Convergência na geração 103 — razoavelmente eficiente
+
+**Impacto do elitismo:**
+- `pop100_no_elitism` convergiu 11 gerações antes do `pop100` sem perda de fitness
+- `pop500_no_elitism` manteve a mesma convergência com tempo levemente maior
+- Elitismo não foi fator determinante neste dataset
+
+**Custo de populações maiores:**
+- `pop500` convergiu mais rápido em número de gerações (33 vs 103)
+- Porém cada geração é muito mais cara — custo total 10× maior
+
+---
+
+## 6. Resultados Consolidados
+
+| Funcionalidade | Status |
+|---------------|--------|
+| TSP com AG e visualização Pygame | ✅ |
+| VRP com múltiplos veículos e cromossomo de frota | ✅ |
+| Fitness com distância, atraso, capacidade e autonomia | ✅ |
+| Mapa do Brasil na visualização (dataset de capitais) | ✅ |
+| Leitura de entregas e veículos via CSV | ✅ |
+| CLI configurável com todos os parâmetros do AG | ✅ |
+| Camada LLM testável — offline e com OpenAI | ✅ |
+| 5 experimentos comparativos VRP com artefatos | ✅ |
+| Suite de testes automatizados | ✅ |
+
+**Última validação:**
 ```
-
-## VRP
-
-O VRP atual cria uma solucao de frota, com uma rota por veiculo, e evolui essa solucao como um individuo completo.
-
-O processo e:
-
-1. criar uma populacao inicial de frotas completas;
-2. avaliar cada frota pelo fitness agregado;
-3. aplicar crossover entre solucoes de frota;
-4. aplicar mutacoes que podem mover, trocar ou reordenar entregas;
-5. manter as melhores frotas por elitismo.
-
-Essa abordagem permite otimizar distribuicao e ordem das rotas em conjunto.
-
-A visualizacao do modo VRP anima a evolucao geracional, desenha uma rota por veiculo com cores diferentes, revela o tracado progressivamente e exibe o historico agregado de fitness da frota. Quando o dataset de capitais brasileiras e usado, a tela tambem exibe um fundo simplificado do mapa do Brasil.
-
-## LLM
-
-A camada LLM monta contexto textual a partir de `TSPSolution` ou `VRPSolution`.
-
-Ela permite:
-
-1. gerar relatorio operacional;
-2. gerar instrucoes para motoristas;
-3. responder perguntas sobre rotas.
-
-Sem cliente externo, a camada retorna respostas deterministicas. Com cliente injetado ou `--provider openai`, ela envia mensagens com prompt de sistema e prompt do usuario ao provedor LLM.
-
-Exemplo de execucao:
-
-```bash
-.venv/bin/python -m src.llm --mode vrp --output report --deliveries-file data/brazil_capitals_sample.csv
-```
-
-Exemplo com OpenAI:
-
-```bash
-.venv/bin/python -m src.llm --provider openai --model gpt-4o-mini --mode vrp --output report --deliveries-file data/brazil_capitals_sample.csv
-```
-
-# Experimentos
-
-A Sprint 8 foi concluida com um runner em `src/metrics/` e comparacao das configuracoes `pop50`, `pop100`, `pop100_no_elitism`, `pop500` e `pop500_no_elitism` em modo VRP.
-
-Artefatos gerados:
-
-- `artifacts/experiments/sprint8_summary.csv`
-- `artifacts/experiments/sprint8_summary.md`
-- `artifacts/experiments/sprint8_summary.json`
-- `artifacts/charts/fitness_curves.png`
-- `artifacts/charts/final_fitness.png`
-- `artifacts/charts/execution_time.png`
-
-Resultado de referencia no dataset de entregas sinteticas:
-
-| Configuracao | Fitness final | Convergencia | Tempo | Melhoria |
-| --- | ---: | ---: | ---: | ---: |
-| pop50 | 0.16 | 103 | 1.323s | 0.40 |
-| pop100 | 0.16 | 187 | 2.588s | 0.40 |
-| pop100_no_elitism | 0.16 | 176 | 2.639s | 0.40 |
-| pop500 | 0.16 | 33 | 13.404s | 0.35 |
-| pop500_no_elitism | 0.16 | 33 | 13.425s | 0.35 |
-
-As cinco configuracoes atingiram o mesmo fitness final no smoke test VRP. O cenario `pop100_no_elitism` convergiu um pouco antes que o `pop100` com elitismo, enquanto `pop500_no_elitism` manteve a mesma convergencia do `pop500` com tempo levemente maior. O `pop50` entregou o melhor equilibrio entre convergencia e tempo.
-
-# Resultados
-
-Resultado atual validado:
-
-- TSP funcional com visualizacao;
-- VRP com multiplas rotas e evolucao conjunta da frota;
-- fitness com distancia, atraso, capacidade e autonomia;
-- leitura de entregas e veiculos via CSV;
-- camada LLM testavel para relatorios, instrucoes e perguntas;
-- experimento comparativo em VRP com cinco configuracoes, incluindo elitismo desligado;
-- comparacao de convergencia entre cinco cenarios VRP;
-- CLI configuravel;
-- suite de testes automatizados passando.
-
-Ultima validacao conhecida:
-
-```text
 62 passed
 ```
 
-# Trabalhos Futuros
+---
 
-Prioridades para aderencia completa ao enunciado:
+## 7. Trabalhos Futuros
 
-1. Refinar operadores geneticos do VRP para preservar melhor agrupamentos geograficos.
-2. Integrar cliente OpenAI concreto se a demonstracao exigir chamada real.
-3. Usar dados reais e malha viaria real em uma evolucao futura.
+1. **Operadores VRP especializados** — crossover cluster-first para preservar agrupamentos geográficos
+2. **Malha viária real** — substituir distâncias euclidianas por rotas OSMnx ou Google Maps API
+3. **VRPTW** — Vehicle Routing Problem with Time Windows para modelagem mais precisa
+4. **AG híbrido** — busca local 2-opt ou Or-opt para refinamento pós-genético
+5. **Cliente OpenAI concreto** — demonstração em produção com GPT-4o-mini e casos reais
 
-# Referências
+---
 
-- Documento do Tech Challenge Fase 2.
-- Codigo base em `references/`.
-- Documentacao interna em `docs/`.
+## 8. Referências
+
+- Documento do Tech Challenge Fase 2 — FIAP
+- Código base em `references/` — ponto de partida do projeto
+- Documentação técnica incremental em `docs/` — uma por sprint
+- Repositório: [github.com/tech-challenge-fiap-GRUPO-2026/tech-challenge-fase2](https://github.com/tech-challenge-fiap-GRUPO-2026/tech-challenge-fase2)

@@ -1,63 +1,83 @@
-# Sprint 3 - Prioridades
+# 🏃 Sprint 3 — Prioridades de Entrega
 
-## Objetivo
+**Status:** ✅ Concluída
 
-Adicionar prioridades de entrega e atualizar o fitness para penalizar atraso em entregas `HIGH`.
+---
 
-## Modelo
+## 🎯 Objetivo
 
-As prioridades ficam em `src/models/priority.py`:
+Adicionar **três níveis de prioridade** às entregas e atualizar a função de fitness para penalizar rotas que causem atrasos — especialmente em entregas críticas.
 
-- `HIGH`
-- `MEDIUM`
-- `LOW`
+---
 
-O modelo `Delivery` fica em `src/models/delivery.py` e contem:
+## 📦 Modelo de Prioridade
 
-- `id`: identificador da entrega;
-- `location`: coordenada `(x, y)`;
-- `priority`: prioridade da entrega;
-- `due_time`: limite maximo de chegada usado para calcular atraso.
+As prioridades são definidas em `src/models/priority.py` como um enum com três valores:
 
-## Regra de fitness
+| Prioridade | Significado | Penalidade por unidade de atraso |
+|:----------:|-------------|:--------------------------------:|
+| `HIGH` | Medicamento urgente — tolerância zero | **100.0×** |
+| `MEDIUM` | Insumo importante — prazo flexível | **30.0×** |
+| `LOW` | Material eletivo — menor urgência | **10.0×** |
 
-O fitness continua sendo a distancia total da rota fechada.
+O modelo `Delivery` em `src/models/delivery.py` foi atualizado com:
 
-Para entregas com prioridade `HIGH`, `MEDIUM` ou `LOW`, o fitness recebe penalizacao quando o tempo de chegada acumulado ultrapassa `due_time`.
+```python
+@dataclass
+class Delivery:
+    id: str                       # identificador único da entrega
+    location: tuple[float, float] # coordenada (x, y)
+    priority: Priority            # HIGH, MEDIUM ou LOW
+    due_time: float | None        # prazo máximo de chegada (ou None)
+```
 
-O fator de penalizacao depende da prioridade:
+---
 
-| Prioridade | Fator   |
-|------------|---------|
-| `HIGH`     | `100.0` |
-| `MEDIUM`   | `30.0`  |
-| `LOW`      | `10.0`  |
+## 📐 Regra de Fitness
 
-Formula da penalizacao:
+O fitness continua sendo a **distância total da rota fechada**, agora somada às penalidades de atraso por prioridade.
 
-```text
-penalty = (arrival_time - due_time) * fator_da_prioridade
+### Cálculo da Penalidade
+
+```
+penalty = (arrival_time − due_time) × fator_da_prioridade
 ```
 
 Onde:
+- `arrival_time` = distância acumulada até a entrega (proxy de tempo)
+- `due_time` = prazo definido na entrega
+- A penalidade só é aplicada quando `arrival_time > due_time`
 
-- `arrival_time` e a distancia acumulada ate a entrega;
-- `due_time` e o prazo da entrega;
-- `HIGH_PRIORITY_DELAY_PENALTY` vale `100.0`.
+### Exemplo prático
 
-Entregas sem `due_time` nao recebem penalizacao.
+```
+Entrega HIGH com due_time = 50 chegando em t = 60:
+  atraso = 60 − 50 = 10
+  penalty = 10 × 100.0 = 1000.0 adicionado ao fitness
+```
 
-## Compatibilidade
+> Entregas sem `due_time` definido (valor `None`) **não recebem penalidade** — o algoritmo trata a ausência de prazo como tolerância ilimitada.
 
-Rotas compostas apenas por tuplas `(x, y)` continuam funcionando como antes.
+---
 
-Isso preserva o TSP migrado na Sprint 2 e permite evoluir gradualmente para entregas medicas.
+## 🔄 Compatibilidade com Sprint 2
 
-## Testes
+A Sprint 3 foi implementada de forma **retrocompatível**:
 
-Os testes da Sprint 3 cobrem:
+- Rotas compostas apenas por tuplas `(x, y)` continuam funcionando sem alterações
+- O TSP migrado na Sprint 2 não foi quebrado
+- A adição de `priority` e `due_time` é opcional no modelo `Delivery`
 
-- entrega `HIGH` sem atraso;
-- entrega `HIGH` com atraso;
-- entrega `MEDIUM` com atraso;
-- entrega `LOW` com atraso.
+Isso permite evoluir gradualmente do TSP genérico para entregas médicas com restrições reais.
+
+---
+
+## ✅ Testes Implementados
+
+| Cenário | Resultado esperado |
+|---------|--------------------|
+| Entrega `HIGH` dentro do prazo | Fitness sem penalidade de atraso |
+| Entrega `HIGH` com atraso | Fitness + `atraso × 100.0` |
+| Entrega `MEDIUM` com atraso | Fitness + `atraso × 30.0` |
+| Entrega `LOW` com atraso | Fitness + `atraso × 10.0` |
+| Entrega sem `due_time` | Nenhuma penalidade aplicada |
