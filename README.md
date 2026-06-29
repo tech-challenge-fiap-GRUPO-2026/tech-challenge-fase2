@@ -351,7 +351,9 @@ Resultado esperado: **62 passed**.
 
 O relatório visual completo com os resultados dos experimentos está disponível em:
 
-> [`docs/index.html`](docs/index.html) — abra diretamente no navegador
+> 🔗 **[tech-challenge-fiap-grupo-2026.github.io/tech-challenge-fase2/index.html](https://tech-challenge-fiap-grupo-2026.github.io/tech-challenge-fase2/index.html)**
+
+Ou abra localmente: [`docs/index.html`](docs/index.html)
 
 ---
 
