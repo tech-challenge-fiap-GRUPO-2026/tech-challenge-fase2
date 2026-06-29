@@ -14,7 +14,7 @@ Gerado ao final da Sprint 9.
 | `docs/architecture.md` | Arquitetura completa do sistema e fluxo de dados |
 | `docs/sprint8_experiments.md` | Detalhamento técnico e análise dos experimentos VRP |
 | `docs/sprint9_consolidation.md` | Fechamento da Sprint 9 e evidências de entrega |
-| `docs/resultado.html` | Página de resultados visual — abrir diretamente no navegador |
+| `index.html` | Página de resultados visual — [GitHub Pages](https://tech-challenge-fiap-grupo-2026.github.io/tech-challenge-fase2/index.html) ou abrir localmente |
 | `README.md` | Comandos principais, CLI, dependências e índice de documentação |
 
 ---

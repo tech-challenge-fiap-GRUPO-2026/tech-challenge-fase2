@@ -1602,9 +1602,43 @@ p{margin-bottom:10px}
     </div>
   </div>
 
-  <div class="box box-g" style="margin-top:20px">
+  <div class="box box-b" style="margin-top:20px">
+    <strong>📐 Pergunta de Pesquisa</strong>
+    Como o tamanho da população e o elitismo afetam a <strong>qualidade da solução</strong>, a <strong>velocidade de convergência</strong> e o <strong>custo computacional</strong> do AG no problema VRP com restrições operacionais reais?
+  </div>
+
+  <h3>Custo por Geração</h3>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr>
+          <th>Configuração</th>
+          <th class="c">Tempo Total</th>
+          <th class="c">Gerações</th>
+          <th class="c">Custo / Geração</th>
+          <th class="c">Relativo ao pop50</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="tr-best">
+          <td>pop50 ★</td><td class="c">1.323s</td><td class="c">500</td>
+          <td class="c">≈ 2.6 ms</td><td class="c"><strong>1×</strong></td>
+        </tr>
+        <tr>
+          <td>pop100</td><td class="c">2.588s</td><td class="c">500</td>
+          <td class="c">≈ 5.2 ms</td><td class="c">2×</td>
+        </tr>
+        <tr>
+          <td>pop500</td><td class="c">13.404s</td><td class="c">500</td>
+          <td class="c">≈ 26.8 ms</td><td class="c">10×</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="box box-g" style="margin-top:16px">
     <strong>✅ Conclusão dos Experimentos</strong>
-    Todas as 5 configurações atingiram o mesmo fitness final (0.16). O cenário <strong>pop50</strong> entregou o melhor equilíbrio: convergência na geração 103 em apenas <strong>1.323s</strong> — 10× mais rápido que pop500 (13.4s) sem perda de qualidade. Populações maiores convergem em menos gerações, mas pagam alto custo computacional por geração.
+    Todas as 5 configurações atingiram o mesmo fitness final (0.16) — o algoritmo é <strong>robusto independentemente do tamanho da população</strong>. O cenário <strong>pop50</strong> entregou o melhor equilíbrio: 1.323s e convergência na geração 103, sendo <strong>10× mais rápido</strong> que pop500 sem perda de qualidade. O custo por geração escala linearmente: pop500 custa ~26.8 ms/gen contra ~2.6 ms do pop50. O elitismo não foi determinante — pop100_no_elitism convergiu 11 gerações antes do pop100 com elitismo.
   </div>
 
   <h3>Artefatos Gerados</h3>

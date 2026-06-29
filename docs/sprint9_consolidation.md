@@ -130,5 +130,5 @@ Use estes comandos para a gravação do vídeo de apresentação:
 ## 🔗 Links
 
 - Repositório: [github.com/tech-challenge-fiap-GRUPO-2026/tech-challenge-fase2](https://github.com/tech-challenge-fiap-GRUPO-2026/tech-challenge-fase2)
-- Resultado visual: [`docs/resultado.html`](resultado.html)
+- Resultado visual: [`index.html`](../index.html) · [GitHub Pages](https://tech-challenge-fiap-grupo-2026.github.io/tech-challenge-fase2/index.html)
 - Relatório técnico: [`reports/final_report.md`](../reports/final_report.md)

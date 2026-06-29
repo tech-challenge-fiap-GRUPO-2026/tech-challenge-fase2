@@ -82,24 +82,30 @@ fitness = distância_total
 
 ## 📊 Experimentos VRP
 
-Cinco configurações foram comparadas em modo VRP, executadas com o dataset de entregas sintéticas:
+> *Como o tamanho da população e o elitismo afetam a qualidade da solução, a convergência e o custo computacional?*
 
-| Configuração | Fitness Final | Convergência | Tempo | Melhoria |
-|:------------|:-------------:|:------------:|:-----:|:--------:|
-| pop50 | 0.16 | 103 | 1.323s | 0.40 |
-| pop100 | 0.16 | 187 | 2.588s | 0.40 |
-| pop100_no_elitism | 0.16 | 176 | 2.639s | 0.40 |
-| pop500 | 0.16 | 33 | 13.404s | 0.35 |
-| pop500_no_elitism | 0.16 | 33 | 13.425s | 0.35 |
+Cinco configurações foram comparadas em modo VRP com `data/deliveries_sample.csv` — 500 gerações cada, semente fixa para reprodutibilidade:
 
-> **`pop50` apresentou o melhor equilíbrio** entre tempo de execução e convergência — atingindo o mesmo fitness final que populações 10× maiores.
+| Configuração | Pop. | Elitismo | Fitness Final | Convergência | Tempo | Melhoria |
+|:------------|:----:|:--------:|:-------------:|:------------:|:-----:|:--------:|
+| ⭐ **pop50** | 50 | 1 | **0.16** | Gen. 103 | **1.323s** | 0.40 |
+| pop100 | 100 | 2 | 0.16 | Gen. 187 | 2.588s | 0.40 |
+| pop100_no_elitism | 100 | 0 | 0.16 | Gen. 176 | 2.639s | 0.40 |
+| pop500 | 500 | 6 | 0.16 | Gen. 33 | 13.404s | 0.35 |
+| pop500_no_elitism | 500 | 0 | 0.16 | Gen. 33 | 13.425s | 0.35 |
 
-Artefatos gerados em `artifacts/`:
+**Conclusões:**
+- Todas as 5 configurações atingiram o **mesmo fitness final (0.16)** — o algoritmo é robusto
+- **`pop50` é 10× mais rápido** que `pop500` com qualidade idêntica (1.3s vs 13.4s)
+- Elitismo não foi determinante neste dataset — `pop100_no_elitism` convergiu 11 gerações antes
+- O custo por geração escala linearmente com o tamanho da população (~2.6 ms vs ~26.8 ms)
+
+Artefatos gerados em `artifacts/` ao executar `python -m src.metrics`:
 - `experiments/sprint8_summary.csv` — tabela comparativa
 - `experiments/sprint8_summary.json` — dados estruturados
-- `charts/fitness_curves.png` — curvas de convergência
+- `charts/fitness_curves.png` — curvas de convergência por geração
 - `charts/final_fitness.png` — comparativo de fitness final
-- `charts/execution_time.png` — comparativo de tempo
+- `charts/execution_time.png` — comparativo de tempo de execução
 
 ---
 
@@ -315,6 +321,20 @@ Resultado esperado: **62 passed**.
 
 ---
 
+## 📈 Métricas da Entrega Final
+
+| Métrica | Resultado |
+|---------|-----------|
+| Testes automatizados | **62 passed** |
+| Fitness final VRP (todas as configs) | **0.16** |
+| Melhor tempo de execução | **1.323s** (pop50) |
+| Speedup pop50 vs pop500 | **≈ 10×** |
+| Melhoria de fitness | **40%** (pop50 e pop100) |
+| Sprints concluídas | **9 / 9** |
+| Modos de saída LLM | **3** (report, instructions, question) |
+
+---
+
 ## 🧩 Dependências
 
 | Biblioteca | Uso |
@@ -353,7 +373,7 @@ O relatório visual completo com os resultados dos experimentos está disponíve
 
 > 🔗 **[tech-challenge-fiap-grupo-2026.github.io/tech-challenge-fase2/index.html](https://tech-challenge-fiap-grupo-2026.github.io/tech-challenge-fase2/index.html)**
 
-Ou abra localmente: [`index.html`](docs/index.html)
+Ou abra localmente: [`index.html`](index.html)
 
 ---
 
