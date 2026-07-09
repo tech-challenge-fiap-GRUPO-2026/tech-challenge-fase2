@@ -352,9 +352,10 @@ def run_visual_demo(args: argparse.Namespace | None = None) -> None:
 
     running = True
 
+    fitness_first_gen = 1
+
     if args.mode == "vrp":
         generation_counter = itertools.count(start=1)
-        fitness_first_gen = 1
         for state in iterate_vrp(VRPProblem(depot=depot, deliveries=tuple(raw_deliveries), vehicles=tuple(vrp_vehicles)), config):
             if not running:
                 break
@@ -369,14 +370,14 @@ def run_visual_demo(args: argparse.Namespace | None = None) -> None:
 
             if generation == 1:
                 fitness_first_gen = state.total_fitness
-                print(fitness_first_gen)
+                print(f"fitness 1gen: {fitness_first_gen:.2f}")
 
             improvement = ((state.total_fitness - fitness_first_gen) / fitness_first_gen) * - 100
 
             screen.fill(WHITE)
             if use_brazil_map:
                 draw_brazil_map_background(screen, pygame, brazil_reference_points or [])
-            sys.stdout.write(f"\rVRP Gen {generation} | fitness: {state.total_fitness:.2f}  | melhoria: {improvement:.1f} %  ")
+            sys.stdout.write(f"\rVRP Gen {generation} | fitness: {state.total_fitness:.2f} | melhoria: {improvement:.1f} %  ")
             sys.stdout.flush()
             draw_fitness_plot(
                 screen,
@@ -414,10 +415,16 @@ def run_visual_demo(args: argparse.Namespace | None = None) -> None:
 
         generation = next(generation_counter)
 
+        if generation == 1:
+            fitness_first_gen = state.best_fitness
+            print(f"fitness 1gen: {fitness_first_gen:.2f}")
+
+        improvement = ((state.best_fitness - fitness_first_gen) / fitness_first_gen) * - 100
+
         screen.fill(WHITE)
         if use_brazil_map:
             draw_brazil_map_background(screen, pygame, brazil_reference_points or [])
-        sys.stdout.write(f"\rTSP Gen {generation} | fitness: {state.best_fitness:.2f}   ")
+        sys.stdout.write(f"\rTSP Gen {generation} | fitness: {state.best_fitness:.2f} | melhoria: {improvement:.1f} % ")
         sys.stdout.flush()
 
         draw_fitness_plot(
