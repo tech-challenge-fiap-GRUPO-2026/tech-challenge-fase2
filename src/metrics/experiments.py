@@ -4,7 +4,7 @@ import random
 import time
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Iterable
+from typing import Callable, Iterable
 
 from src.data_loader import load_deliveries_csv, load_vehicles_csv
 from src.ga.genetic_algorithm import GeneticAlgorithmConfig
@@ -148,7 +148,7 @@ def _select_depot_location(deliveries_file: str | Path | None) -> tuple[float, f
     if deliveries_file is None:
         return DEFAULT_DEPOT_LOCATION
 
-    if Path(deliveries_file).resolve() == (Path(__file__).resolve().parents[2] / "data" / "brazil_capitals_sample.csv").resolve():
+    if Path(deliveries_file).resolve() == (Path(__file__).resolve().parents[2] / "data" / "brazil_capitals_sample.csv").resolve() or Path(deliveries_file).resolve() == (Path(__file__).resolve().parents[2] / "data" / "brazil_large_sample.csv").resolve():
         return BRAZIL_CAPITALS_DEPOT_LOCATION
 
     return DEFAULT_DEPOT_LOCATION
@@ -162,6 +162,9 @@ def _calculate_improvement(initial_fitness: float, final_fitness: float) -> tupl
     return improvement, (improvement / initial_fitness) * 100
 
 
+ProgressCallback = Callable[[int, int, float], None]
+
+
 def run_single_experiment(
     case: ExperimentCase,
     deliveries: list[object],
@@ -172,6 +175,7 @@ def run_single_experiment(
     vehicle_ids: list[str] | None = None,
     seed: int | None = None,
     deliveries_file: str | Path | None = None,
+    on_progress: ProgressCallback | None = None,
 ) -> ExperimentResult:
     rng = random.Random(seed)
     start = time.perf_counter()
@@ -185,6 +189,8 @@ def run_single_experiment(
         final_state = None
         for state in iterate_vrp(problem, case.config, rng):
             final_state = state
+            if on_progress is not None:
+                on_progress(state.generation, case.max_generations, state.total_fitness)
 
         if final_state is None:
             raise RuntimeError("Nao foi possivel executar o experimento VRP.")
@@ -202,6 +208,8 @@ def run_single_experiment(
         final_state = None
         for state in iterate_tsp(problem, case.config, rng):
             final_state = state
+            if on_progress is not None:
+                on_progress(state.generation, case.max_generations, state.best_fitness)
 
         if final_state is None:
             raise RuntimeError("Nao foi possivel executar o experimento TSP.")
@@ -248,6 +256,7 @@ def run_experiment_suite(
     vehicle_id: str | None = None,
     vehicle_ids: list[str] | None = None,
     seed: int | None = 7,
+    on_progress: ProgressCallback | None = None,
 ) -> list[ExperimentResult]:
     deliveries = load_deliveries_csv(deliveries_file)
     vehicles = load_vehicles_csv(vehicles_file)
@@ -263,6 +272,7 @@ def run_experiment_suite(
             vehicle_ids=vehicle_ids,
             seed=seed,
             deliveries_file=deliveries_file,
+            on_progress=on_progress,
         )
         for case in cases
     ]

@@ -1,0 +1,103 @@
+delivery_id,latitude,longitude,priority,weight,due_time
+Rio Branco,10,8,MEDIUM,6,58
+Porto Velho,16,16,MEDIUM,7,55
+Manaus,24,30,HIGH,12,42
+Boa Vista,28,46,MEDIUM,5,60
+Belem,44,53,HIGH,14,38
+Macapa,50,65,LOW,4,72
+Palmas,43,36,MEDIUM,6,52
+Sao Luis,53,58,HIGH,11,40
+Teresina,58,52,MEDIUM,8,48
+Fortaleza,67,59,HIGH,13,36
+Natal,77,62,MEDIUM,7,44
+Joao Pessoa,75,56,MEDIUM,6,46
+Recife,73,50,HIGH,12,34
+Maceio,74,44,MEDIUM,8,43
+Aracaju,71,39,LOW,5,57
+Salvador,65,34,HIGH,15,32
+Cuiaba,38,24,MEDIUM,9,50
+Campo Grande,34,14,MEDIUM,10,49
+Goiania,47,23,HIGH,13,37
+Brasilia,50,28,HIGH,16,30
+Belo Horizonte,55,18,HIGH,14,33
+Vitoria,60,20,MEDIUM,8,45
+Rio de Janeiro,57,12,HIGH,17,28
+Sao Paulo,52,8,HIGH,18,26
+Curitiba,47,4,MEDIUM,9,41
+Florianopolis,50,2,LOW,6,54
+Porto Alegre,45,0,MEDIUM,10,47
+Campinas,51,10,HIGH,11,30
+Santos,53,7,MEDIUM,9,42
+Guarulhos,52,9,HIGH,14,29
+Ribeirao Preto,48,14,MEDIUM,8,46
+Uberlandia,47,19,HIGH,10,38
+Uberaba,47,17,MEDIUM,7,48
+Juiz de Fora,55,15,MEDIUM,6,50
+Contagem,54,18,MEDIUM,8,43
+Montes Claros,56,25,MEDIUM,7,47
+Governador Valadares,58,22,LOW,5,58
+Ipatinga,57,21,MEDIUM,6,49
+Maringa,43,8,MEDIUM,8,46
+Londrina,44,9,HIGH,10,35
+Cascavel,40,6,MEDIUM,7,50
+Foz do Iguacu,38,4,LOW,6,62
+Ponta Grossa,46,5,MEDIUM,5,52
+Joinville,49,3,MEDIUM,7,48
+Blumenau,49,4,LOW,5,56
+Chapeco,43,3,MEDIUM,6,51
+Caxias do Sul,44,1,MEDIUM,8,45
+Pelotas,43,0,LOW,5,58
+Santa Maria,41,1,MEDIUM,6,53
+Novo Hamburgo,45,1,MEDIUM,7,47
+Feira de Santana,64,32,HIGH,11,34
+Vitoria da Conquista,62,28,MEDIUM,8,44
+Ilheus,63,30,LOW,6,55
+Itabuna,63,29,MEDIUM,7,47
+Petrolina,63,40,HIGH,10,37
+Juazeiro,63,39,MEDIUM,7,45
+Caruaru,72,47,MEDIUM,6,46
+Campina Grande,74,52,HIGH,9,38
+Mossoro,75,58,MEDIUM,8,43
+Parnamirim,76,61,MEDIUM,6,45
+Imperatriz,50,48,HIGH,10,39
+Maraba,42,46,MEDIUM,8,47
+Santarem,35,42,MEDIUM,7,52
+Castanhal,45,53,MEDIUM,6,49
+Ananindeua,44,54,HIGH,9,37
+Ji-Parana,18,13,MEDIUM,6,54
+Vilhena,22,10,LOW,5,62
+Sinop,35,30,MEDIUM,7,50
+Rondonopolis,36,20,MEDIUM,8,48
+Dourados,33,12,HIGH,10,36
+Tres Lagoas,37,16,MEDIUM,6,50
+Anapolis,47,24,HIGH,9,35
+Aparecida de Goiania,47,22,MEDIUM,7,44
+Rio Verde,44,20,MEDIUM,8,47
+Jatai,42,19,LOW,5,58
+Criciuma,48,1,LOW,4,60
+Itajai,49,3,MEDIUM,6,48
+Presidente Prudente,44,11,MEDIUM,7,49
+Bauru,47,12,MEDIUM,8,46
+Sorocaba,50,9,HIGH,9,34
+Sao Jose dos Campos,54,10,HIGH,11,31
+Taubate,54,11,MEDIUM,7,44
+Volta Redonda,56,13,MEDIUM,8,45
+Campos dos Goytacazes,59,18,MEDIUM,7,47
+Macae,60,19,LOW,5,56
+Cabo Frio,59,16,MEDIUM,6,48
+Niteroi,57,13,MEDIUM,8,42
+Arapiraca,73,43,MEDIUM,7,44
+Sobral,64,56,HIGH,9,38
+Crato,66,50,MEDIUM,6,47
+Parauapebas,40,44,HIGH,10,36
+Tucurui,41,48,MEDIUM,7,50
+Garanhuns,70,44,LOW,5,58
+Altamira,38,44,LOW,5,60
+Tefé,20,34,MEDIUM,6,55
+Tabatinga,12,32,LOW,4,65
+Cruzeiro do Sul,11,12,MEDIUM,5,58
+Itaituba,33,40,MEDIUM,7,52
+Obidos,37,46,LOW,5,60
+Parintins,28,38,MEDIUM,6,53
+Barreiras,57,32,MEDIUM,8,46
+Jequie,63,27,MEDIUM,7,48
