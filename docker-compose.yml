@@ -1,0 +1,81 @@
+services:
+
+  experiments:
+    build: .
+    image: tech-challenge-fase2:latest
+    container_name: tcf2-experiments
+    volumes:
+      - ./artifacts:/app/artifacts
+    command:
+      - python
+      - -m
+      - src.metrics
+      - --deliveries-file
+      - data/deliveries_sample.csv
+      - --vehicles-file
+      - data/vehicles_sample.csv
+      - --output-dir
+      - artifacts
+
+
+  llm:
+    build: .
+    image: tech-challenge-fase2:latest
+    container_name: tcf2-llm
+    environment:
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+    volumes:
+      - ./artifacts:/app/artifacts
+    command:
+      - python
+      - -m
+      - src.llm
+      - --mode
+      - vrp
+      - --output
+      - report
+      - --deliveries-file
+      - data/brazil_capitals_sample.csv
+      - --generations
+      - "80"
+      - --population-size
+      - "80"
+
+
+  tests:
+    build: .
+    image: tech-challenge-fase2:latest
+    container_name: tcf2-tests
+    command:
+      - python
+      - -m
+      - pytest
+
+
+  viewer:
+    build: .
+    image: tech-challenge-fase2:latest
+    container_name: tcf2-viewer
+    environment:
+      DISPLAY: ${DISPLAY:-:0}
+      # Sobrescreve o driver dummy da imagem para usar o display real do host
+      SDL_VIDEODRIVER: x11
+      SDL_AUDIODRIVER: dummy
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+    command:
+      - python
+      - -m
+      - src.main
+      - --mode
+      - vrp
+      - --deliveries-file
+      - data/brazil_capitals_sample.csv
+      - --population-size
+      - "100"
+      - --mutation-probability
+      - "0.3"
+      - --elite-size
+      - "2"
+      - --fps
+      - "15"

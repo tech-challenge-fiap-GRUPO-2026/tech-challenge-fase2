@@ -271,10 +271,22 @@ def run_visual_demo(args: argparse.Namespace | None = None) -> None:
     running = True
 
     if args.mode == "vrp":
+        same_total_fitness_limit = 800
+        same_total_fitness = []
+        last_total_fitness = 0.0
+
         generation_counter = itertools.count(start=1)
         for state in iterate_vrp(VRPProblem(depot=depot, deliveries=tuple(raw_deliveries), vehicles=tuple(vrp_vehicles)), config):
             if not running:
                 break
+
+            total_fitness = round(state.total_fitness, 2)
+
+            if last_total_fitness == total_fitness:
+                same_total_fitness.append(True)
+            else:
+                same_total_fitness = []
+
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -287,7 +299,7 @@ def run_visual_demo(args: argparse.Namespace | None = None) -> None:
             screen.fill(WHITE)
             if use_brazil_map:
                 draw_brazil_map_background(screen, pygame, brazil_reference_points or [])
-            print(f"VRP Generation {generation}: Total fleet fitness = {round(state.total_fitness, 2)}")
+            print(f"VRP Generation {generation}: Total fleet fitness = {total_fitness}")
             draw_fitness_plot(
                 screen,
                 state.fitness_history,
@@ -304,6 +316,9 @@ def run_visual_demo(args: argparse.Namespace | None = None) -> None:
 
             pygame.display.flip()
             clock.tick(args.fps)
+            last_total_fitness = total_fitness
+            if len(same_total_fitness) > same_total_fitness_limit:
+                break
 
         pygame.quit()
         return
@@ -311,9 +326,20 @@ def run_visual_demo(args: argparse.Namespace | None = None) -> None:
     problem = TSPProblem(depot=depot, cities=tuple(raw_deliveries), vehicle=vehicle)
     generation_counter = itertools.count(start=1)
 
+    same_best_fitness_limit = 800
+    same_best_fitness = []
+    last_best_fitness = 0.0
+
     for state in iterate_tsp(problem, config):
         if not running:
             break
+
+        best_fitness = round(state.best_fitness, 2)
+
+        if last_best_fitness == best_fitness:
+            same_best_fitness.append(True)
+        else:
+            same_best_fitness = []
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -326,7 +352,7 @@ def run_visual_demo(args: argparse.Namespace | None = None) -> None:
         screen.fill(WHITE)
         if use_brazil_map:
             draw_brazil_map_background(screen, pygame, brazil_reference_points or [])
-        print(f"Generation {generation}: Best fitness = {round(state.best_fitness, 2)}")
+        print(f"Generation {generation}: Best fitness = {best_fitness}")
 
         draw_fitness_plot(
             screen,
@@ -342,6 +368,9 @@ def run_visual_demo(args: argparse.Namespace | None = None) -> None:
 
         pygame.display.flip()
         clock.tick(args.fps)
+        last_best_fitness = best_fitness
+        if len(same_best_fitness) > same_best_fitness_limit:
+            break
 
     pygame.quit()
 
