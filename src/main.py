@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import sys
 from pathlib import Path
 
 import itertools
@@ -96,6 +97,81 @@ BRAZIL_CAPITAL_VISUAL_LOCATIONS = {
     "Curitiba": (-49.27, -25.43),
     "Florianopolis": (-48.55, -27.59),
     "Porto Alegre": (-51.23, -30.03),
+    "Campinas": (-47.06, -22.91),
+    "Santos": (-46.33, -23.96),
+    "Guarulhos": (-46.53, -23.45),
+    "Ribeirao Preto": (-47.81, -21.18),
+    "Uberlandia": (-48.28, -18.92),
+    "Uberaba": (-47.93, -19.75),
+    "Juiz de Fora": (-43.35, -21.76),
+    "Contagem": (-44.05, -19.93),
+    "Montes Claros": (-43.86, -16.73),
+    "Governador Valadares": (-41.95, -18.85),
+    "Ipatinga": (-42.54, -19.47),
+    "Maringa": (-51.94, -23.42),
+    "Londrina": (-51.16, -23.31),
+    "Cascavel": (-53.46, -24.96),
+    "Foz do Iguacu": (-54.59, -25.55),
+    "Ponta Grossa": (-50.16, -25.09),
+    "Joinville": (-48.85, -26.3),
+    "Blumenau": (-49.07, -26.92),
+    "Chapeco": (-52.62, -27.1),
+    "Caxias do Sul": (-51.18, -29.17),
+    "Pelotas": (-52.34, -31.77),
+    "Santa Maria": (-53.81, -29.68),
+    "Novo Hamburgo": (-51.13, -29.68),
+    "Feira de Santana": (-38.97, -12.27),
+    "Vitoria da Conquista": (-40.84, -14.86),
+    "Ilheus": (-39.05, -14.79),
+    "Itabuna": (-39.28, -14.79),
+    "Petrolina": (-40.5, -9.39),
+    "Juazeiro": (-40.5, -9.41),
+    "Caruaru": (-35.98, -8.28),
+    "Campina Grande": (-35.88, -7.23),
+    "Mossoro": (-37.34, -5.19),
+    "Parnamirim": (-35.26, -5.92),
+    "Imperatriz": (-47.47, -5.52),
+    "Maraba": (-49.12, -5.37),
+    "Santarem": (-54.71, -2.44),
+    "Castanhal": (-47.93, -1.29),
+    "Ananindeua": (-48.39, -1.37),
+    "Ji-Parana": (-61.95, -10.88),
+    "Vilhena": (-60.15, -12.74),
+    "Sinop": (-55.51, -11.86),
+    "Rondonopolis": (-54.64, -16.47),
+    "Dourados": (-54.81, -22.22),
+    "Tres Lagoas": (-51.68, -20.75),
+    "Anapolis": (-48.95, -16.33),
+    "Aparecida de Goiania": (-49.24, -16.82),
+    "Rio Verde": (-50.93, -17.8),
+    "Jatai": (-51.72, -17.88),
+    "Criciuma": (-49.37, -28.68),
+    "Itajai": (-48.67, -26.91),
+    "Presidente Prudente": (-51.39, -22.13),
+    "Bauru": (-49.07, -22.31),
+    "Sorocaba": (-47.46, -23.5),
+    "Sao Jose dos Campos": (-45.89, -23.18),
+    "Taubate": (-45.56, -23.02),
+    "Volta Redonda": (-44.1, -22.52),
+    "Campos dos Goytacazes": (-41.3, -21.76),
+    "Macae": (-41.79, -22.37),
+    "Cabo Frio": (-42.03, -22.88),
+    "Niteroi": (-43.1, -22.88),
+    "Arapiraca": (-36.66, -9.75),
+    "Sobral": (-40.35, -3.69),
+    "Crato": (-39.41, -7.23),
+    "Parauapebas": (-49.9, -6.07),
+    "Tucurui": (-49.67, -3.77),
+    "Garanhuns": (-36.49, -8.89),
+    "Altamira": (-52.21, -3.2),
+    "Tefé": (-64.71, -3.35),
+    "Tabatinga": (-69.94, -4.25),
+    "Cruzeiro do Sul": (-72.67, -7.63),
+    "Itaituba": (-55.98, -4.28),
+    "Obidos": (-55.52, -1.9),
+    "Parintins": (-56.74, -2.63),
+    "Barreiras": (-44.99, -12.15),
+    "Jequie": (-40.08, -13.85),
 }
 BRAZIL_CAPITALS_DEPOT_VISUAL_LOCATION = BRAZIL_CAPITAL_VISUAL_LOCATIONS["Brasilia"]
 VRP_ROUTE_COLORS = (
@@ -112,6 +188,7 @@ MUTATION_PROBABILITY = 0.5
 ELITE_SIZE = 1
 DELIVERIES_SAMPLE_PATH = Path(__file__).resolve().parents[1] / "data" / "deliveries_sample.csv"
 BRAZIL_CAPITALS_SAMPLE_PATH = Path(__file__).resolve().parents[1] / "data" / "brazil_capitals_sample.csv"
+BRAZIL_LARGE_SAMPLE_PATH = Path(__file__).resolve().parents[1] / "data" / "brazil_large_sample.csv"
 VEHICLES_SAMPLE_PATH = Path(__file__).resolve().parents[1] / "data" / "vehicles_sample.csv"
 DEPOT_LOCATION = (-1.4615, -48.4968)
 BRAZIL_CAPITALS_DEPOT_LOCATION = (50, 28)
@@ -158,15 +235,20 @@ def select_vehicles(vehicles: list[object], vehicle_ids: list[str] | None) -> li
     return [vehicle for vehicle in selected_vehicles if vehicle is not None]
 
 
+def _is_brazil_dataset(deliveries_file: Path) -> bool:
+    resolved = deliveries_file.resolve()
+    return resolved == BRAZIL_CAPITALS_SAMPLE_PATH.resolve() or resolved == BRAZIL_LARGE_SAMPLE_PATH.resolve()
+
+
 def select_depot_location(deliveries_file: Path) -> tuple[float, float]:
-    if deliveries_file.resolve() == BRAZIL_CAPITALS_SAMPLE_PATH.resolve():
+    if _is_brazil_dataset(deliveries_file):
         return BRAZIL_CAPITALS_DEPOT_LOCATION
 
     return DEPOT_LOCATION
 
 
 def uses_brazil_map_background(deliveries_file: Path) -> bool:
-    return deliveries_file.resolve() == BRAZIL_CAPITALS_SAMPLE_PATH.resolve()
+    return _is_brazil_dataset(deliveries_file)
 
 
 def brazil_visual_location(delivery: object) -> tuple[float, float]:
@@ -270,6 +352,8 @@ def run_visual_demo(args: argparse.Namespace | None = None) -> None:
 
     running = True
 
+    fitness_first_gen = 1
+
     if args.mode == "vrp":
         same_total_fitness_limit = 800
         same_total_fitness = []
@@ -296,10 +380,19 @@ def run_visual_demo(args: argparse.Namespace | None = None) -> None:
 
             generation = next(generation_counter)
 
+            if generation == 1:
+                fitness_first_gen = state.total_fitness
+                print(f"fitness 1gen: {fitness_first_gen:.2f}")
+
+            improvement = ((state.total_fitness - fitness_first_gen) / fitness_first_gen) * - 100
+
             screen.fill(WHITE)
             if use_brazil_map:
                 draw_brazil_map_background(screen, pygame, brazil_reference_points or [])
-            print(f"VRP Generation {generation}: Total fleet fitness = {total_fitness}")
+
+            sys.stdout.write(f"\rVRP Gen {generation} | fitness: {state.total_fitness:.2f} | melhoria: {improvement:.1f} %  ")
+            sys.stdout.flush()
+
             draw_fitness_plot(
                 screen,
                 state.fitness_history,
@@ -320,6 +413,7 @@ def run_visual_demo(args: argparse.Namespace | None = None) -> None:
             if len(same_total_fitness) > same_total_fitness_limit:
                 break
 
+        print()
         pygame.quit()
         return
 
@@ -349,10 +443,18 @@ def run_visual_demo(args: argparse.Namespace | None = None) -> None:
 
         generation = next(generation_counter)
 
+        if generation == 1:
+            fitness_first_gen = state.best_fitness
+            print(f"fitness 1gen: {fitness_first_gen:.2f}")
+
+        improvement = ((state.best_fitness - fitness_first_gen) / fitness_first_gen) * - 100
+
         screen.fill(WHITE)
         if use_brazil_map:
             draw_brazil_map_background(screen, pygame, brazil_reference_points or [])
-        print(f"Generation {generation}: Best fitness = {best_fitness}")
+
+        sys.stdout.write(f"\rTSP Gen {generation} | fitness: {state.best_fitness:.2f} | melhoria: {improvement:.1f} % ")
+        sys.stdout.flush()
 
         draw_fitness_plot(
             screen,
@@ -372,6 +474,7 @@ def run_visual_demo(args: argparse.Namespace | None = None) -> None:
         if len(same_best_fitness) > same_best_fitness_limit:
             break
 
+    print()
     pygame.quit()
 
 
