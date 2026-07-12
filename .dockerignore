@@ -1,0 +1,27 @@
+.git
+.gitignore
+
+__pycache__/
+*.pyc
+
+.venv/
+venv/
+
+.pytest_cache/
+.mypy_cache/
+
+.coverage
+htmlcov/
+
+.idea/
+.vscode/
+
+# Artefatos gerados em runtime (montados por volume)
+artifacts/maps/*
+artifacts/charts/*
+artifacts/reports/*
+results/*
+
+# Documentos pesados nao necessarios em runtime
+docs/relatorio_tecnico_abnt.docx
+docs/relatorio_tecnico_challenge2.pdf

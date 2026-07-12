@@ -175,8 +175,17 @@ tech-challenge-fase2/
 │   ├── experiments/                        # Resultados dos experimentos VRP
 │   └── final/                              # Manifesto final de artefatos
 ├── references/                             # Baseline TSP e referências técnicas
+├── build-docker-image.sh                   # Gera a imagem Docker no Linux
+├── Dockerfile                              # Imagem base do projeto
+├── docker-compose.yml                      # Serviços: experiments, llm, tests, viz
+├── .dockerignore                           # Exclusões do contexto de build
 ├── requirements.txt                        # Dependências principais
-└── requirements-llm.txt                    # Dependências opcionais (OpenAI)
+├── requirements-llm.txt                    # Dependências opcionais (OpenAI)
+├── run-container-experiments.sh            # Executa os 5 cenários VRP e gera artefatos 
+├── run-container-llm.sh                    # Executa a aplicação integrando com LLM (OpenAI)
+├── run-container-tests.sh                  # Rodar os testes unitários
+└── run-container-viewer.sh                 # Executa a visualização interativa (Pygame)
+
 ```
 
 ---
@@ -333,6 +342,114 @@ Executa os cenários `pop50`, `pop100`, `pop100_no_elitism`, `pop500` e `pop500_
 ```
 
 Resultado esperado: **62 passed**.
+
+---
+
+## 🐳 Execução com Docker Compose
+
+O projeto inclui `Dockerfile` e `docker-compose.yml` para rodar sem instalar Python ou dependências no host. A imagem usa `python:3.12-slim` com as bibliotecas de sistema do SDL/Pygame e roda em modo headless por padrão (`SDL_VIDEODRIVER=dummy`).
+
+### 📥 Construir a imagem
+
+```bash
+docker compose build --no-cache
+```
+
+### 🔬 Rodar os experimentos VRP (serviço padrão)
+
+Gera os artefatos em `./artifacts` (montado como volume, então os resultados ficam no host):
+
+```bash
+
+docker compose up experiments
+
+```
+
+```bash
+  # Arquivo para execução com valores padrão utilizando o docker compose no Linux
+
+  ./run-container-experiments.sh
+  
+```
+
+### 🤖 Rodar a camada LLM
+
+Funciona sem chave de API (respostas determinísticas). Para usar a OpenAI de verdade, exporte a chave antes:
+
+```bash
+# Determinístico (sem chave)
+docker compose run --rm llm
+
+# Com OpenAI
+export OPENAI_API_KEY="sua-chave"
+docker compose run --rm llm python -m src.llm --mode vrp --output report --deliveries-file data/brazil_capitals_sample.csv --generations "80" --population-size "80" --provider openai
+
+```
+
+```bash
+  # Arquivo para execução com valores padrão utilizando o docker compose no Linux
+
+  # Determinístico (sem chave)
+  ./run-container-llm.sh
+
+  # # Com OpenAI
+  ./run-container-llm.sh sua_chave
+  
+```
+
+### ✅ Rodar os testes unitários 
+
+```bash
+docker compose run --rm tests
+```
+
+```bash
+  # Arquivo para execução com valores padrão utilizando o docker compose no Linux
+
+  ./run-container-tests.sh
+
+```
+
+### 🖥️ Rodar a visualização interativa (Pygame)
+
+A visualização precisa de um display X11 no host. No Linux:
+
+```bash
+
+# Libera o acesso do container ao servidor X do host
+xhost +local:docker
+
+docker compose run --rm viewer
+
+# Ao terminar, revogue o acesso
+xhost -local:docker
+```
+
+```bash
+  # Arquivo para execução com valores padrão utilizando o docker compose no Linux
+
+  ./run-container-viewer.sh
+  
+```
+
+> A visualização depende de X11 e é suportada principalmente em hosts Linux. Em macOS/Windows é necessário um servidor X (ex.: XQuartz/VcXsrv) e ajustar a variável `DISPLAY`.
+
+### 🎛️ Comandos customizados
+
+Qualquer comando da CLI pode ser sobrescrito no `docker compose run`. Exemplo, instruções para motoristas via LLM:
+
+```bash
+docker compose run --rm llm \
+  python -m src.llm --mode vrp --output instructions \
+  --vehicle-ids 1 3 5 --deliveries-file data/brazil_capitals_sample.csv
+```
+
+| Serviço | Comando | Descrição |
+|---------|---------|-----------|
+| `experiments` | `docker compose up experiments` | Executa os 5 cenários VRP e gera artefatos |
+| `llm` | `docker compose run --rm llm` | Gera relatório operacional via camada LLM |
+| `tests` | `docker compose run --rm tests` | Executa a suite `pytest` |
+| `viewer` | `docker compose run --rm viewer` | Visualização interativa Pygame (requer X11) |
 
 ---
 
