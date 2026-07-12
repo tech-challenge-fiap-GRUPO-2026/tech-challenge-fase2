@@ -396,7 +396,7 @@ Resultado esperado: **62 passed**.
 
 ## 🎬 Vídeo Demonstração
 
-[![Assistir no YouTube](https://img.shields.io/badge/YouTube-Assistir%20Demo-FF0000?logo=youtube&logoColor=white)](https://www.youtube.com/watch?v=DEMO_LINK)
+[![Assistir no YouTube](https://img.shields.io/badge/YouTube-Assistir%20Demo-FF0000?logo=youtube&logoColor=white)](https://youtu.be/tCo0JeZm52g)
 
 ---
 
